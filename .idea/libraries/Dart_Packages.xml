@@ -51,13 +51,6 @@
             </list>
           </value>
         </entry>
-        <entry key="flashy_flutter">
-          <value>
-            <list>
-              <option value="$PROJECT_DIR$/../lib" />
-            </list>
-          </value>
-        </entry>
         <entry key="flutter">
           <value>
             <list>
@@ -201,7 +194,6 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/term_glyph-1.2.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/test_api-0.5.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/vector_math-2.1.4/lib" />
-      <root url="file://$PROJECT_DIR$/../lib" />
       <root url="file://$PROJECT_DIR$/../../../flutter/bin/cache/pkg/sky_engine/lib" />
       <root url="file://$PROJECT_DIR$/../../../flutter/packages/flutter/lib" />
       <root url="file://$PROJECT_DIR$/../../../flutter/packages/flutter_test/lib" />
