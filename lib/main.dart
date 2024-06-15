@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:flashy_flutter/screens/home.dart';
 import 'package:flashy_flutter/utils/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {

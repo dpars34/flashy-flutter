@@ -1,66 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:flashy_flutter/utils/api_helper.dart';
 import 'package:flashy_flutter/utils/colors.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../notifiers/deck_notifier.dart';
 
-import '../classes/deck_data.dart';
-import '../components/deck_card.dart';
+import '../widgets/deck_card.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.title});
+class HomeScreen extends ConsumerStatefulWidget {
+  const HomeScreen({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  // DATA
-  late List<DeckData> deckDataList;
-
-  bool loaded = false;
-
-
-  final DeckData dummyDeckData = DeckData(
-    id: 1,
-    createdAt: DateTime.parse('2024-06-01T07:14:12.000000Z'),
-    updatedAt: DateTime.parse('2024-06-01T07:14:12.000000Z'),
-    creatorUserId: 10,
-    name: 'Dummy Deck',
-    description: 'This is a dummy description.',
-    categories: ['math'],
-    leftOption: 'false',
-    rightOption: 'true',
-    count: 10,
-    creatorUserName: 'Mr Test Person',
-  );
-
-  final ApiHelper apiHelper = ApiHelper();
-
-  Future fetchData() async {
-    List<dynamic> jsonData = await apiHelper.get('/decks');
-    deckDataList = jsonData.map((json) => DeckData.fromJson(json)).toList();
-
-    setState(() {
-      loaded = true;
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Fetch the deck data when the widget is initialized
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(deckProvider.notifier).fetchDeckData();
     });
   }
 
   @override
-  void initState() {
-    super.initState();
-    fetchData();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final deckDataList = ref.watch(deckProvider);
+    final deckNotifier = ref.read(deckProvider.notifier);
+
     return Scaffold(
       backgroundColor: bg,
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: loaded ?
+      body: !deckDataList.isEmpty ?
         SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(24),
