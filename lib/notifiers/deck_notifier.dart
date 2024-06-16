@@ -11,6 +11,23 @@ class DeckNotifier extends StateNotifier<List<DeckData>> {
     List<dynamic> jsonData = await apiHelper.get('/decks');
     state = jsonData.map((json) => DeckData.fromJson(json)).toList();
   }
+
+  Future<void> fetchDeckDetails(int id) async {
+
+    // if cards have already been loaded then return
+    final index = state.indexWhere((deck) => deck.id == id);
+    if (index != -1 && state[index].cards != null) {
+      return;
+    }
+
+    Map<String, dynamic> jsonData = await apiHelper.get('/decks/$id');
+    DeckData deckData = DeckData.fromJson(jsonData);
+
+    state = [
+      for (final deck in state)
+        if (deck.id == id) deckData else deck
+    ];
+  }
 }
 
 final deckProvider = StateNotifierProvider<DeckNotifier, List<DeckData>>((ref) {

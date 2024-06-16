@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flashy_flutter/utils/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../notifiers/deck_notifier.dart';
+import 'package:flashy_flutter/screens/deck_detail_screen.dart';
 
+import '../notifiers/deck_notifier.dart';
 import '../widgets/deck_card.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -24,6 +25,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     });
   }
 
+  void _navigateToDeckDetail(BuildContext context, int id) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DeckDetailScreen(id: id),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final deckDataList = ref.watch(deckProvider);
@@ -35,7 +45,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: !deckDataList.isEmpty ?
+      body: deckDataList.isNotEmpty ?
         SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(24),
@@ -67,7 +77,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   children: [
                     ...deckDataList.map((deckData) => Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
-                      child: DeckCard(deckData: deckData),
+                      child: InkWell(
+                        onTap: () => _navigateToDeckDetail(context, deckData.id),
+                        child: DeckCard(deckData: deckData)
+                      ),
                     )),
                   ],
                 )

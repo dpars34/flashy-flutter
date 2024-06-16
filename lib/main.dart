@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flashy_flutter/screens/home.dart';
+import 'package:flashy_flutter/screens/home_screen.dart';
 import 'package:flashy_flutter/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

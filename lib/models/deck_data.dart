@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flashy_flutter/models/creator_data.dart';
+import 'package:flashy_flutter/models/cards_data.dart';
+import 'package:flashy_flutter/models/highscores_data.dart';
 
 class DeckData {
   final int id;
@@ -13,7 +15,10 @@ class DeckData {
   final String leftOption;
   final String rightOption;
   final int count;
+  final List<int> likedUsers;
   final CreatorData creator;
+  final List<CardsData>? cards;
+  final List<HighscoresData>? highscores;
 
   DeckData({
     required this.id,
@@ -26,7 +31,10 @@ class DeckData {
     required this.leftOption,
     required this.rightOption,
     required this.count,
+    required this.likedUsers,
     required this.creator,
+    required this.cards,
+    required this.highscores
   });
 
   factory DeckData.fromJson(Map<String, dynamic> json) {
@@ -41,7 +49,14 @@ class DeckData {
       leftOption: json['left_option'],
       rightOption: json['right_option'],
       count: json['count'],
+      likedUsers: List<int>.from(jsonDecode(json['liked_users'])),
       creator: CreatorData.fromJson(json['creator']),
+      cards: json['cards'] != null
+          ? (json['cards'] as List).map((i) => CardsData.fromJson(i)).toList()
+          : null,
+      highscores: json['highscores'] != null
+          ? (json['highscores'] as List).map((i) => HighscoresData.fromJson(i)).toList()
+          : null,
     );
   }
 
@@ -57,7 +72,10 @@ class DeckData {
       'left_option': leftOption,
       'right_option': rightOption,
       'count': count,
+      'likedUsers': jsonEncode(likedUsers),
       'creator': creator.toJson(),
+      'cards': cards?.map((card) => card.toJson()).toList(),
+      'highscores': highscores?.map((highscore) => highscore.toJson()).toList(),
     };
   }
 }
