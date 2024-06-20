@@ -4,6 +4,7 @@ import 'package:flashy_flutter/utils/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../notifiers/deck_notifier.dart';
+import '../widgets/base_button.dart';
 import '../widgets/deck_card.dart';
 import '../widgets/option_pill.dart';
 
@@ -104,9 +105,30 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              deck.highscores != null ?
-                LeaderboardCard(highscoresData: deck.highscores ?? [],)
-               : Text('LOADING')
+              if (deck.highscores != null)
+                Column(
+                  children: [
+                    LeaderboardCard(highscoresData: deck.highscores ?? []),
+                    const SizedBox(height: 30),
+                    BaseButton(
+                      text: 'Like deck',
+                      color: green,
+                      outlined: true,
+                      onPressed: () => {
+
+                      },
+                    ),
+                    const SizedBox(height: 8),
+                    BaseButton(
+                      text: 'Start',
+                      onPressed: () => {
+
+                      },
+                    ),
+                  ],
+                )
+              else
+                Text('LOADING')
             ],
           ),
         ),
