@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../notifiers/deck_notifier.dart';
 import '../widgets/base_button.dart';
-import '../widgets/deck_card.dart';
 import '../widgets/option_pill.dart';
+import '../screens/swipe_screen.dart';
 
 class DeckDetailScreen extends ConsumerStatefulWidget {
   const DeckDetailScreen({Key? key, required this.id}) : super(key: key);
@@ -122,7 +122,10 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
                     BaseButton(
                       text: 'Start',
                       onPressed: () => {
-
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SwipeScreen(id: deck.id, title: deck.name)),
+                        ),
                       },
                     ),
                   ],

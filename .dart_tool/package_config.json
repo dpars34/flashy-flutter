@@ -164,6 +164,12 @@
       "languageVersion": "2.18"
     },
     {
+      "name": "swipe_cards",
+      "rootUri": "file:///Users/daniel/.pub-cache/hosted/pub.dev/swipe_cards-2.0.0+1",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
       "name": "term_glyph",
       "rootUri": "file:///Users/daniel/.pub-cache/hosted/pub.dev/term_glyph-1.2.1",
       "packageUri": "lib/",
@@ -194,7 +200,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2024-06-20T14:00:34.632695Z",
+  "generated": "2024-06-22T06:46:48.160969Z",
   "generator": "pub",
   "generatorVersion": "3.0.3"
 }
