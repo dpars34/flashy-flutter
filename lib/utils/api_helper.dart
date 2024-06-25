@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+import 'api_exception.dart';
+
 class ApiHelper {
   String baseUrl = 'http://localhost/api';
 
@@ -55,7 +57,7 @@ class ApiHelper {
     if (statusCode >= 200 && statusCode < 300) {
       return jsonDecode(response.body);
     } else {
-      throw Exception('Error occurred with status code: $statusCode');
+      throw ApiException(statusCode, 'Error occurred with status code: $statusCode');
     }
   }
 }

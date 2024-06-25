@@ -46,7 +46,7 @@
 		</data>
 		<key>Frameworks/App.framework/App</key>
 		<data>
-		j1ikaxmQVD7z8r8MfGXma/WsZGE=
+		K46y4VRiJcMbtEDfEFlJsduMvBg=
 		</data>
 		<key>Frameworks/App.framework/Info.plist</key>
 		<data>
@@ -54,15 +54,15 @@
 		</data>
 		<key>Frameworks/App.framework/_CodeSignature/CodeResources</key>
 		<data>
-		a5ptmHIuKOKe+6LTO7HDcurxQ5c=
+		tOqMuaSqGFjJO7vPg14Qf2qO49I=
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/AssetManifest.json</key>
 		<data>
-		oG5/OGn+vw7vp/nu5DUDoZJ4nFc=
+		SEcRQPKcg+/Knf9NyyrWT6tEpPc=
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/AssetManifest.smcbin</key>
 		<data>
-		BOBZtVCKogwuSluqb0miwcmwMmY=
+		VRXn+of4otS1hIOyQuKZvp4U1fU=
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/FontManifest.json</key>
 		<data>
@@ -70,7 +70,11 @@
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/NOTICES.Z</key>
 		<data>
-		ijioAQ5znhAMuTF701FkyGhJZUg=
+		LVqZBtZKtTb/3tflsW6bownvWrc=
+		</data>
+		<key>Frameworks/App.framework/flutter_assets/assets/flashy-logo.png</key>
+		<data>
+		1qwjMsGYasc5PAGvLczuA4apd0s=
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/fonts/MaterialIcons-Regular.otf</key>
 		<data>
@@ -82,7 +86,7 @@
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/kernel_blob.bin</key>
 		<data>
-		oade9FZdfch/VSW7m88tKsWiP5Q=
+		FnU2amBglnm+p46RLspeovOH0Yg=
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf</key>
 		<data>
@@ -180,6 +184,26 @@
 		<data>
 		nMTZkkm9uooDDa8A2YJSyK73oP8=
 		</data>
+		<key>Frameworks/shared_preferences_foundation.framework/Info.plist</key>
+		<data>
+		C+5oGI5wEELBHrB1SgBFmAeCses=
+		</data>
+		<key>Frameworks/shared_preferences_foundation.framework/_CodeSignature/CodeResources</key>
+		<data>
+		pTVRi/TD0pay1jUSVDxF0BsraEc=
+		</data>
+		<key>Frameworks/shared_preferences_foundation.framework/shared_preferences_foundation</key>
+		<data>
+		hDy4bMf2cpZsl8NnHN5VRIq9wvM=
+		</data>
+		<key>Frameworks/shared_preferences_foundation.framework/shared_preferences_foundation_privacy.bundle/Info.plist</key>
+		<data>
+		fzKzemVz2w9ZGH06xRxVoudTOMs=
+		</data>
+		<key>Frameworks/shared_preferences_foundation.framework/shared_preferences_foundation_privacy.bundle/PrivacyInfo.xcprivacy</key>
+		<data>
+		6uLTlq7fgHHWA8emYDf4ImHC+AY=
+		</data>
 		<key>Info.plist</key>
 		<data>
 		g59g0T2y+SKavr/QL3dPoQwboW0=
@@ -265,7 +289,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			rCxrd6IdlLYxcUKQwC1V0aLvuER6x4yi4DJ9lxhqbks=
+			DATjFkFvPFpPggkse9ruO9E/DpqcYuXO3vuuI6lk9gg=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/Info.plist</key>
@@ -279,21 +303,21 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			MyZcSuvaKMRh7cDeAEflM5hBshGg9zj6lIV0rT88YIQ=
+			8PvkxjCEJFF706GG93Cj5rwPrT9mjubYhUMs47h6qvk=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/flutter_assets/AssetManifest.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Sps95+7JukayebvM0TLjL1LW1VXXndpKp/O8tOm9ZR8=
+			ZJa1fHpEymnRwwLhu2CH2eecmUL7VwXcAZGX5t6Pb54=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/flutter_assets/AssetManifest.smcbin</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			nFwFXoxik7nUz3ocXKA7ilNzgyDD8BvjtuMmn6MuJrY=
+			nQ/UdM/7mxyAkwt57DGHuKzJrCZe5SpnU0oxT+I9Ipk=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/flutter_assets/FontManifest.json</key>
@@ -307,7 +331,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			lHxn3Ue6UcpFlmfPvFrvyqQWVaFjs7ugFNtXsbp60V0=
+			4lD+H3RwxhU6/0ge1ToqvUHF+PU3uWJG5iR7E7dhJ5w=
+			</data>
+		</dict>
+		<key>Frameworks/App.framework/flutter_assets/assets/flashy-logo.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			gPEYZbObmD1O5ytbvrTOubGHVnzl/leD1pPoPv8Ggm8=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/flutter_assets/fonts/MaterialIcons-Regular.otf</key>
@@ -328,7 +359,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			MlxH5cQrk+vdYCAgDeZFCpjaJq7vDAz34iHpKeeMeno=
+			vgBa24UQBRFqJWQAZX0PfXZabUM+EKFliIQrlyvbqT4=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf</key>
@@ -497,6 +528,41 @@
 			<key>hash2</key>
 			<data>
 			rETMw/Yb9jC7IPuAQ9hs/kyJldBrRgCEQA20XXBJezA=
+			</data>
+		</dict>
+		<key>Frameworks/shared_preferences_foundation.framework/Info.plist</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			4G56AYh3gOazf6LakLvCXs3IKh6cXecuiS9d48nT//o=
+			</data>
+		</dict>
+		<key>Frameworks/shared_preferences_foundation.framework/_CodeSignature/CodeResources</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			jCKBWGUNXnEv280iGLZ0OHSsjJ3B6JsSq/Y0xpi9/II=
+			</data>
+		</dict>
+		<key>Frameworks/shared_preferences_foundation.framework/shared_preferences_foundation</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			sZzcwYYgrXzSAzAeDK6nTkrHsZ5AK/YsJ+kZFFLwJbY=
+			</data>
+		</dict>
+		<key>Frameworks/shared_preferences_foundation.framework/shared_preferences_foundation_privacy.bundle/Info.plist</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			7Fil3RCuHFwune8jYOtc+3kqXVU2XDJbTOTWgfpSn+o=
+			</data>
+		</dict>
+		<key>Frameworks/shared_preferences_foundation.framework/shared_preferences_foundation_privacy.bundle/PrivacyInfo.xcprivacy</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			BWQouTi9VwGKYAGdFcPB7i+nJ/I2h1mLu9k0hIsYCxo=
 			</data>
 		</dict>
 	</dict>

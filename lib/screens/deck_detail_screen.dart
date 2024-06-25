@@ -40,7 +40,7 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
     return Scaffold(
       backgroundColor: bg,
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: secondary,
         title: const Text(''),
       ),
       body: deckDataList.isNotEmpty ?

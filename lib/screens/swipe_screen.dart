@@ -1,11 +1,11 @@
 import 'dart:async';
+import 'package:flashy_flutter/screens/results_screen.dart';
 import 'package:flashy_flutter/utils/colors.dart';
 import 'package:flashy_flutter/widgets/option_pill.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flashy_flutter/models/cards_data.dart';
 import 'package:flashy_flutter/widgets/swipe_card.dart';
-import 'package:swipe_cards/draggable_card.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 import '../notifiers/deck_notifier.dart';
 import '../widgets/swipe_tag.dart';
@@ -23,7 +23,7 @@ class SwipeScreen extends ConsumerStatefulWidget {
 class _SwipeScreenState extends ConsumerState<SwipeScreen> {
   late MatchEngine _matchEngine;
   bool _isLoading = true;
-  int _swipeCounter = 0;
+  int _swipeCounter = 1;
   int _totalCount = 0;
 
   // Timer-related variables
@@ -103,7 +103,7 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
     return Scaffold(
       backgroundColor: bg,
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: secondary,
         title: Text(widget.title),
       ),
       body: _isLoading
@@ -118,12 +118,15 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
                 const Spacer(),
                 const Icon(Icons.access_time, size: 18, color: black),
                 const SizedBox(width: 4),
-                Text(
-                  _formatTime(_elapsedMilliseconds),
-                  style: const TextStyle(
-                    color: black,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16
+                Container(
+                  width: 60,
+                  child: Text(
+                    _formatTime(_elapsedMilliseconds),
+                    style: const TextStyle(
+                      color: black,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16
+                    ),
                   ),
                 ),
                 const Spacer(),
@@ -138,7 +141,10 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
                   return SwipeCard(item: deck.cards![index]);
                 },
                 onStackFinished: () {
-                  print('Stack Finished');
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => ResultsScreen(id: 1,)),
+                  );
                 },
                 upSwipeAllowed: false,
                 fillSpace: false,

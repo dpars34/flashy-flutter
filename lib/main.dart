@@ -5,6 +5,8 @@ import 'package:flashy_flutter/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'notifiers/loading_notifier.dart';
+
 void main() {
   runApp(const ProviderScope(child: MyApp()));
 }
@@ -21,7 +23,24 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: primary),
         useMaterial3: true,
       ),
-      home: const HomeScreen(title: 'HOME SCREEN'),
+      builder: (context, child) {
+        return Stack(
+          children: [
+            child!,
+            Consumer(builder: (context, ref, _) {
+              final isLoading = ref.watch(loadingProvider).isLoading;
+              return isLoading ? Material(
+                color: Colors.black.withOpacity(0.5),
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              )
+                  : const SizedBox.shrink();
+            }),
+          ],
+        );
+      },
+      home: const HomeScreen(),
     );
   }
 }
