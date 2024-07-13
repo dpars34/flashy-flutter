@@ -1,3 +1,4 @@
+import 'package:flashy_flutter/screens/register_screen.dart';
 import 'package:flashy_flutter/utils/api_exception.dart';
 import 'package:flashy_flutter/widgets/error_modal.dart';
 import 'package:flutter/material.dart';
@@ -59,7 +60,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 child: TextField(
                   controller: _emailController,
                   decoration: const InputDecoration(
-                    labelText: 'Email',
+                    hintText: 'Email',
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.all(16.0),
                   ),
@@ -75,7 +76,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   controller: _passwordController,
                   obscureText: true,
                   decoration: const InputDecoration(
-                    labelText: 'Password',
+                    hintText: 'Password',
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.all(16.0),
                   ),
@@ -115,7 +116,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               SizedBox(height: 12.0),
               BaseButton(
                 text: 'Register account',
-                onPressed: () => {},
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RegisterScreen(),
+                  ),
+                ),
                 outlined: true,
               ),
             ],
