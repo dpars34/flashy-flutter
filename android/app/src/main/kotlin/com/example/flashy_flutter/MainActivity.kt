@@ -1,4 +1,4 @@
-package com.example.flashy_flutter
+package com.danpdev.flashy
 
 import io.flutter.embedding.android.FlutterActivity
 
