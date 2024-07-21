@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart';
 
 import 'api_exception.dart';
 
@@ -15,15 +17,36 @@ class ApiHelper {
     return _handleResponse(response);
   }
 
-  Future<dynamic> post(String endpoint, Map<String, dynamic> body) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl$endpoint'),
-      headers: _headers(),
-      body: jsonEncode(body),
-    );
+  Future<dynamic> post(String endpoint, Map<String, dynamic> body, {File? file}) async {
+    var uri = Uri.parse('$baseUrl$endpoint');
+    var request = http.MultipartRequest('POST', uri);
 
-    return _handleResponse(response);
+    // Add fields
+    body.forEach((key, value) {
+      request.fields[key] = value.toString();
+    });
+
+    // Add file if provided
+    if (file != null) {
+      var fileStream = http.ByteStream(file.openRead());
+      var length = await file.length();
+      var multipartFile = http.MultipartFile(
+        'profile_image',
+        fileStream,
+        length,
+        filename: basename(file.path),
+      );
+      request.files.add(multipartFile);
+    }
+
+    request.headers.addAll(_headers());
+
+    var response = await request.send();
+    var responseBody = await response.stream.bytesToString();
+
+    return _handleResponse(http.Response(responseBody, response.statusCode));
   }
+
 
   Future<dynamic> put(String endpoint, Map<String, dynamic> body) async {
     final response = await http.put(

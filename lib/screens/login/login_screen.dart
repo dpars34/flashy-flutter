@@ -93,9 +93,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       _passwordController.text,
                     );
                     if (mounted) {
-                      Navigator.pushReplacement(
-                        context,
+                      Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(builder: (context) => const HomeScreen()),
+                            (Route<dynamic> route) => false,
                       );
                     }
                   } catch (e) {

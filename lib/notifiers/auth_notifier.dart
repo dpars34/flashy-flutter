@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flashy_flutter/models/login_data.dart';
 import 'package:flashy_flutter/utils/api_exception.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,6 +39,49 @@ class AuthNotifier extends StateNotifier<User?> {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('auth_token', '${loginData.tokenType} ${loginData.accessToken}');
       state = loginData.user;
+
+    } catch (e) {
+      if (e is ApiException) {
+        throw ApiException(e.statusCode, e.message);
+      } else {
+        throw ApiException(500, 'Unexpected Error: $e');
+      }
+    }
+  }
+
+  Future<Map<String, dynamic>> validate(String email, String password, String passwordConfirmation, String userName, File? image) async {
+    try {
+      Map<String, dynamic> body = {
+        'email': email,
+        'password': password,
+        'password_confirmation': passwordConfirmation,
+        'name': userName,
+      };
+
+      // Call post method with optional file parameter
+      var response = await apiHelper.post('/register-confirmation', body, file: image);
+      return response;
+
+    } catch (e) {
+      if (e is ApiException) {
+        throw ApiException(e.statusCode, e.message);
+      } else {
+        throw ApiException(500, 'Unexpected Error: $e');
+      }
+    }
+  }
+
+  Future<void> register(String email, String password, String passwordConfirmation, String userName, File? image) async {
+    try {
+      Map<String, dynamic> body = {
+        'email': email,
+        'password': password,
+        'password_confirmation': passwordConfirmation,
+        'name': userName,
+      };
+
+      // Call post method with optional file parameter
+      var response = await apiHelper.post('/register', body, file: image);
 
     } catch (e) {
       if (e is ApiException) {

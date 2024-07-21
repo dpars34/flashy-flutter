@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flashy_flutter/screens/home/home_screen.dart';
+import 'package:flashy_flutter/screens/login/login_screen.dart';
 import 'package:flashy_flutter/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,6 +24,9 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: primary),
         useMaterial3: true,
       ),
+      routes: {
+        '/login': (context) => const LoginScreen(),
+      },
       builder: (context, child) {
         return Stack(
           children: [

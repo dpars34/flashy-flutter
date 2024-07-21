@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flashy_flutter/screens/register/register_confirm_screen.dart';
 import 'package:flashy_flutter/utils/api_exception.dart';
 import 'package:flashy_flutter/widgets/error_modal.dart';
 import 'package:flutter/material.dart';
@@ -55,15 +56,67 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     });
   }
 
-  void _toNextPage () {
+  String formatValidationErrors(Map<String, dynamic> errors) {
+    List<String> errorMessages = [];
+
+    errors.forEach((field, messages) {
+      if (messages is List) {
+        for (var message in messages) {
+          errorMessages.add(message);
+        }
+      } else {
+        errorMessages.add(messages);
+      }
+    });
+
+    return errorMessages.join('\n\n');
+  }
+
+  void _toNextPage () async {
+    final loadingNotifier = ref.read(loadingProvider.notifier);
+    final authNotifier = ref.watch(authProvider.notifier);
+
     if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Form is valid and image is selected!')),
-      );
+
+      try {
+        // SEND TO VALIDATION API
+        loadingNotifier.showLoading(context);
+        final errors = await authNotifier.validate(
+          _emailController.text,
+          _passwordController.text,
+          _passwordConfirmationController.text,
+          _usernameController.text,
+          _image,
+        );
+        if (!mounted) return;
+        if (errors.isNotEmpty) {
+          String message = formatValidationErrors(errors);
+          showModal(context, 'Validation Error', message);
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RegisterConfirmScreen(
+                  email: _emailController.text,
+                  password: _passwordController.text,
+                  passwordConfirmation: _passwordConfirmationController.text,
+                  username: _usernameController.text,
+                  image: _image
+              ),
+            ),
+          );
+        }
+      } catch (e) {
+        if (e is ApiException) {
+          showModal(context, 'An Error Occurred', 'Please try again');
+        } else {
+          showModal(context, 'An Error Occurred', 'Please try again');
+        }
+      } finally {
+        loadingNotifier.hideLoading();
+      }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please select an image')),
-      );
+      // showModal(context, 'An Error Occurred', "Please check that the information you have entered is valid and try again.");
     }
   }
 
