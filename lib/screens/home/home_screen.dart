@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flashy_flutter/utils/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flashy_flutter/screens/deck/deck_detail_screen.dart';
+import 'package:flashy_flutter/screens/account/account_screen.dart';
 
 import '../../notifiers/auth_notifier.dart';
 import '../../notifiers/deck_notifier.dart';
 import '../../widgets/deck_card.dart';
 import '../../notifiers/auth_notifier.dart';
 import '../../notifiers/loading_notifier.dart';
+import '../../widgets/error_modal.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -95,38 +97,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ],
             ),
             const SizedBox(height: 10),
-            // ListTile(
-            //   leading: const Icon(
-            //     Icons.home,
-            //     color: black,
-            //   ),
-            //   title: const Text(
-            //     'Home',
-            //     style: TextStyle(
-            //       color: black,
-            //     ),
-            //   ),
-            //   onTap: () {
-            //     Navigator.pop(context); // Close the drawer
-            //     // Navigate to home
-            //   },
-            // ),
-            // ListTile(
-            //   leading: const Icon(
-            //     Icons.settings,
-            //     color: black
-            //   ),
-            //   title: const Text(
-            //     'Settings',
-            //     style: TextStyle(
-            //       color: black,
-            //     ),
-            //   ),
-            //   onTap: () {
-            //     Navigator.pop(context); // Close the drawer
-            //     // Navigate to settings
-            //   },
-            // ),
+            if (user != null) ListTile(
+              leading: const Icon(
+                Icons.account_circle,
+                color: primary,
+              ),
+              title: const Text(
+                'My account',
+                style: TextStyle(
+                  color: primary,
+                  fontWeight: FontWeight.bold
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AccountScreen()
+                  ),
+                );
+              },
+            ),
             user == null ? ListTile(
               leading: const Icon(
                   Icons.login,
@@ -227,4 +218,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         Text('LOADING'),
     );
   }
+}
+
+void showModal(BuildContext context, String title, String content) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return ErrorModal(title: title, content: content, context: context);
+    },
+  );
 }

@@ -2,17 +2,29 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'api_exception.dart';
 
 class ApiHelper {
   String baseUrl = 'http://localhost/api';
+  String? _token;
 
   // constructor
-  ApiHelper();
+  ApiHelper() {
+    _initToken();
+  }
+
+  Future<void> _initToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _token = prefs.getString('auth_token');
+  }
 
   Future<dynamic> get(String endpoint) async {
-    final response = await http.get(Uri.parse('$baseUrl$endpoint'));
+    final response = await http.get(
+      Uri.parse('$baseUrl$endpoint'),
+      headers: await _headers(),
+    );
 
     return _handleResponse(response);
   }
@@ -39,7 +51,7 @@ class ApiHelper {
       request.files.add(multipartFile);
     }
 
-    request.headers.addAll(_headers());
+    request.headers.addAll(await _headers());
 
     var response = await request.send();
     var responseBody = await response.stream.bytesToString();
@@ -51,7 +63,7 @@ class ApiHelper {
   Future<dynamic> put(String endpoint, Map<String, dynamic> body) async {
     final response = await http.put(
       Uri.parse('$baseUrl$endpoint'),
-      headers: _headers(),
+      headers: await _headers(),
       body: jsonEncode(body),
     );
 
@@ -61,17 +73,26 @@ class ApiHelper {
   Future<dynamic> delete(String endpoint) async {
     final response = await http.delete(
       Uri.parse('$baseUrl$endpoint'),
-      headers: _headers(),
+      headers: await _headers(),
     );
 
     return _handleResponse(response);
   }
 
-  Map<String, String> _headers() {
-    return {
+  Future<Map<String, String>> _headers() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('auth_token');
+
+    Map<String, String> headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     };
+
+    if (token != null) {
+      headers['Authorization'] = 'Bearer $token';
+    }
+
+    return headers;
   }
 
   dynamic _handleResponse(http.Response response) {

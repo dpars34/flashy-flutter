@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flashy_flutter/models/login_data.dart';
+import 'package:flashy_flutter/models/user_data.dart';
 import 'package:flashy_flutter/utils/api_exception.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,10 +20,15 @@ class AuthNotifier extends StateNotifier<User?> {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('auth_token');
     if (token != null) {
-      // TODO
-      // GET USER DATA!!!
-      // final userData = jsonDecode(token);
-      // state = User(id: userData['id'], email: userData['email']);
+      try {
+        Map<String, dynamic> jsonData = await apiHelper.get('/user');
+        User userData = User.fromJson(jsonData);
+        state = userData;
+      } catch (e) {
+        // IF ERROR THEN IGNORE
+        print(e);
+      }
+      print(token);
     }
   }
 
