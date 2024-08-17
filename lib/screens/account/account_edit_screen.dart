@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flashy_flutter/screens/account/account_edit_confirm_screen.dart';
 import 'package:flashy_flutter/screens/register/register_confirm_screen.dart';
 import 'package:flashy_flutter/utils/api_exception.dart';
 import 'package:flashy_flutter/widgets/error_modal.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flashy_flutter/utils/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../notifiers/auth_notifier.dart';
 import '../../notifiers/loading_notifier.dart';
@@ -23,11 +25,10 @@ class AccountEditScreen extends ConsumerStatefulWidget {
 class _AccountEditScreenState extends ConsumerState<AccountEditScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _passwordConfirmationController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final picker = ImagePicker();
   File? _image;
+  bool _updateImage = false;
 
   Future<void> _pickImage() async {
     final loadingNotifier = ref.read(loadingProvider.notifier);
@@ -38,6 +39,7 @@ class _AccountEditScreenState extends ConsumerState<AccountEditScreen> {
 
       if (pickedFile != null) {
         setState(() {
+          _updateImage = true;
           _image = File(pickedFile.path);
         });
       } else {
@@ -52,6 +54,7 @@ class _AccountEditScreenState extends ConsumerState<AccountEditScreen> {
 
   void _deleteImage () {
     setState(() {
+      _updateImage = true;
       _image = null;
     });
   }
@@ -75,18 +78,18 @@ class _AccountEditScreenState extends ConsumerState<AccountEditScreen> {
   void _toNextPage () async {
     final loadingNotifier = ref.read(loadingProvider.notifier);
     final authNotifier = ref.watch(authProvider.notifier);
+    final user = ref.read(authProvider);
 
     if (_formKey.currentState!.validate()) {
 
       try {
         // SEND TO VALIDATION API
         loadingNotifier.showLoading(context);
-        final errors = await authNotifier.validate(
+        final errors = await authNotifier.validateEdit(
           _emailController.text,
-          _passwordController.text,
-          _passwordConfirmationController.text,
           _usernameController.text,
           _image,
+          _updateImage,
         );
         if (!mounted) return;
         if (errors.isNotEmpty) {
@@ -96,12 +99,12 @@ class _AccountEditScreenState extends ConsumerState<AccountEditScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => RegisterConfirmScreen(
+              builder: (context) => AccountEditConfirmScreen(
                   email: _emailController.text,
-                  password: _passwordController.text,
-                  passwordConfirmation: _passwordConfirmationController.text,
                   username: _usernameController.text,
-                  image: _image
+                  image: _image,
+                  updateImage: _updateImage,
+                  imageUrl: user?.profileImage,
               ),
             ),
           );
@@ -138,6 +141,7 @@ class _AccountEditScreenState extends ConsumerState<AccountEditScreen> {
   Widget build(BuildContext context) {
     final authNotifier = ref.watch(authProvider.notifier);
     final loadingNotifier = ref.read(loadingProvider.notifier);
+    final user = ref.read(authProvider);
 
     return Scaffold(
         appBar: AppBar(
@@ -153,7 +157,7 @@ class _AccountEditScreenState extends ConsumerState<AccountEditScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                      'Register account',
+                      'Edit details',
                       style: TextStyle(
                         fontWeight: FontWeight.w800,
                         color: primary,
@@ -184,36 +188,6 @@ class _AccountEditScreenState extends ConsumerState<AccountEditScreen> {
                   ),
                   const SizedBox(height: 12.0),
                   CustomInputField(
-                    controller: _passwordController,
-                    labelText: 'Password',
-                    isPassword: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
-                      }
-                      if (value.length < 6) {
-                        return 'Password must be at least 6 characters long';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 12.0),
-                  CustomInputField(
-                    controller: _passwordConfirmationController,
-                    labelText: 'Password confirmation',
-                    isPassword: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please confirm your password';
-                      }
-                      if (value != _passwordController.text) {
-                        return 'Passwords do not match';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 40.0),
-                  CustomInputField(
                     controller: _usernameController,
                     labelText: 'Username',
                     validator: (value) {
@@ -234,7 +208,7 @@ class _AccountEditScreenState extends ConsumerState<AccountEditScreen> {
                   const SizedBox(height: 12.0),
                   GestureDetector(
                     onTap: _pickImage,
-                    child: _image != null ? Container(
+                    child: _updateImage ? _image != null ? Container(
                       height: 109,
                       width: 109,
                       decoration: BoxDecoration(
@@ -244,7 +218,51 @@ class _AccountEditScreenState extends ConsumerState<AccountEditScreen> {
                           fit: BoxFit.cover, // Make the image cover the container
                         ),
                       ),
-                    ):
+                    ) :
+                    Container(
+                      height: 109,
+                      width: 109,
+                      decoration: BoxDecoration(
+                        color: gray2,
+                        borderRadius: BorderRadius.circular(12), // Rounded corners
+                      ),
+                      child: const Center(
+                        child: Icon(
+                            Icons.add,
+                            size: 50,
+                            color: white
+                        ),
+                      ),
+                    )
+                   : user?.profileImage != null ? Container(
+                        height: 109,
+                        width: 109,
+                        decoration: BoxDecoration(
+                          color: gray2,
+                          borderRadius: BorderRadius.circular(12), // Rounded corners
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.network(
+                            user!.profileImage!,
+                            fit: BoxFit.cover,
+                            width: 109,
+                            height: 109,
+                            loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Shimmer.fromColors(
+                                baseColor: Colors.grey.shade300,
+                                highlightColor: Colors.grey.shade100,
+                                child: Container(
+                                  width: 109,
+                                  height: 109,
+                                  color: Colors.white,
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                    ) :
                     Container(
                       height: 109,
                       width: 109,
@@ -262,7 +280,7 @@ class _AccountEditScreenState extends ConsumerState<AccountEditScreen> {
                     ),
                   ),
                   const SizedBox(height: 40.0),
-                  _image != null ? BaseButton(onPressed: _deleteImage, text: 'Delete image', outlined: true,) :
+                  (_updateImage && _image != null) || (!_updateImage && user?.profileImage != null) ? BaseButton(onPressed: _deleteImage, text: 'Delete image', outlined: true,) :
                   BaseButton(onPressed: _pickImage, text: 'Upload image', outlined: true,),
                   const SizedBox(height: 12.0),
                   BaseButton(onPressed: _toNextPage, text: 'Next'),

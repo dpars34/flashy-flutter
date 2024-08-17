@@ -98,6 +98,48 @@ class AuthNotifier extends StateNotifier<User?> {
     }
   }
 
+  Future<Map<String, dynamic>> validateEdit(String email, String userName, File? image, bool updateImage) async {
+    try {
+      Map<String, dynamic> body = {
+        'email': email,
+        'name': userName,
+        'updateImage': updateImage,
+      };
+
+      // Call post method with optional file parameter
+      var response = await apiHelper.post('/user-edit-confirmation', body, file: image);
+      return response;
+
+    } catch (e) {
+      if (e is ApiException) {
+        throw ApiException(e.statusCode, e.message);
+      } else {
+        throw ApiException(500, 'Unexpected Error: $e');
+      }
+    }
+  }
+
+  Future<void> edit(String email, String userName, File? image, bool updateImage) async {
+    try {
+      Map<String, dynamic> body = {
+        'email': email,
+        'name': userName,
+        'updateImage': updateImage,
+      };
+
+      // Call post method with optional file parameter
+      var response = await apiHelper.post('/user-edit', body, file: image);
+      _loadUser();
+
+    } catch (e) {
+      if (e is ApiException) {
+        throw ApiException(e.statusCode, e.message);
+      } else {
+        throw ApiException(500, 'Unexpected Error: $e');
+      }
+    }
+  }
+
   Future<void> logout() async {
     state = null;
     final prefs = await SharedPreferences.getInstance();
