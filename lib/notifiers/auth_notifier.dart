@@ -140,6 +140,81 @@ class AuthNotifier extends StateNotifier<User?> {
     }
   }
 
+  Future<Map<String, dynamic>> validateOldPassword(String oldPassword) async {
+    try {
+      Map<String, dynamic> body = {
+        'old_password': oldPassword,
+      };
+
+      // Call post method with optional file parameter
+      var response = await apiHelper.post('/validate-password', body);
+      return response;
+
+    } catch (e) {
+      if (e is ApiException) {
+        throw ApiException(e.statusCode, e.message);
+      } else {
+        throw ApiException(500, 'Unexpected Error: $e');
+      }
+    }
+  }
+
+  Future<Map<String, dynamic>> checkPassword(String oldPassword) async {
+    try {
+      Map<String, dynamic> body = {
+        'old_password': oldPassword,
+      };
+
+      // Call post method with optional file parameter
+      var response = await apiHelper.post('/check-password', body);
+      return response;
+
+    } catch (e) {
+      if (e is ApiException) {
+        throw ApiException(e.statusCode, e.message);
+      } else {
+        throw ApiException(500, 'Unexpected Error: $e');
+      }
+    }
+  }
+
+  Future<void> changePassword(String oldPassword, String newPassword) async {
+    try {
+      Map<String, dynamic> body = {
+        'old_password': oldPassword,
+        'new_password': newPassword,
+      };
+
+      // Call post method with optional file parameter
+      var response = await apiHelper.post('/update-password', body);
+
+    } catch (e) {
+      if (e is ApiException) {
+        throw ApiException(e.statusCode, e.message);
+      } else {
+        throw ApiException(500, 'Unexpected Error: $e');
+      }
+    }
+  }
+
+  Future<void> deleteAccount(String password) async {
+    try {
+      Map<String, dynamic> body = {
+        'password': password,
+      };
+
+      // Call post method with optional file parameter
+      var response = await apiHelper.post('/delete-account', body);
+
+    } catch (e) {
+      if (e is ApiException) {
+        throw ApiException(e.statusCode, e.message);
+      } else {
+        throw ApiException(500, 'Unexpected Error: $e');
+      }
+    }
+  }
+
   Future<void> logout() async {
     state = null;
     final prefs = await SharedPreferences.getInstance();

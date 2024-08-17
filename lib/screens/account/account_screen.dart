@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flashy_flutter/screens/account/account_edit_screen.dart';
+import 'package:flashy_flutter/screens/account/delete_account_screen.dart';
+import 'package:flashy_flutter/screens/account/password_change_screen.dart';
 import 'package:flashy_flutter/screens/register/register_complete_screen.dart';
 import 'package:flashy_flutter/utils/api_exception.dart';
 import 'package:flashy_flutter/widgets/error_modal.dart';
@@ -33,6 +35,24 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
       context,
       MaterialPageRoute(
           builder: (context) => const AccountEditScreen()
+      ),
+    );
+  }
+
+  void _toPasswordChangeScreen () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => const PasswordChangeScreen()
+      ),
+    );
+  }
+
+  void _toDeleteAccountScreen () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => const DeleteAccountScreen()
       ),
     );
   }
@@ -202,7 +222,9 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 const SizedBox(height: 40.0),
                 BaseButton(onPressed: _toEditScreen, text: 'Edit details', outlined: true,),
                 const SizedBox(height: 12.0),
-                BaseButton(onPressed: _goBack, text: 'Delete account'),
+                BaseButton(onPressed: _toPasswordChangeScreen, text: 'Change password', outlined: true,),
+                const SizedBox(height: 12.0),
+                BaseButton(onPressed: _toDeleteAccountScreen, text: 'Delete account'),
                 const SizedBox(height: 92.0),
               ],
             ),
