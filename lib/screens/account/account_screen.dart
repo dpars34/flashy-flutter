@@ -1,11 +1,13 @@
 import 'dart:io';
 
+import 'package:flashy_flutter/screens/account/account_edit_screen.dart';
 import 'package:flashy_flutter/screens/register/register_complete_screen.dart';
 import 'package:flashy_flutter/utils/api_exception.dart';
 import 'package:flashy_flutter/widgets/error_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flashy_flutter/utils/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../notifiers/auth_notifier.dart';
 import '../../notifiers/loading_notifier.dart';
@@ -24,6 +26,15 @@ class AccountScreen extends ConsumerStatefulWidget {
 class _AccountScreenState extends ConsumerState<AccountScreen> {
   void _goBack () {
     Navigator.of(context).pop();
+  }
+
+  void _toEditScreen () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => const AccountEditScreen()
+      ),
+    );
   }
 
   @override
@@ -146,17 +157,34 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 ),
                 const SizedBox(height: 12.0),
                   user.profileImage != null ? Container(
-                  height: 109,
-                  width: 109,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12), // Rounded corners
-                    image: DecorationImage(
-                      image: NetworkImage(user.profileImage!),
-                      fit: BoxFit.cover, // Make the image cover the container
+                    height: 109,
+                    width: 109,
+                    decoration: BoxDecoration(
+                      color: gray2,
+                      borderRadius: BorderRadius.circular(12), // Rounded corners
                     ),
-                  ),
-                ):
-                Container(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.network(
+                        user.profileImage!,
+                        fit: BoxFit.cover,
+                        width: 109,
+                        height: 109,
+                        loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Shimmer.fromColors(
+                            baseColor: Colors.grey.shade300,
+                            highlightColor: Colors.grey.shade100,
+                            child: Container(
+                              width: 109,
+                              height: 109,
+                              color: Colors.white,
+                            ),
+                          );
+                        },
+                      ),
+                    )
+                ): Container(
                   height: 109,
                   width: 109,
                   decoration: BoxDecoration(
@@ -172,7 +200,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                   ),
                 ),
                 const SizedBox(height: 40.0),
-                BaseButton(onPressed: _goBack, text: 'Edit details', outlined: true,),
+                BaseButton(onPressed: _toEditScreen, text: 'Edit details', outlined: true,),
                 const SizedBox(height: 12.0),
                 BaseButton(onPressed: _goBack, text: 'Delete account'),
                 const SizedBox(height: 92.0),
