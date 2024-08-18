@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'api_exception.dart';
 
 class ApiHelper {
-  String baseUrl = 'http://172.20.10.2/api';
+  String baseUrl = 'http://localhost/api';
   String? _token;
 
   // constructor
@@ -57,6 +57,16 @@ class ApiHelper {
     var responseBody = await response.stream.bytesToString();
 
     return _handleResponse(http.Response(responseBody, response.statusCode));
+  }
+
+  Future<dynamic> postNoConvert(String endpoint, Map<String, dynamic> body, {File? file}) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl$endpoint'),
+      headers: await _headers(),
+      body: jsonEncode(body),
+    );
+
+    return _handleResponse(response);
   }
 
 

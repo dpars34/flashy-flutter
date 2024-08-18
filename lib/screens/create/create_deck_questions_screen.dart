@@ -10,28 +10,18 @@ import 'package:flashy_flutter/utils/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../models/question_controllers.dart';
 import '../../notifiers/auth_notifier.dart';
 import '../../notifiers/loading_notifier.dart';
 import '../../widgets/base_button.dart';
 import '../../widgets/custom_input_field.dart';
-
-class QuestionControllers {
-  final TextEditingController questionController;
-  final TextEditingController noteController;
-  final TextEditingController answerController;
-
-  QuestionControllers({
-    required this.questionController,
-    required this.noteController,
-    required this.answerController,
-  });
-}
 
 class CreateDeckQuestionsScreen extends ConsumerStatefulWidget {
   final String title;
   final String description;
   final String leftOption;
   final String rightOption;
+  final List<QuestionControllers>? controllers;
 
   const CreateDeckQuestionsScreen({
     Key? key,
@@ -39,6 +29,7 @@ class CreateDeckQuestionsScreen extends ConsumerStatefulWidget {
     required this.description,
     required this.leftOption,
     required this.rightOption,
+    this.controllers,
   }) : super(key: key);
 
   @override
@@ -90,7 +81,7 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
   }
 
   void _goBack () {
-    Navigator.of(context).pop();
+    Navigator.pop(context, _controllers);
   }
 
   void _toNextPage () async {
@@ -101,8 +92,9 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
       validationChecked = true;
     });
 
-    if (_formKey.currentState!.validate()) {
+    bool allAnswersSelected = _controllers.every((q) => q.answerController.text.isNotEmpty);
 
+    if (_formKey.currentState!.validate() && allAnswersSelected) {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -110,7 +102,8 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
               title: widget.title,
               description: widget.description,
               leftOption: widget.leftOption,
-              rightOption: widget.rightOption
+              rightOption: widget.rightOption,
+              controllers: _controllers,
           ),
         ),
       );
@@ -125,22 +118,28 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
     super.initState();
     // Fetch the deck data when the widget is initialized
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _controllers = [];
-      for (int i = 0; i < 5; i++) {
-        _addQuestion();
+      if (widget.controllers != null) {
+        setState(() {
+          _controllers = widget.controllers!;
+        });
+      } else {
+        _controllers = [];
+        for (int i = 0; i < 5; i++) {
+          _addQuestion();
+        }
       }
     });
   }
 
-  @override
-  void dispose() {
-    for (var controllerSet in _controllers) {
-      controllerSet.questionController.dispose();
-      controllerSet.noteController.dispose();
-      controllerSet.answerController.dispose();
-    }
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   for (var controllerSet in _controllers) {
+  //     controllerSet.questionController.dispose();
+  //     controllerSet.noteController.dispose();
+  //     controllerSet.answerController.dispose();
+  //   }
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -151,6 +150,12 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
         appBar: AppBar(
           backgroundColor: secondary,
           title: Text(widget.title),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              _goBack();
+            },
+          ),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -278,7 +283,7 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
                                     child: Text(
                                       'Please select an answer for Question ${index + 1}',
                                       style: const TextStyle(
-                                        color: Colors.red,
+                                        color: red,
                                         fontSize: 12.0,
                                       ),
                                     ),
@@ -301,6 +306,8 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
                   ),
                   const SizedBox(height: 40.0),
                   BaseButton(onPressed: _addQuestion, text: 'Add question', outlined: true,),
+                  const SizedBox(height: 12.0),
+                  BaseButton(onPressed: _goBack, text: 'Go back', outlined: true,),
                   const SizedBox(height: 12.0),
                   BaseButton(onPressed: _toNextPage, text: 'Next'),
                   const SizedBox(height: 92.0),

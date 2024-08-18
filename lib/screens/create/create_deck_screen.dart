@@ -8,10 +8,12 @@ import 'package:flashy_flutter/utils/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../models/question_controllers.dart';
 import '../../notifiers/auth_notifier.dart';
 import '../../notifiers/loading_notifier.dart';
 import '../../widgets/base_button.dart';
 import '../../widgets/custom_input_field.dart';
+import '../../widgets/custom_modal.dart';
 import 'create_deck_questions_screen.dart';
 
 class CreateDeckScreen extends ConsumerStatefulWidget {
@@ -27,6 +29,7 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _leftOptionController = TextEditingController();
   final TextEditingController _rightOptionController = TextEditingController();
+  List<QuestionControllers>? _controllers;
 
   String formatValidationErrors(Map<String, dynamic> errors) {
     List<String> errorMessages = [];
@@ -45,7 +48,22 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
   }
 
   void _goBack () {
-    Navigator.of(context).pop();
+
+    void doNothing () {}
+
+    void goBack () {
+      Navigator.pop(context);
+    }
+
+    showBackModal(
+      context,
+      'Are you sure you want to go back?',
+      'Your new deck will not be saved!',
+      'Keep editing',
+      'Go back',
+      doNothing,
+      goBack,
+    );
   }
 
   void _toNextPage () async {
@@ -61,11 +79,15 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
               title: _titleController.text,
               description: _descriptionController.text,
               leftOption: _leftOptionController.text,
-              rightOption: _rightOptionController.text
+              rightOption: _rightOptionController.text,
+              controllers: _controllers,
           ),
         ),
-      );
-
+      ).then((result) {
+        if (result != null) {
+          _controllers = result;
+        }
+      });
     } else {
       // showModal(context, 'An Error Occurred', "Please check that the information you have entered is valid and try again.");
     }
@@ -77,6 +99,8 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
 
     // Fetch the deck data when the widget is initialized
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _leftOptionController.text = 'false';
+      _rightOptionController.text = 'true';
     });
   }
 
@@ -89,6 +113,12 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
         appBar: AppBar(
           backgroundColor: secondary,
           title: const Text(''),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              _goBack();
+            },
+          ),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -199,6 +229,22 @@ void showModal(BuildContext context, String title, String content) {
     context: context,
     builder: (BuildContext context) {
       return ErrorModal(title: title, content: content, context: context);
+    },
+  );
+}
+
+void showBackModal(BuildContext context, String title, String content, String button1Text, String button2Text, VoidCallback button1Callback, VoidCallback button2Callback) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return CustomModal(
+        title: title,
+        content: content,
+        button1Text: button1Text,
+        button2Text: button2Text,
+        button1Callback: button1Callback,
+        button2Callback: button2Callback,
+      );
     },
   );
 }

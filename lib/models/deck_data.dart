@@ -33,8 +33,8 @@ class DeckData {
     required this.count,
     required this.likedUsers,
     required this.creator,
-    required this.cards,
-    required this.highscores
+    this.cards,
+    this.highscores,
   });
 
   factory DeckData.fromJson(Map<String, dynamic> json) {
@@ -45,11 +45,11 @@ class DeckData {
       creatorUserId: json['creator_user_id'],
       name: json['name'],
       description: json['description'],
-      categories: List<String>.from(jsonDecode(json['categories'])),
+      categories: List<String>.from(json['categories']),
       leftOption: json['left_option'],
       rightOption: json['right_option'],
       count: json['count'],
-      likedUsers: List<int>.from(jsonDecode(json['liked_users'])),
+      likedUsers: List<int>.from(json['liked_users']),
       creator: CreatorData.fromJson(json['creator']),
       cards: json['cards'] != null
           ? (json['cards'] as List).map((i) => CardsData.fromJson(i)).toList()
@@ -68,14 +68,14 @@ class DeckData {
       'creator_user_id': creatorUserId,
       'name': name,
       'description': description,
-      'categories': jsonEncode(categories),
+      'categories': categories,
       'left_option': leftOption,
       'right_option': rightOption,
       'count': count,
-      'likedUsers': jsonEncode(likedUsers),
+      'liked_users': likedUsers,
       'creator': creator.toJson(),
-      'cards': cards?.map((card) => card.toJson()).toList(),
-      'highscores': highscores?.map((highscore) => highscore.toJson()).toList(),
+      'cards': cards?.map((e) => e.toJson()).toList(),
+      'highscores': highscores?.map((e) => e.toJson()).toList(),
     };
   }
 }
