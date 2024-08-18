@@ -14,6 +14,7 @@ import '../../notifiers/auth_notifier.dart';
 import '../../notifiers/loading_notifier.dart';
 import '../../widgets/base_button.dart';
 import '../../widgets/custom_input_field.dart';
+import 'account_edit_complete_screen.dart';
 
 class AccountEditScreen extends ConsumerStatefulWidget {
   const AccountEditScreen({Key? key}) : super(key: key);
@@ -96,18 +97,18 @@ class _AccountEditScreenState extends ConsumerState<AccountEditScreen> {
           String message = formatValidationErrors(errors);
           showModal(context, 'Validation Error', message);
         } else {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AccountEditConfirmScreen(
-                  email: _emailController.text,
-                  username: _usernameController.text,
-                  image: _image,
-                  updateImage: _updateImage,
-                  imageUrl: user?.profileImage,
-              ),
-            ),
+          await authNotifier.edit(
+            _emailController.text,
+            _usernameController.text,
+            _image,
+            _updateImage,
           );
+          if (mounted) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const AccountEditCompleteScreen()),
+            );
+          }
         }
       } catch (e) {
         if (e is ApiException) {
@@ -283,7 +284,7 @@ class _AccountEditScreenState extends ConsumerState<AccountEditScreen> {
                   (_updateImage && _image != null) || (!_updateImage && user?.profileImage != null) ? BaseButton(onPressed: _deleteImage, text: 'Delete image', outlined: true,) :
                   BaseButton(onPressed: _pickImage, text: 'Upload image', outlined: true,),
                   const SizedBox(height: 12.0),
-                  BaseButton(onPressed: _toNextPage, text: 'Next'),
+                  BaseButton(onPressed: _toNextPage, text: 'Save'),
                   const SizedBox(height: 92.0),
                 ],
               ),

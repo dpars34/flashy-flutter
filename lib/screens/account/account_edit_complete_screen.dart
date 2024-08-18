@@ -14,7 +14,6 @@ class AccountEditCompleteScreen extends StatefulWidget {
 class _AccountEditCompleteScreenState extends State<AccountEditCompleteScreen> {
   void _goToAccount () {
     Navigator.of(context).pop();
-    Navigator.of(context).pop();
   }
 
   void _goHome () {
@@ -45,7 +44,7 @@ class _AccountEditCompleteScreenState extends State<AccountEditCompleteScreen> {
                 ),
                 SizedBox(height: 12),
                 const Text(
-                  'You changes have been saved!',
+                  'Your changes have been saved!',
                   style: TextStyle(
                       fontWeight: FontWeight.w900,
                       color: black,

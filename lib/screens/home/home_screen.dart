@@ -1,3 +1,4 @@
+import 'package:flashy_flutter/screens/create/create_deck_screen.dart';
 import 'package:flashy_flutter/screens/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flashy_flutter/utils/colors.dart';
@@ -99,14 +100,35 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             const SizedBox(height: 10),
             if (user != null) ListTile(
               leading: const Icon(
+                Icons.add_circle_outline_outlined,
+                color: primary,
+              ),
+              title: const Text(
+                'Create deck',
+                style: TextStyle(
+                  color: primary,
+                  fontWeight: FontWeight.bold
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const CreateDeckScreen()
+                  ),
+                );
+              },
+            ),
+            if (user != null) ListTile(
+              leading: const Icon(
                 Icons.account_circle,
                 color: primary,
               ),
               title: const Text(
                 'My account',
                 style: TextStyle(
-                  color: primary,
-                  fontWeight: FontWeight.bold
+                    color: primary,
+                    fontWeight: FontWeight.bold
                 ),
               ),
               onTap: () {

@@ -6,6 +6,8 @@ class CustomInputField extends StatelessWidget {
   final String labelText;
   final bool isPassword;
   final FormFieldValidator<String>? validator;
+  final int minLines;
+  final int maxLines;
 
   const CustomInputField({
     Key? key,
@@ -13,6 +15,8 @@ class CustomInputField extends StatelessWidget {
     required this.labelText,
     this.isPassword = false,
     this.validator,
+    this.minLines = 1,
+    this.maxLines = 1,
   }) : super(key: key);
 
   @override
@@ -31,6 +35,8 @@ class CustomInputField extends StatelessWidget {
         TextFormField(
           controller: controller,
           obscureText: isPassword,
+          minLines: minLines,
+          maxLines: maxLines,
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.white,
