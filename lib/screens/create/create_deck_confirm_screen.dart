@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flashy_flutter/screens/create/create_deck_confirm_screen.dart';
 import 'package:flashy_flutter/screens/register/register_confirm_screen.dart';
 import 'package:flashy_flutter/utils/api_exception.dart';
 import 'package:flashy_flutter/widgets/custom_radio_button_field.dart';
@@ -27,13 +26,13 @@ class QuestionControllers {
   });
 }
 
-class CreateDeckQuestionsScreen extends ConsumerStatefulWidget {
+class CreateDeckConfirmScreen extends ConsumerStatefulWidget {
   final String title;
   final String description;
   final String leftOption;
   final String rightOption;
 
-  const CreateDeckQuestionsScreen({
+  const CreateDeckConfirmScreen({
     Key? key,
     required this.title,
     required this.description,
@@ -42,10 +41,10 @@ class CreateDeckQuestionsScreen extends ConsumerStatefulWidget {
   }) : super(key: key);
 
   @override
-  ConsumerState<CreateDeckQuestionsScreen> createState() => _CreateDeckQuestionsScreenState();
+  ConsumerState<CreateDeckConfirmScreen> createState() => _CreateDeckConfirmScreenState();
 }
 
-class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsScreen> {
+class _CreateDeckConfirmScreenState extends ConsumerState<CreateDeckConfirmScreen> {
   final _formKey = GlobalKey<FormState>();
 
   List<QuestionControllers> _controllers = [];
@@ -53,23 +52,12 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
 
   // Add a new set of inputs for a question
   void _addQuestion() {
-    if (_controllers.length > 50) {
-      showModal(context, 'Limit reached', "You can only add a maximum of 50 cards!");
-      return;
-    }
-
     setState(() {
       _controllers.add(QuestionControllers(
         questionController: TextEditingController(),
         noteController: TextEditingController(),
         answerController: TextEditingController(),
       ));
-    });
-  }
-
-  void _removeQuestion(int index) {
-    setState(() {
-      _controllers.removeAt(index);
     });
   }
 
@@ -97,23 +85,16 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
     final loadingNotifier = ref.read(loadingProvider.notifier);
     final authNotifier = ref.watch(authProvider.notifier);
 
-    setState(() {
-      validationChecked = true;
-    });
-
     if (_formKey.currentState!.validate()) {
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => CreateDeckConfirmScreen(
-              title: widget.title,
-              description: widget.description,
-              leftOption: widget.leftOption,
-              rightOption: widget.rightOption
-          ),
-        ),
-      );
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) => RegisterConfirmScreen(
+      //
+      //     ),
+      //   ),
+      // );
 
     } else {
       // showModal(context, 'An Error Occurred', "Please check that the information you have entered is valid and try again.");
@@ -200,107 +181,93 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
                       ..._controllers.asMap().entries.map((entry) {
                         int index = entry.key;
                         var question = entry.value;
-                        return Stack(
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Question ${index + 1}',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w800,
-                                    color: gray,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                CustomInputField(
-                                  controller: question.questionController,
-                                  labelText: 'Question',
-                                  minLines: 3,
-                                  maxLines: 3,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter a question';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                const SizedBox(height: 8),
-                                CustomInputField(
-                                  controller: question.noteController,
-                                  labelText: 'Note',
-                                  validator: (value) {
-                                    return null;
-                                  },
-                                ),
-                                const SizedBox(height: 8),
-                                const Text(
-                                  'Answer',
-                                  style: TextStyle(
-                                    color: gray,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                const SizedBox(height: 4.0),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: CustomRadioButtonField(
-                                        labelText: widget.leftOption,
-                                        isError: question.answerController.text.isEmpty && validationChecked,
-                                        value: question.answerController.text == 'left',
-                                        onChanged: (newValue) {
-                                          setState(() {
-                                            question.answerController.text = 'left';
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: CustomRadioButtonField(
-                                        labelText: widget.rightOption,
-                                        isError: question.answerController.text.isEmpty && validationChecked,
-                                        value: question.answerController.text == 'right',
-                                        onChanged: (newValue) {
-                                          setState(() {
-                                            question.answerController.text = 'right';
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                if (question.answerController.text.isEmpty && validationChecked)
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8.0),
-                                    child: Text(
-                                      'Please select an answer for Question ${index + 1}',
-                                      style: const TextStyle(
-                                        color: Colors.red,
-                                        fontSize: 12.0,
-                                      ),
-                                    ),
-                                  ),
-                                const SizedBox(height: 40),
-                              ],
-                            ),
-                            if (index > 4) Positioned(
-                              top: 0,
-                              right: 0,
-                              child: IconButton(
-                                icon: const Icon(Icons.delete, color: gray),
-                                onPressed: () => _removeQuestion(index),
+                            Text(
+                              'Question ${index + 1}',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w800,
+                                color: gray,
+                                fontSize: 14,
                               ),
                             ),
+                            const SizedBox(height: 8),
+                            CustomInputField(
+                              controller: question.questionController,
+                              labelText: 'Question',
+                              minLines: 3,
+                              maxLines: 3,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter a question';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 8),
+                            CustomInputField(
+                              controller: question.noteController,
+                              labelText: 'Note',
+                              validator: (value) {
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              'Answer',
+                              style: TextStyle(
+                                color: gray,
+                                fontSize: 14,
+                              ),
+                            ),
+                            const SizedBox(height: 4.0),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: CustomRadioButtonField(
+                                    labelText: widget.leftOption,
+                                    value: question.answerController.text == 'left',
+                                    onChanged: (newValue) {
+                                      setState(() {
+                                        question.answerController.text = 'left';
+                                      });
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: CustomRadioButtonField(
+                                    labelText: widget.rightOption,
+                                    value: question.answerController.text == 'right',
+                                    onChanged: (newValue) {
+                                      setState(() {
+                                        question.answerController.text = 'right';
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            if (question.answerController.text.isEmpty && validationChecked)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Text(
+                                  'Please select an answer for Question ${index + 1}',
+                                  style: const TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 12.0,
+                                  ),
+                                ),
+                              ),
+                            const SizedBox(height: 40),
                           ],
                         );
                       }).toList(),
                     ],
                   ),
                   const SizedBox(height: 40.0),
-                  BaseButton(onPressed: _addQuestion, text: 'Add question', outlined: true,),
+                  BaseButton(onPressed: _goBack, text: 'Go back', outlined: true,),
                   const SizedBox(height: 12.0),
                   BaseButton(onPressed: _toNextPage, text: 'Next'),
                   const SizedBox(height: 92.0),

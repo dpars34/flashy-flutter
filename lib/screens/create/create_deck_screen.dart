@@ -12,6 +12,7 @@ import '../../notifiers/auth_notifier.dart';
 import '../../notifiers/loading_notifier.dart';
 import '../../widgets/base_button.dart';
 import '../../widgets/custom_input_field.dart';
+import 'create_deck_questions_screen.dart';
 
 class CreateDeckScreen extends ConsumerStatefulWidget {
   const CreateDeckScreen({Key? key}) : super(key: key);
@@ -53,14 +54,17 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
 
     if (_formKey.currentState!.validate()) {
 
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => RegisterConfirmScreen(
-      //
-      //     ),
-      //   ),
-      // );
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CreateDeckQuestionsScreen(
+              title: _titleController.text,
+              description: _descriptionController.text,
+              leftOption: _leftOptionController.text,
+              rightOption: _rightOptionController.text
+          ),
+        ),
+      );
 
     } else {
       // showModal(context, 'An Error Occurred', "Please check that the information you have entered is valid and try again.");
@@ -141,32 +145,40 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
                       )
                   ),
                   const SizedBox(height: 12.0),
-                  CustomInputField(
-                    controller: _leftOptionController,
-                    labelText: 'Left option',
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter an option';
-                      }
-                      if (value.length > 15) {
-                        return 'Options must be 15 characters or less';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 12.0),
-                  CustomInputField(
-                    controller: _rightOptionController,
-                    labelText: 'Right option',
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter an option';
-                      }
-                      if (value.length > 15) {
-                        return 'Options must be 15 characters or less';
-                      }
-                      return null;
-                    },
+                  Row(
+                    children: [
+                      Expanded(
+                        child: CustomInputField(
+                          controller: _leftOptionController,
+                          labelText: 'Left option',
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter an option';
+                            }
+                            if (value.length > 15) {
+                              return 'Options must be 15 characters or less';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 8.0),
+                      Expanded(
+                        child: CustomInputField(
+                          controller: _rightOptionController,
+                          labelText: 'Right option',
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter an option';
+                            }
+                            if (value.length > 15) {
+                              return 'Options must be 15 characters or less';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 40.0),
                   BaseButton(onPressed: _goBack, text: 'Go back', outlined: true,),
