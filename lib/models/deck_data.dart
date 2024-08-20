@@ -15,7 +15,7 @@ class DeckData {
   final String leftOption;
   final String rightOption;
   final int count;
-  final List<int> likedUsers;
+  late final List<int> likedUsers;
   final CreatorData creator;
   final List<CardsData>? cards;
   final List<HighscoresData>? highscores;
@@ -77,5 +77,39 @@ class DeckData {
       'cards': cards?.map((e) => e.toJson()).toList(),
       'highscores': highscores?.map((e) => e.toJson()).toList(),
     };
+  }
+
+  DeckData copyWith({
+    int? id,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    int? creatorUserId,
+    String? name,
+    String? description,
+    List<String>? categories,
+    String? leftOption,
+    String? rightOption,
+    int? count,
+    List<int>? likedUsers,
+    CreatorData? creator,
+    List<CardsData>? cards,
+    List<HighscoresData>? highscores,
+  }) {
+    return DeckData(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      creatorUserId: creatorUserId ?? this.creatorUserId,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      categories: categories ?? this.categories,
+      leftOption: leftOption ?? this.leftOption,
+      rightOption: rightOption ?? this.rightOption,
+      count: count ?? this.count,
+      likedUsers: likedUsers ?? this.likedUsers,
+      creator: creator ?? this.creator,
+      cards: cards ?? this.cards,
+      highscores: highscores ?? this.highscores,
+    );
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flashy_flutter/utils/api_helper.dart';
 import '../models/deck_data.dart';
 import '../models/question_controllers.dart';
+import '../utils/api_exception.dart';
 import 'auth_notifier.dart';
 
 class DeckNotifier extends StateNotifier<List<DeckData>> {
@@ -62,6 +63,52 @@ class DeckNotifier extends StateNotifier<List<DeckData>> {
     };
 
     Map<String, dynamic> jsonData = await apiHelper.postNoConvert('/submit-deck', body);
+  }
+
+  Future<void> likeDeck(int id) async {
+    try {
+      var response = await apiHelper.post('/like-deck/$id', {});
+      List<int> likedUsers = List<int>.from(response['liked_users']);
+
+      final index = state.indexWhere((deck) => deck.id == id);
+      if (index != -1) {
+        final updatedDeck = state[index].copyWith(likedUsers: likedUsers);
+        state = [
+          for (int i = 0; i < state.length; i++)
+            if (i == index) updatedDeck else state[i]
+        ];
+      }
+
+    } catch (e) {
+      if (e is ApiException) {
+        throw ApiException(e.statusCode, e.message);
+      } else {
+        throw ApiException(500, 'Unexpected Error: $e');
+      }
+    }
+  }
+
+  Future<void> unlikeDeck(int id) async {
+    try {
+      var response = await apiHelper.delete('/like-deck/$id');
+      List<int> likedUsers = List<int>.from(response['liked_users']);
+
+      final index = state.indexWhere((deck) => deck.id == id);
+      if (index != -1) {
+        final updatedDeck = state[index].copyWith(likedUsers: likedUsers);
+        state = [
+          for (int i = 0; i < state.length; i++)
+            if (i == index) updatedDeck else state[i]
+        ];
+      }
+
+    } catch (e) {
+      if (e is ApiException) {
+        throw ApiException(e.statusCode, e.message);
+      } else {
+        throw ApiException(500, 'Unexpected Error: $e');
+      }
+    }
   }
 }
 

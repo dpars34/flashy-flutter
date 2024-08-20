@@ -2,9 +2,13 @@ import 'package:flashy_flutter/widgets/leaderboard_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flashy_flutter/utils/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart';
 
+import '../../notifiers/auth_notifier.dart';
 import '../../notifiers/deck_notifier.dart';
+import '../../utils/api_exception.dart';
 import '../../widgets/base_button.dart';
+import '../../widgets/error_modal.dart';
 import '../../widgets/option_pill.dart';
 import './swipe_screen.dart';
 
@@ -18,6 +22,9 @@ class DeckDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
+
+  bool likeProcessing = false;
+
   @override
   void initState() {
     super.initState();
@@ -30,10 +37,45 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
     });
   }
 
+  void _handleLikeClick (int deckId) async {
+    if (likeProcessing) return;
+    try {
+      likeProcessing = true;
+      await ref.read(deckProvider.notifier).likeDeck(deckId);
+      HapticFeedback.mediumImpact();
+    } catch (e) {
+      if (e is ApiException) {
+        showModal(context, 'An Error Occurred', 'Please try again');
+      } else {
+        showModal(context, 'An Error Occurred', 'Please try again');
+      }
+    } finally {
+      likeProcessing = false;
+    }
+  }
+
+  void _handleUnlikeClick (int deckId) async {
+    if (likeProcessing) return;
+    try {
+      likeProcessing = true;
+      await ref.read(deckProvider.notifier).unlikeDeck(deckId);
+      HapticFeedback.mediumImpact();
+    } catch (e) {
+      if (e is ApiException) {
+        showModal(context, 'An Error Occurred', 'Please try again');
+      } else {
+        showModal(context, 'An Error Occurred', 'Please try again');
+      }
+    } finally {
+      likeProcessing = false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final deckDataList = ref.watch(deckProvider);
     final deckNotifier = ref.read(deckProvider.notifier);
+    final user = ref.watch(authProvider);
 
     final deck = deckDataList.firstWhere((deck) => deck.id == widget.id);
 
@@ -105,18 +147,19 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              if (deck.highscores != null)
-                Column(
+              Column(
                   children: [
-                    LeaderboardCard(highscoresData: deck.highscores ?? []),
+                    if (deck.highscores!.isNotEmpty) LeaderboardCard(highscoresData: deck.highscores ?? []),
                     const SizedBox(height: 30),
-                    BaseButton(
+                    deck.likedUsers.contains(user?.id) ? BaseButton(
+                      text: 'Deck liked',
+                      color: green,
+                      onPressed: () => _handleUnlikeClick(deck.id),
+                    ) : BaseButton(
                       text: 'Like deck',
                       color: green,
                       outlined: true,
-                      onPressed: () => {
-
-                      },
+                      onPressed: () => _handleLikeClick(deck.id),
                     ),
                     const SizedBox(height: 8),
                     BaseButton(
@@ -130,8 +173,6 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
                     ),
                   ],
                 )
-              else
-                Text('LOADING')
             ],
           ),
         ),
@@ -139,4 +180,13 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
       Text('LOADING'),
     );
   }
+}
+
+void showModal(BuildContext context, String title, String content) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return ErrorModal(title: title, content: content, context: context);
+    },
+  );
 }

@@ -2,7 +2,7 @@ class CreatorData {
   final int id;
   final String name;
   final String email;
-  final DateTime emailVerifiedAt;
+  final DateTime? emailVerifiedAt;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -10,7 +10,7 @@ class CreatorData {
     required this.id,
     required this.name,
     required this.email,
-    required this.emailVerifiedAt,
+    this.emailVerifiedAt,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -20,7 +20,9 @@ class CreatorData {
       id: json['id'],
       name: json['name'],
       email: json['email'],
-      emailVerifiedAt: DateTime.parse(json['email_verified_at']),
+      emailVerifiedAt: json['email_verified_at'] != null
+          ? DateTime.parse(json['email_verified_at'])
+          : null,
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
     );
@@ -31,7 +33,7 @@ class CreatorData {
       'id': id,
       'name': name,
       'email': email,
-      'email_verified_at': emailVerifiedAt.toIso8601String(),
+      'email_verified_at': emailVerifiedAt?.toIso8601String(),
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
     };
