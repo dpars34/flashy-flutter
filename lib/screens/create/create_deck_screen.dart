@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:flashy_flutter/models/category_data.dart';
 import 'package:flashy_flutter/screens/register/register_confirm_screen.dart';
 import 'package:flashy_flutter/utils/api_exception.dart';
+import 'package:flashy_flutter/widgets/custom_dropdown_field.dart';
 import 'package:flashy_flutter/widgets/error_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flashy_flutter/utils/colors.dart';
@@ -10,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../models/question_controllers.dart';
 import '../../notifiers/auth_notifier.dart';
+import '../../notifiers/category_notifier.dart';
 import '../../notifiers/loading_notifier.dart';
 import '../../widgets/base_button.dart';
 import '../../widgets/custom_input_field.dart';
@@ -29,6 +32,7 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _leftOptionController = TextEditingController();
   final TextEditingController _rightOptionController = TextEditingController();
+  CategoryData? _category;
   List<QuestionControllers>? _controllers;
 
   String formatValidationErrors(Map<String, dynamic> errors) {
@@ -45,6 +49,12 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
     });
 
     return errorMessages.join('\n\n');
+  }
+
+  void _handleCategorySelect (CategoryData? value) {
+    setState(() {
+      _category = value;
+    });
   }
 
   void _goBack () {
@@ -80,6 +90,7 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
               description: _descriptionController.text,
               leftOption: _leftOptionController.text,
               rightOption: _rightOptionController.text,
+              category: _category,
               controllers: _controllers,
           ),
         ),
@@ -108,6 +119,7 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
   Widget build(BuildContext context) {
     final authNotifier = ref.watch(authProvider.notifier);
     final loadingNotifier = ref.read(loadingProvider.notifier);
+    final categoryNotifier = ref.read(categoryProvider.notifier);
 
     return Scaffold(
         appBar: AppBar(
@@ -164,6 +176,19 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
                     validator: (value) {
                       return null;
                     },
+                  ),
+                  const SizedBox(height: 12.0),
+                  CustomDropdownField(
+                      labelText: 'Category',
+                      value: _category,
+                      items: categoryNotifier.state,
+                      onChanged: _handleCategorySelect,
+                      validator: (value) {
+                        if (value == null) {
+                          return 'Please enter a category';
+                        }
+                        return null;
+                      },
                   ),
                   const SizedBox(height: 40.0),
                   const Text(

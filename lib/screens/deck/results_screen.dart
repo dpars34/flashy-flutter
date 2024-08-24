@@ -21,7 +21,6 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch the deck data when the widget is initialized
   }
 
   @override

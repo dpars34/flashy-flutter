@@ -23,6 +23,7 @@ class SwipeScreen extends ConsumerStatefulWidget {
 
 class _SwipeScreenState extends ConsumerState<SwipeScreen> {
   final AppinioSwiperController controller = AppinioSwiperController();
+
   bool _isLoading = true;
   int _swipeCounter = 1;
   int _totalCount = 0;
@@ -35,45 +36,20 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+        final deckDataList = ref.watch(deckProvider);
+        final deck = deckDataList.firstWhere((deck) => deck.id == widget.id, orElse: () {
+          throw Exception('Deck with id ${widget.id} not found');
+        });
+        _totalCount = deck.count!;
         _isLoading = false;
       _startTimer();
     });
   }
 
-  // void _initializeMatchEngine() {
-  //   final deckDataList = ref.read(deckProvider);
-  //
-  //   // Ensure the deck exists
-  //   final deck = deckDataList.firstWhere((deck) => deck.id == widget.id, orElse: () {
-  //     throw Exception('Deck with id ${widget.id} not found');
-  //   });
-  //
-  //   final List<CardsData>? allCards = deck.cards;
-  //   _totalCount = allCards?.length ?? 0;
-  //
-  //   final swipeItems = allCards?.map((item) => SwipeItem(
-  //     content: SwipeCard(item: item),
-  //     likeAction: () {
-  //       setState(() {
-  //         _swipeCounter++;
-  //       });
-  //     },
-  //     nopeAction: () {
-  //       setState(() {
-  //         _swipeCounter++;
-  //       });
-  //     },
-  //   )).toList();
-  //
-  //   setState(() {
-  //     _matchEngine = MatchEngine(swipeItems: swipeItems);
-  //     _isLoading = false;
-  //   });
-  // }
-
   void _swipeEnd(int previousIndex, int targetIndex, SwiperActivity activity) {
     switch (activity) {
       case Swipe():
+        _swipeCounter++;
         print('The card was swiped to the : ${activity.direction}');
         print('previous index: $previousIndex, target index: $targetIndex');
         break;
@@ -114,8 +90,11 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
   String _formatTime(int milliseconds) {
     int minutes = (milliseconds ~/ 60000);
     int seconds = (milliseconds ~/ 1000) % 60;
+    int hundredths = (milliseconds ~/ 10) % 100;
+    String minutesStr = minutes.toString().padLeft(2, '0');
     String secondsStr = seconds.toString().padLeft(2, '0');
-    return '$minutes:$secondsStr';
+    String hundredthsStr = hundredths.toString().padLeft(2, '0');
+    return '$minutesStr:$secondsStr.$hundredthsStr';
   }
 
   @override
@@ -146,7 +125,7 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
                 const Icon(Icons.access_time, size: 18, color: black),
                 const SizedBox(width: 4),
                 Container(
-                  width: 60,
+                  width: 80,
                   child: Text(
                     _formatTime(_elapsedMilliseconds),
                     style: const TextStyle(
@@ -170,7 +149,7 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
                   child: AppinioSwiper(
                     invertAngleOnBottomDrag: true,
                     backgroundCardCount: 0,
-                    swipeOptions: const SwipeOptions.all(),
+                    swipeOptions: const SwipeOptions.symmetric(horizontal: true),
                     controller: controller,
                     onSwipeEnd: _swipeEnd,
                     onEnd: _onEnd,

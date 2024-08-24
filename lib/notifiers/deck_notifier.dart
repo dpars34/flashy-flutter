@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flashy_flutter/models/category_data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flashy_flutter/utils/api_helper.dart';
 import '../models/deck_data.dart';
@@ -39,6 +40,7 @@ class DeckNotifier extends StateNotifier<List<DeckData>> {
       String description,
       String leftOption,
       String rightOption,
+      CategoryData? category,
       List<QuestionControllers> questions,
       ) async {
 
@@ -50,7 +52,7 @@ class DeckNotifier extends StateNotifier<List<DeckData>> {
     Map<String, dynamic> body = {
       'name': name,
       'description': description,
-      'categories': [],
+      'category_id': category!.id,
       'left_option': leftOption,
       'right_option': rightOption,
       'count': questions.length,

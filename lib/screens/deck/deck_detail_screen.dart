@@ -127,7 +127,22 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: 8),
+                  const Icon(
+                    Icons.thumb_up,
+                    size: 14,
+                    color: gray,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    deck.likedUsers.length.toString(),
+                    style: const TextStyle(
+                      color: gray,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
                   Row(
                     children: [
                       OptionPill(color: 'red', text: deck.leftOption),

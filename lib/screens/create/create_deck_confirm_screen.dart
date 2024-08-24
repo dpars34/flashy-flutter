@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flashy_flutter/widgets/base_button.dart';
 
+import '../../models/category_data.dart';
 import '../../models/question_controllers.dart';
 import '../../notifiers/deck_notifier.dart';
 import '../../utils/colors.dart';
@@ -17,6 +18,7 @@ class CreateDeckConfirmScreen extends ConsumerWidget {
   final String description;
   final String leftOption;
   final String rightOption;
+  final CategoryData? category;
   final List<QuestionControllers> controllers;
 
   const CreateDeckConfirmScreen({
@@ -25,6 +27,7 @@ class CreateDeckConfirmScreen extends ConsumerWidget {
     required this.description,
     required this.leftOption,
     required this.rightOption,
+    required this.category,
     required this.controllers,
   }) : super(key: key);
 
@@ -39,7 +42,7 @@ class CreateDeckConfirmScreen extends ConsumerWidget {
 
     try {
       loadingNotifier.showLoading(context);
-      await deckNotifier.submitDeck(title, description, leftOption, rightOption, controllers);
+      await deckNotifier.submitDeck(title, description, leftOption, rightOption, category, controllers);
       if (context.mounted) {
         Navigator.pushReplacement(
           context,
@@ -118,6 +121,23 @@ class CreateDeckConfirmScreen extends ConsumerWidget {
               ),
               Text(
                 description,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: gray,
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 12.0),
+              const Text(
+                'Category:',
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  color: gray,
+                  fontSize: 16,
+                ),
+              ),
+              Text(
+                category!.name,
                 style: const TextStyle(
                   fontWeight: FontWeight.w500,
                   color: gray,

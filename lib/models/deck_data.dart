@@ -4,6 +4,8 @@ import 'package:flashy_flutter/models/creator_data.dart';
 import 'package:flashy_flutter/models/cards_data.dart';
 import 'package:flashy_flutter/models/highscores_data.dart';
 
+import 'category_data.dart';
+
 class DeckData {
   final int id;
   final DateTime createdAt;
@@ -11,7 +13,7 @@ class DeckData {
   final int creatorUserId;
   final String name;
   final String description;
-  final List<String> categories;
+  final CategoryData? category;
   final String leftOption;
   final String rightOption;
   final int count;
@@ -27,7 +29,7 @@ class DeckData {
     required this.creatorUserId,
     required this.name,
     required this.description,
-    required this.categories,
+    required this.category,
     required this.leftOption,
     required this.rightOption,
     required this.count,
@@ -45,7 +47,7 @@ class DeckData {
       creatorUserId: json['creator_user_id'],
       name: json['name'],
       description: json['description'],
-      categories: List<String>.from(json['categories']),
+      category: CategoryData.fromJson(json['category']),
       leftOption: json['left_option'],
       rightOption: json['right_option'],
       count: json['count'],
@@ -68,7 +70,7 @@ class DeckData {
       'creator_user_id': creatorUserId,
       'name': name,
       'description': description,
-      'categories': categories,
+      'categories': category,
       'left_option': leftOption,
       'right_option': rightOption,
       'count': count,
@@ -86,7 +88,7 @@ class DeckData {
     int? creatorUserId,
     String? name,
     String? description,
-    List<String>? categories,
+    CategoryData? category,
     String? leftOption,
     String? rightOption,
     int? count,
@@ -102,7 +104,7 @@ class DeckData {
       creatorUserId: creatorUserId ?? this.creatorUserId,
       name: name ?? this.name,
       description: description ?? this.description,
-      categories: categories ?? this.categories,
+      category: category ?? this.category,
       leftOption: leftOption ?? this.leftOption,
       rightOption: rightOption ?? this.rightOption,
       count: count ?? this.count,

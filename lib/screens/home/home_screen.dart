@@ -8,6 +8,7 @@ import 'package:flashy_flutter/screens/account/account_screen.dart';
 
 import '../../notifiers/auth_notifier.dart';
 import '../../notifiers/deck_notifier.dart';
+import '../../notifiers/category_notifier.dart';
 import '../../widgets/deck_card.dart';
 import '../../notifiers/auth_notifier.dart';
 import '../../notifiers/loading_notifier.dart';
@@ -27,6 +28,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // Fetch the deck data when the widget is initialized
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(deckProvider.notifier).fetchDeckData();
+      ref.read(categoryProvider.notifier).fetchCategoryData();
     });
   }
 

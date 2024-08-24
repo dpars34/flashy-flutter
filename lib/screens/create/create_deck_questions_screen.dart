@@ -10,6 +10,7 @@ import 'package:flashy_flutter/utils/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../models/category_data.dart';
 import '../../models/question_controllers.dart';
 import '../../notifiers/auth_notifier.dart';
 import '../../notifiers/loading_notifier.dart';
@@ -21,6 +22,7 @@ class CreateDeckQuestionsScreen extends ConsumerStatefulWidget {
   final String description;
   final String leftOption;
   final String rightOption;
+  final CategoryData? category;
   final List<QuestionControllers>? controllers;
 
   const CreateDeckQuestionsScreen({
@@ -29,6 +31,7 @@ class CreateDeckQuestionsScreen extends ConsumerStatefulWidget {
     required this.description,
     required this.leftOption,
     required this.rightOption,
+    required this.category,
     this.controllers,
   }) : super(key: key);
 
@@ -103,6 +106,7 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
               description: widget.description,
               leftOption: widget.leftOption,
               rightOption: widget.rightOption,
+              category: widget.category,
               controllers: _controllers,
           ),
         ),

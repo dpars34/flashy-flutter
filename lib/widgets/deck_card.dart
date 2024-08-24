@@ -59,7 +59,22 @@ class DeckCard extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              SizedBox(width: 6),
+              const SizedBox(width: 8),
+              const Icon(
+                Icons.thumb_up,
+                size: 14,
+                color: gray,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                deckData.likedUsers.length.toString(),
+                style: const TextStyle(
+                  color: gray,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(width: 8),
               Row(
                 children: [
                   OptionPill(color: 'red', text: deckData.leftOption),
