@@ -112,6 +112,31 @@ class DeckNotifier extends StateNotifier<List<DeckData>> {
       }
     }
   }
+
+  Future<void> submitHighscore(
+      int deckId,
+      int time,
+      ) async {
+
+    final user = ref.read(authProvider);
+    if (user == null) {
+      throw Exception('User is not logged in');
+    }
+
+    Map<String, dynamic> body = {
+      'deck_id': deckId,
+      'user_id': user.id,
+      'time': time,
+    };
+
+    Map<String, dynamic> jsonData = await apiHelper.postNoConvert('/update-highscore', body);
+    DeckData deckData = DeckData.fromJson(jsonData);
+
+    state = [
+      for (final deck in state)
+        if (deck.id == deckId) deckData else deck
+    ];
+  }
 }
 
 final deckProvider = StateNotifierProvider<DeckNotifier, List<DeckData>>((ref) {

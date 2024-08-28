@@ -43,6 +43,7 @@ dependencies:
   flutter_image_compress: ^1.1.0
   shimmer: ^2.0.0
   appinio_swiper: ^2.1.1
+  flutter_confetti: ^0.3.0
 
 dev_dependencies:
   flutter_test:

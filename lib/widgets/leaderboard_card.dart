@@ -7,18 +7,24 @@ import 'package:intl/intl.dart';
 class LeaderboardCard extends StatelessWidget {
 
   final List<HighscoresData> highscoresData;
+  final int? highlightIndex;
 
   const LeaderboardCard({
     super.key,
     required this.highscoresData,
+    required this.highlightIndex
   });
 
-  String formatTime(double timeInSeconds) {
-    final int minutes = timeInSeconds ~/ 60;
-    final int seconds = (timeInSeconds % 60).toInt();
-    final String formattedMinutes = NumberFormat("0").format(minutes);
-    final String formattedSeconds = NumberFormat("00").format(seconds);
-    return "$formattedMinutes:$formattedSeconds";
+  String formatTime(int timeInMilliseconds) {
+    final int minutes = timeInMilliseconds ~/ 60000; // 1 minute = 60000 milliseconds
+    final int seconds = (timeInMilliseconds % 60000) ~/ 1000; // 1 second = 1000 milliseconds
+    final int milliseconds = (timeInMilliseconds % 1000) ~/ 10; // Get hundredths of a second
+
+    final String formattedMinutes = minutes.toString();
+    final String formattedSeconds = seconds.toString().padLeft(2, '0');
+    final String formattedMilliseconds = milliseconds.toString().padLeft(2, '0');
+
+    return "$formattedMinutes:$formattedSeconds.$formattedMilliseconds";
   }
 
   @override
@@ -56,8 +62,8 @@ class LeaderboardCard extends StatelessWidget {
                 const SizedBox(width: 6),
                 Text(
                   highscore.user.name,
-                  style: const TextStyle(
-                    color: gray,
+                  style: TextStyle(
+                    color: highlightIndex == index ? primary : gray,
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                     overflow: TextOverflow.ellipsis,

@@ -20,7 +20,7 @@ class DeckData {
   late final List<int> likedUsers;
   final CreatorData creator;
   final List<CardsData>? cards;
-  final List<HighscoresData>? highscores;
+  final List<HighscoresData> highscores;
 
   DeckData({
     required this.id,
@@ -36,7 +36,7 @@ class DeckData {
     required this.likedUsers,
     required this.creator,
     this.cards,
-    this.highscores,
+    required this.highscores,
   });
 
   factory DeckData.fromJson(Map<String, dynamic> json) {
@@ -56,9 +56,7 @@ class DeckData {
       cards: json['cards'] != null
           ? (json['cards'] as List).map((i) => CardsData.fromJson(i)).toList()
           : null,
-      highscores: json['highscores'] != null
-          ? (json['highscores'] as List).map((i) => HighscoresData.fromJson(i)).toList()
-          : null,
+      highscores: (json['highscores'] as List).map((i) => HighscoresData.fromJson(i)).toList()
     );
   }
 

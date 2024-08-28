@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flashy_flutter/models/answer_data.dart';
 import 'package:flashy_flutter/screens/deck/results_screen.dart';
 import 'package:flashy_flutter/utils/colors.dart';
 import 'package:flashy_flutter/widgets/option_pill.dart';
@@ -6,16 +7,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flashy_flutter/models/cards_data.dart';
 import 'package:flashy_flutter/widgets/swipe_card.dart';
+import '../../models/deck_data.dart';
 import '../../notifiers/deck_notifier.dart';
 
 import 'package:appinio_swiper/appinio_swiper.dart';
 
 
 class SwipeScreen extends ConsumerStatefulWidget {
-  const SwipeScreen({Key? key, required this.title, required this.id}) : super(key: key);
+  const SwipeScreen({Key? key, required this.deck}) : super(key: key);
 
-  final String title;
-  final int id;
+  final DeckData deck;
 
   @override
   ConsumerState<SwipeScreen> createState() => _SwipeScreenState();
@@ -27,6 +28,7 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
   bool _isLoading = true;
   int _swipeCounter = 1;
   int _totalCount = 0;
+  List<AnswerData> _answers = [];
 
   // Timer-related variables
   late Timer _timer;
@@ -36,11 +38,7 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-        final deckDataList = ref.watch(deckProvider);
-        final deck = deckDataList.firstWhere((deck) => deck.id == widget.id, orElse: () {
-          throw Exception('Deck with id ${widget.id} not found');
-        });
-        _totalCount = deck.count!;
+        _totalCount = widget.deck.count!;
         _isLoading = false;
       _startTimer();
     });
@@ -52,6 +50,11 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
         _swipeCounter++;
         print('The card was swiped to the : ${activity.direction}');
         print('previous index: $previousIndex, target index: $targetIndex');
+        _answers.add(AnswerData(
+            card: widget.deck.cards![previousIndex],
+            userAnswer: activity.direction == AxisDirection.left ? 'left' : 'right',
+            correctAnswer: widget.deck.cards![previousIndex].answer,
+        ));
         break;
       case Unswipe():
         print('A ${activity.direction.name} swipe was undone.');
@@ -69,7 +72,11 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
   void _onEnd () {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => ResultsScreen(id: 1,)),
+      MaterialPageRoute(builder: (context) => ResultsScreen(
+        deck: widget.deck,
+        answers: _answers,
+        time: _elapsedMilliseconds,
+      )),
     );
   }
 
@@ -99,18 +106,11 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final deckDataList = ref.watch(deckProvider);
-
-    // Ensure the deck exists
-    final deck = deckDataList.firstWhere((deck) => deck.id == widget.id, orElse: () {
-      throw Exception('Deck with id ${widget.id} not found');
-    });
-
     return Scaffold(
       backgroundColor: bg,
       appBar: AppBar(
         backgroundColor: secondary,
-        title: Text(widget.title),
+        title: Text(widget.deck.name),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -120,7 +120,7 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
           children: [
             Row(
               children: [
-                OptionPill(color: 'red', text: deck.leftOption, large: true,),
+                OptionPill(color: 'red', text: widget.deck.leftOption, large: true,),
                 const Spacer(),
                 const Icon(Icons.access_time, size: 18, color: black),
                 const SizedBox(width: 4),
@@ -136,7 +136,7 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
                   ),
                 ),
                 const Spacer(),
-                OptionPill(color: 'green', text: deck.rightOption, large: true,)
+                OptionPill(color: 'green', text: widget.deck.rightOption, large: true,)
               ],
             ),
             const SizedBox(height: 24),
@@ -153,10 +153,10 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
                     controller: controller,
                     onSwipeEnd: _swipeEnd,
                     onEnd: _onEnd,
-                    cardCount: deck.cards!.length,
+                    cardCount: widget.deck.cards!.length,
                     threshold: 25,
                     cardBuilder: (BuildContext context, int index) {
-                      return SwipeCard(item: deck.cards![index]);
+                      return SwipeCard(item: widget.deck.cards![index]);
                     },
                   ),
                 );

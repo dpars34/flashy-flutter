@@ -6,7 +6,7 @@ class HighscoresData {
   final DateTime updatedAt;
   final int deckId;
   final int userId;
-  final double time;
+  final int time;
   final User user;
 
   HighscoresData({

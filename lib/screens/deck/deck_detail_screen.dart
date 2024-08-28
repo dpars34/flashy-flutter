@@ -164,7 +164,7 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
               const SizedBox(height: 12),
               Column(
                   children: [
-                    if (deck.highscores!.isNotEmpty) LeaderboardCard(highscoresData: deck.highscores ?? []),
+                    if (deck.highscores!.isNotEmpty) LeaderboardCard(highscoresData: deck.highscores ?? [], highlightIndex: null,),
                     const SizedBox(height: 30),
                     deck.likedUsers.contains(user?.id) ? BaseButton(
                       text: 'Deck liked',
@@ -182,7 +182,9 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
                       onPressed: () => {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => SwipeScreen(id: deck.id, title: deck.name)),
+                          MaterialPageRoute(builder: (context) => SwipeScreen(
+                            deck: deck,
+                          )),
                         ),
                       },
                     ),
