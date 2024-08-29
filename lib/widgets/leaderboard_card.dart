@@ -52,12 +52,16 @@ class LeaderboardCard extends StatelessWidget {
                     '$indexString.'
                   ),
                 ),
-                CircleAvatar(
+                (highscore.user.profileImage != null) ? CircleAvatar(
                   radius: 10,
-                  backgroundImage: NetworkImage('https://placehold.jp/150x150.png'),
+                  backgroundImage: NetworkImage(highscore.user.profileImage!),
                   onBackgroundImageError: (exception, stackTrace) {
                     print('Error loading image: $exception');
                   },
+                ) : const Icon(
+                    Icons.account_circle,
+                    size: 20,
+                    color: gray2
                 ),
                 const SizedBox(width: 6),
                 Text(

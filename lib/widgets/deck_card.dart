@@ -43,12 +43,16 @@ class DeckCard extends StatelessWidget {
           const SizedBox(height: 4),
           Row(
             children: [
-              CircleAvatar(
+              (deckData.creator.profileImage != null) ? CircleAvatar(
                 radius: 10,
-                backgroundImage: NetworkImage('https://placehold.jp/150x150.png'),
+                backgroundImage: NetworkImage(deckData.creator.profileImage!),
                 onBackgroundImageError: (exception, stackTrace) {
                   print('Error loading image: $exception');
                 },
+              ) : const Icon(
+                  Icons.account_circle,
+                  size: 20,
+                  color: gray2
               ),
               SizedBox(width: 6),
               Text(

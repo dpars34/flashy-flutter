@@ -122,12 +122,16 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
               const SizedBox(height: 12),
               Row(
                 children: [
-                  CircleAvatar(
+                  (deck.creator.profileImage != null) ? CircleAvatar(
                     radius: 10,
-                    backgroundImage: NetworkImage('https://placehold.jp/150x150.png'),
+                  backgroundImage: NetworkImage(deck.creator.profileImage!),
                     onBackgroundImageError: (exception, stackTrace) {
                       print('Error loading image: $exception');
                     },
+                  ) : const Icon(
+                      Icons.account_circle,
+                      size: 20,
+                      color: gray2
                   ),
                   const SizedBox(width: 6),
                   Text(
