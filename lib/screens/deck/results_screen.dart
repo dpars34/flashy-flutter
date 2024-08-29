@@ -14,6 +14,7 @@ import '../../notifiers/deck_notifier.dart';
 import '../../utils/api_exception.dart';
 import '../../widgets/base_button.dart';
 import '../../widgets/error_modal.dart';
+import 'deck_review_screen.dart';
 
 class ResultsScreen extends ConsumerStatefulWidget {
   const ResultsScreen({
@@ -107,23 +108,26 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> with TickerProvid
       newRecordData.removeLast();
     }
 
-    try {
-      await ref.read(deckProvider.notifier).submitHighscore(widget.deck.id, widget.time);
-    } catch (e) {
-      if (e is ApiException) {
-        showModal(context, 'An Error Occurred', 'Please try again');
-      } else {
-        showModal(context, 'An Error Occurred', 'Please try again');
+    if (isNewRecord) {
+      Confetti.launch(
+        context,
+        options: const ConfettiOptions(
+            particleCount: 100, spread: 70, y: 0.6),
+      );
+
+      try {
+        await ref.read(deckProvider.notifier).submitHighscore(widget.deck.id, widget.time);
+      } catch (e) {
+        if (e is ApiException) {
+          showModal(context, 'An Error Occurred', 'Please try again');
+        } else {
+          showModal(context, 'An Error Occurred', 'Please try again');
+        }
       }
     }
   }
 
   void _generateMessage () {
-    Confetti.launch(
-        context,
-        options: const ConfettiOptions(
-            particleCount: 100, spread: 70, y: 0.6)
-    );
     final user = ref.read(authProvider);
 
     for (var answer in widget.answers) {
@@ -198,6 +202,22 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> with TickerProvid
     _controller.forward();
   }
 
+  void _goBack () {
+    Navigator.of(context).pop();
+  }
+
+  void _goToReviewScreen () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => DeckReviewScreen(
+        deck: widget.deck,
+        answers: widget.answers,
+        time: widget.time,
+        score: correctAnswers
+      )),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -261,7 +281,7 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> with TickerProvid
       backgroundColor: bg,
       appBar: AppBar(
         backgroundColor: secondary,
-        title: const Text(''),
+        title: Text(widget.deck.name),
       ),
       body: Stack(
         children: [
@@ -313,9 +333,9 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> with TickerProvid
                         if (newRecordData.isNotEmpty) SizedBox(height: 12),
                         if (newRecordData.isNotEmpty) LeaderboardCard(highscoresData: newRecordData, highlightIndex: newRecordIndex,),
                         SizedBox(height: 60),
-                        BaseButton(onPressed: () {}, text: 'Review answers', outlined: true,),
+                        BaseButton(onPressed: _goToReviewScreen, text: 'Review answers', outlined: true,),
                         SizedBox(height: 8),
-                        BaseButton(onPressed: () {}, text: 'Review answers', outlined: true,)
+                        BaseButton(onPressed: _goBack, text: 'Go back')
                       ],
                     )
                   ),

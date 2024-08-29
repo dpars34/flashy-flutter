@@ -38,6 +38,17 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
   }
 
   void _handleLikeClick (int deckId) async {
+    final user = ref.watch(authProvider);
+
+    if (user == null) {
+      showModal(
+        context,
+        'Register to like this deck!',
+        "By registering, you'll be able to like decks, get on the leaderboard and create your own decks!"
+      );
+      return;
+    }
+
     if (likeProcessing) return;
     try {
       likeProcessing = true;
@@ -165,6 +176,21 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
               Column(
                   children: [
                     if (deck.highscores!.isNotEmpty) LeaderboardCard(highscoresData: deck.highscores ?? [], highlightIndex: null,),
+                    if (deck.highscores!.isEmpty) Container(
+                      padding: const EdgeInsets.fromLTRB(12.0, 12.0, 12.0, 12.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: white,
+                      ),
+                      child: const Text(
+                        "There doesn't seem to be anyone on the leaderboard!",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: gray,
+                          fontWeight: FontWeight.w600
+                        )
+                      ),
+                    ),
                     const SizedBox(height: 30),
                     deck.likedUsers.contains(user?.id) ? BaseButton(
                       text: 'Deck liked',
