@@ -2,6 +2,7 @@ class User {
   final int id;
   final String name;
   final String email;
+  final String bio;
   final String? profileImage;
   final DateTime? emailVerifiedAt;
   final DateTime createdAt;
@@ -11,6 +12,7 @@ class User {
     required this.id,
     required this.name,
     required this.email,
+    required this.bio,
     required this.profileImage,
     required this.emailVerifiedAt,
     required this.createdAt,
@@ -18,11 +20,11 @@ class User {
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
-    print(json);
     return User(
       id: json['id'],
       name: json['name'],
       email: json['email'],
+      bio: json['bio'],
       profileImage: json['profile_image'],
       emailVerifiedAt: json['email_verified_at'] != null ? DateTime.parse(json['email_verified_at']) : null,
       createdAt: DateTime.parse(json['created_at']),
@@ -35,6 +37,7 @@ class User {
       'id': id,
       'name': name,
       'email': email,
+      'bio': bio,
       'profile_image': profileImage,
       'email_verified_at': emailVerifiedAt?.toIso8601String(),
       'created_at': createdAt.toIso8601String(),

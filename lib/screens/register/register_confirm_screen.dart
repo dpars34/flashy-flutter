@@ -18,6 +18,7 @@ class RegisterConfirmScreen extends ConsumerStatefulWidget {
   final String password;
   final String passwordConfirmation;
   final String username;
+  final String bio;
   final File? image;
 
 
@@ -27,6 +28,7 @@ class RegisterConfirmScreen extends ConsumerStatefulWidget {
     required this.password,
     required this.passwordConfirmation,
     required this.username,
+    required this.bio,
     required this.image
   }) : super(key: key);
 
@@ -50,6 +52,7 @@ class _RegisterConfirmScreenState extends ConsumerState<RegisterConfirmScreen> {
         widget.password,
         widget.passwordConfirmation,
         widget.username,
+        widget.bio,
         widget.image
       );
       if (mounted) {
@@ -176,6 +179,23 @@ class _RegisterConfirmScreenState extends ConsumerState<RegisterConfirmScreen> {
                 const SizedBox(height: 4.0),
                 Text(
                   widget.username,
+                  style: const TextStyle(
+                      color: black,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800
+                  ),
+                ),
+                const SizedBox(height: 12.0),
+                const Text(
+                  'Bio',
+                  style: TextStyle(
+                    color: gray,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 4.0),
+                Text(
+                  widget.bio,
                   style: const TextStyle(
                       color: black,
                       fontSize: 14,

@@ -55,13 +55,14 @@ class AuthNotifier extends StateNotifier<User?> {
     }
   }
 
-  Future<Map<String, dynamic>> validate(String email, String password, String passwordConfirmation, String userName, File? image) async {
+  Future<Map<String, dynamic>> validate(String email, String password, String passwordConfirmation, String userName, String bio, File? image) async {
     try {
       Map<String, dynamic> body = {
         'email': email,
         'password': password,
         'password_confirmation': passwordConfirmation,
         'name': userName,
+        'bio': bio,
       };
 
       // Call post method with optional file parameter
@@ -77,13 +78,14 @@ class AuthNotifier extends StateNotifier<User?> {
     }
   }
 
-  Future<void> register(String email, String password, String passwordConfirmation, String userName, File? image) async {
+  Future<void> register(String email, String password, String passwordConfirmation, String userName, String bio, File? image) async {
     try {
       Map<String, dynamic> body = {
         'email': email,
         'password': password,
         'password_confirmation': passwordConfirmation,
         'name': userName,
+        'bio': bio
       };
 
       // Call post method with optional file parameter
@@ -98,12 +100,13 @@ class AuthNotifier extends StateNotifier<User?> {
     }
   }
 
-  Future<Map<String, dynamic>> validateEdit(String email, String userName, File? image, bool updateImage) async {
+  Future<Map<String, dynamic>> validateEdit(String email, String userName, String bio, File? image, bool updateImage) async {
     try {
       Map<String, dynamic> body = {
         'email': email,
         'name': userName,
         'updateImage': updateImage,
+        'bio': bio
       };
 
       // Call post method with optional file parameter
@@ -119,12 +122,13 @@ class AuthNotifier extends StateNotifier<User?> {
     }
   }
 
-  Future<void> edit(String email, String userName, File? image, bool updateImage) async {
+  Future<void> edit(String email, String userName, String bio, File? image, bool updateImage) async {
     try {
       Map<String, dynamic> body = {
         'email': email,
         'name': userName,
         'updateImage': updateImage,
+        'bio': bio
       };
 
       // Call post method with optional file parameter

@@ -169,6 +169,23 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 ),
                 const SizedBox(height: 12.0),
                 const Text(
+                  'Bio',
+                  style: TextStyle(
+                    color: gray,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 4.0),
+                Text(
+                  user.bio,
+                  style: const TextStyle(
+                      color: black,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800
+                  ),
+                ),
+                const SizedBox(height: 12.0),
+                const Text(
                     'Profile picture',
                     style: TextStyle(
                       color: gray,

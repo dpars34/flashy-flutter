@@ -26,6 +26,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _passwordConfirmationController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _bioController = TextEditingController();
   final picker = ImagePicker();
   File? _image;
 
@@ -86,6 +87,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           _passwordController.text,
           _passwordConfirmationController.text,
           _usernameController.text,
+          _bioController.text,
           _image,
         );
         if (!mounted) return;
@@ -101,6 +103,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   password: _passwordController.text,
                   passwordConfirmation: _passwordConfirmationController.text,
                   username: _usernameController.text,
+                  bio: _bioController.text,
                   image: _image
               ),
             ),
@@ -215,6 +218,16 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your username';
                       }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 12.0),
+                  CustomInputField(
+                    controller: _bioController,
+                    labelText: 'Bio',
+                    minLines: 3,
+                    maxLines: 3,
+                    validator: (value) {
                       return null;
                     },
                   ),

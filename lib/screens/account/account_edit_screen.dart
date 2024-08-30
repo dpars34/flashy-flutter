@@ -27,6 +27,7 @@ class _AccountEditScreenState extends ConsumerState<AccountEditScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _bioController = TextEditingController();
   final picker = ImagePicker();
   File? _image;
   bool _updateImage = false;
@@ -89,6 +90,7 @@ class _AccountEditScreenState extends ConsumerState<AccountEditScreen> {
         final errors = await authNotifier.validateEdit(
           _emailController.text,
           _usernameController.text,
+          _bioController.text,
           _image,
           _updateImage,
         );
@@ -100,6 +102,7 @@ class _AccountEditScreenState extends ConsumerState<AccountEditScreen> {
           await authNotifier.edit(
             _emailController.text,
             _usernameController.text,
+            _bioController.text,
             _image,
             _updateImage,
           );
@@ -134,6 +137,7 @@ class _AccountEditScreenState extends ConsumerState<AccountEditScreen> {
       setState(() {
         _emailController.text = user?.email ?? '';
         _usernameController.text = user?.name ?? '';
+        _bioController.text = user?.bio ?? '';
       });
     });
   }
@@ -195,6 +199,16 @@ class _AccountEditScreenState extends ConsumerState<AccountEditScreen> {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your username';
                       }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 12.0),
+                  CustomInputField(
+                    controller: _bioController,
+                    minLines: 3,
+                    maxLines: 3,
+                    labelText: 'Bio',
+                    validator: (value) {
                       return null;
                     },
                   ),
