@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flashy_flutter/screens/create/create_deck_screen.dart';
 import 'package:flashy_flutter/screens/login/login_screen.dart';
 import 'package:flutter/material.dart';
@@ -5,12 +7,13 @@ import 'package:flashy_flutter/utils/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flashy_flutter/screens/deck/deck_detail_screen.dart';
 import 'package:flashy_flutter/screens/account/account_screen.dart';
+import 'package:flashy_flutter/screens/profile/profile_screen.dart';
 
 import '../../notifiers/auth_notifier.dart';
 import '../../notifiers/deck_notifier.dart';
 import '../../notifiers/category_notifier.dart';
+import '../../notifiers/profile_notifier.dart';
 import '../../widgets/deck_card.dart';
-import '../../notifiers/auth_notifier.dart';
 import '../../notifiers/loading_notifier.dart';
 import '../../widgets/error_modal.dart';
 
@@ -229,7 +232,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: InkWell(
                         onTap: () => _navigateToDeckDetail(context, deckData.id),
-                        child: DeckCard(deckData: deckData)
+                        child: DeckCard(
+                          deckData: deckData,
+                          onUserTap: (int id) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ProfileScreen(id: id)),
+                            ).then((_) {
+                              ref.read(profileProvider.notifier).clearProfile();
+                            });
+                          },
+                        )
                       ),
                     )),
                   ],

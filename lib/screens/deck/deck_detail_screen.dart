@@ -6,10 +6,12 @@ import 'package:flutter/services.dart';
 
 import '../../notifiers/auth_notifier.dart';
 import '../../notifiers/deck_notifier.dart';
+import '../../notifiers/profile_notifier.dart';
 import '../../utils/api_exception.dart';
 import '../../widgets/base_button.dart';
 import '../../widgets/error_modal.dart';
 import '../../widgets/option_pill.dart';
+import '../profile/profile_screen.dart';
 import './swipe_screen.dart';
 
 class DeckDetailScreen extends ConsumerStatefulWidget {
@@ -122,24 +124,38 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
               const SizedBox(height: 12),
               Row(
                 children: [
-                  (deck.creator.profileImage != null) ? CircleAvatar(
-                    radius: 10,
-                  backgroundImage: NetworkImage(deck.creator.profileImage!),
-                    onBackgroundImageError: (exception, stackTrace) {
-                      print('Error loading image: $exception');
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ProfileScreen(id: deck.id)),
+                      ).then((_) {
+                        ref.read(profileProvider.notifier).clearProfile();
+                      });
                     },
-                  ) : const Icon(
-                      Icons.account_circle,
-                      size: 20,
-                      color: gray2
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    deck.creator.name,
-                    style: const TextStyle(
-                      color: gray,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
+                    child: Row(
+                      children: [
+                        (deck.creator.profileImage != null) ? CircleAvatar(
+                          radius: 10,
+                          backgroundImage: NetworkImage(deck.creator.profileImage!),
+                          onBackgroundImageError: (exception, stackTrace) {
+                            print('Error loading image: $exception');
+                          },
+                        ) : const Icon(
+                            Icons.account_circle,
+                            size: 20,
+                            color: gray2
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          deck.creator.name,
+                          style: const TextStyle(
+                            color: gray,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -179,7 +195,17 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
               const SizedBox(height: 12),
               Column(
                   children: [
-                    if (deck.highscores!.isNotEmpty) LeaderboardCard(highscoresData: deck.highscores ?? [], highlightIndex: null,),
+                    if (deck.highscores!.isNotEmpty) LeaderboardCard(
+                      highscoresData: deck.highscores ?? [], highlightIndex: null,
+                      onUserTap: (int id) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ProfileScreen(id: id)),
+                        ).then((_) {
+                          ref.read(profileProvider.notifier).clearProfile();
+                        });
+                      },
+                    ),
                     if (deck.highscores!.isEmpty) Container(
                       padding: const EdgeInsets.fromLTRB(12.0, 12.0, 12.0, 12.0),
                       decoration: BoxDecoration(

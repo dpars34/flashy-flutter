@@ -8,11 +8,13 @@ class LeaderboardCard extends StatelessWidget {
 
   final List<HighscoresData> highscoresData;
   final int? highlightIndex;
+  final void Function(int) onUserTap;
 
   const LeaderboardCard({
     super.key,
     required this.highscoresData,
-    required this.highlightIndex
+    required this.highlightIndex,
+    required this.onUserTap,
   });
 
   String formatTime(int timeInMilliseconds) {
@@ -52,25 +54,34 @@ class LeaderboardCard extends StatelessWidget {
                     '$indexString.'
                   ),
                 ),
-                (highscore.user.profileImage != null) ? CircleAvatar(
-                  radius: 10,
-                  backgroundImage: NetworkImage(highscore.user.profileImage!),
-                  onBackgroundImageError: (exception, stackTrace) {
-                    print('Error loading image: $exception');
+                GestureDetector(
+                  onTap: () {
+                    onUserTap(highscore.userId);
                   },
-                ) : const Icon(
-                    Icons.account_circle,
-                    size: 20,
-                    color: gray2
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  highscore.user.name,
-                  style: TextStyle(
-                    color: highlightIndex == index ? primary : gray,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    overflow: TextOverflow.ellipsis,
+                  child: Row(
+                    children: [
+                      (highscore.user.profileImage != null) ? CircleAvatar(
+                        radius: 10,
+                        backgroundImage: NetworkImage(highscore.user.profileImage!),
+                        onBackgroundImageError: (exception, stackTrace) {
+                          print('Error loading image: $exception');
+                        },
+                      ) : const Icon(
+                          Icons.account_circle,
+                          size: 20,
+                          color: gray2
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        highscore.user.name,
+                        style: TextStyle(
+                          color: highlightIndex == index ? primary : gray,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const Spacer(),

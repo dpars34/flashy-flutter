@@ -11,9 +11,11 @@ import '../../models/answer_data.dart';
 import '../../models/deck_data.dart';
 import '../../notifiers/auth_notifier.dart';
 import '../../notifiers/deck_notifier.dart';
+import '../../notifiers/profile_notifier.dart';
 import '../../utils/api_exception.dart';
 import '../../widgets/base_button.dart';
 import '../../widgets/error_modal.dart';
+import '../profile/profile_screen.dart';
 import 'deck_review_screen.dart';
 
 class ResultsScreen extends ConsumerStatefulWidget {
@@ -331,7 +333,17 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> with TickerProvid
                           ),
                         ),
                         if (newRecordData.isNotEmpty) SizedBox(height: 12),
-                        if (newRecordData.isNotEmpty) LeaderboardCard(highscoresData: newRecordData, highlightIndex: newRecordIndex,),
+                        if (newRecordData.isNotEmpty) LeaderboardCard(
+                          highscoresData: newRecordData, highlightIndex: newRecordIndex,
+                          onUserTap: (int id) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ProfileScreen(id: id)),
+                            ).then((_) {
+                              ref.read(profileProvider.notifier).clearProfile();
+                            });
+                          },
+                        ),
                         SizedBox(height: 60),
                         BaseButton(onPressed: _goToReviewScreen, text: 'Review answers', outlined: true,),
                         SizedBox(height: 8),

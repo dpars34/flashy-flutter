@@ -7,10 +7,12 @@ import '../models/deck_data.dart';
 class DeckCard extends StatelessWidget {
 
   final DeckData deckData;
+  final void Function(int) onUserTap;
 
   const DeckCard({
     super.key,
     required this.deckData,
+    required this.onUserTap,
   });
 
   @override
@@ -43,24 +45,31 @@ class DeckCard extends StatelessWidget {
           const SizedBox(height: 4),
           Row(
             children: [
-              (deckData.creator.profileImage != null) ? CircleAvatar(
-                radius: 10,
-                backgroundImage: NetworkImage(deckData.creator.profileImage!),
-                onBackgroundImageError: (exception, stackTrace) {
-                  print('Error loading image: $exception');
-                },
-              ) : const Icon(
-                  Icons.account_circle,
-                  size: 20,
-                  color: gray2
-              ),
-              SizedBox(width: 6),
-              Text(
-                deckData.creator.name,
-                style: const TextStyle(
-                  color: gray,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
+              GestureDetector(
+                onTap: () { onUserTap(deckData.id); },
+                child: Row(
+                  children: [
+                    (deckData.creator.profileImage != null) ? CircleAvatar(
+                      radius: 10,
+                      backgroundImage: NetworkImage(deckData.creator.profileImage!),
+                      onBackgroundImageError: (exception, stackTrace) {
+                        print('Error loading image: $exception');
+                      },
+                    ) : const Icon(
+                        Icons.account_circle,
+                        size: 20,
+                        color: gray2
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      deckData.creator.name,
+                      style: const TextStyle(
+                        color: gray,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(width: 8),
