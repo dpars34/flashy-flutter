@@ -1,3 +1,4 @@
+import 'package:flashy_flutter/models/deck_data.dart';
 import 'package:flashy_flutter/widgets/leaderboard_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flashy_flutter/utils/colors.dart';
@@ -15,9 +16,10 @@ import '../profile/profile_screen.dart';
 import './swipe_screen.dart';
 
 class DeckDetailScreen extends ConsumerStatefulWidget {
-  const DeckDetailScreen({Key? key, required this.id}) : super(key: key);
+  const DeckDetailScreen({Key? key, required this.id, required this.type}) : super(key: key);
 
   final int id;
+  final String type;
 
   @override
   ConsumerState<DeckDetailScreen> createState() => _DeckDetailScreenState();
@@ -32,9 +34,22 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
     super.initState();
     // Fetch the deck data when the widget is initialized
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final deck = ref.read(deckProvider).firstWhere((deck) => deck.id == widget.id);
-      if (deck?.cards == null) {
-        ref.read(deckProvider.notifier).fetchDeckDetails(widget.id);
+      if (widget.type == 'home') {
+        final deck = ref.read(deckProvider).homeDecks
+            .expand((categoryDeck) => categoryDeck.decks)
+            .firstWhere((deck) => deck.id == widget.id);
+
+        if (deck?.cards == null) {
+          ref.read(deckProvider.notifier).fetchDeckDetails(widget.id);
+        }
+      } else if (widget.type == 'detail') {
+        final deck = ref.read(deckProvider).detailDecks
+            .expand((categoryDeck) => categoryDeck.decks)
+            .firstWhere((deck) => deck.id == widget.id);
+
+        if (deck?.cards == null) {
+          ref.read(deckProvider.notifier).fetchDeckDetails(widget.id);
+        }
       }
     });
   }
@@ -90,7 +105,17 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
     final deckNotifier = ref.read(deckProvider.notifier);
     final user = ref.watch(authProvider);
 
-    final deck = deckDataList.firstWhere((deck) => deck.id == widget.id);
+    late DeckData deck;
+
+    if (widget.type == 'home') {
+      deck = ref.read(deckProvider).homeDecks
+          .expand((categoryDeck) => categoryDeck.decks)
+          .firstWhere((deck) => deck.id == widget.id);
+    } else if (widget.type == 'detail') {
+      deck = ref.read(deckProvider).homeDecks
+          .expand((categoryDeck) => categoryDeck.decks)
+          .firstWhere((deck) => deck.id == widget.id);
+    }
 
     return Scaffold(
       backgroundColor: bg,
@@ -98,8 +123,7 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
         backgroundColor: secondary,
         title: const Text(''),
       ),
-      body: deckDataList.isNotEmpty ?
-      SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
@@ -249,8 +273,7 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
             ],
           ),
         ),
-      ) :
-      Text('LOADING'),
+      )
     );
   }
 }

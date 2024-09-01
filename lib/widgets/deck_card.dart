@@ -46,7 +46,7 @@ class DeckCard extends StatelessWidget {
           Row(
             children: [
               GestureDetector(
-                onTap: () { onUserTap(deckData.id); },
+                onTap: () { onUserTap(deckData.creatorUserId); },
                 child: Row(
                   children: [
                     (deckData.creator.profileImage != null) ? CircleAvatar(

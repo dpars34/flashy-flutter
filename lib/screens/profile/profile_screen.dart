@@ -3,17 +3,10 @@ import 'package:flashy_flutter/screens/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flashy_flutter/utils/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flashy_flutter/screens/deck/deck_detail_screen.dart';
-import 'package:flashy_flutter/screens/account/account_screen.dart';
 import 'package:intl/intl.dart';
 
-import '../../notifiers/auth_notifier.dart';
-import '../../notifiers/deck_notifier.dart';
-import '../../notifiers/category_notifier.dart';
 import '../../notifiers/profile_notifier.dart';
 import '../../widgets/base_button.dart';
-import '../../widgets/deck_card.dart';
-import '../../notifiers/loading_notifier.dart';
 import '../../widgets/error_modal.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {

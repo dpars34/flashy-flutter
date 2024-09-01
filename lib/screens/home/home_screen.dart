@@ -30,7 +30,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.initState();
     // Fetch the deck data when the widget is initialized
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(deckProvider.notifier).fetchDeckData();
+      ref.read(deckProvider.notifier).fetchHomeDeckData();
       ref.read(categoryProvider.notifier).fetchCategoryData();
     });
   }
@@ -39,7 +39,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => DeckDetailScreen(id: id),
+        builder: (context) => DeckDetailScreen(id: id, type: 'home',),
       ),
     );
   }
@@ -198,58 +198,63 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ],
         ),
       ),
-      body: deckDataList.isNotEmpty ?
+      body: deckDataList.homeDecks.isNotEmpty ?
         SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(24),
             child: Column(
               children: [
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Popular Decks',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: black,
-                        fontSize: 16,
+                ...deckDataList.homeDecks.map((category) {
+                  return Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            category.category.name,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: black,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const Text(
+                            'more',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: primary,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    Text(
-                      'more',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: primary,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 18.0),
-                Column(
-                  children: [
-                    ...deckDataList.map((deckData) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: InkWell(
-                        onTap: () => _navigateToDeckDetail(context, deckData.id),
-                        child: DeckCard(
-                          deckData: deckData,
-                          onUserTap: (int id) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => ProfileScreen(id: id)),
-                            ).then((_) {
-                              ref.read(profileProvider.notifier).clearProfile();
-                            });
-                          },
-                        )
-                      ),
-                    )),
-                  ],
-                )
-                // Text(data.toString())
-              ],
-            ),
+                      const SizedBox(height: 18.0),
+                      Column(
+                        children: [
+                          ...category.decks.map((deckData) => Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: InkWell(
+                                onTap: () => _navigateToDeckDetail(context, deckData.id),
+                                child: DeckCard(
+                                  deckData: deckData,
+                                  onUserTap: (int id) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => ProfileScreen(id: id)),
+                                    ).then((_) {
+                                      ref.read(profileProvider.notifier).clearProfile();
+                                    });
+                                  },
+                                )
+                            ),
+                          )),
+                        ],
+                      )
+                      // Text(data.toString())
+                    ],
+                  );
+                })
+            ]),
           ),
         ) :
         Text('LOADING'),
