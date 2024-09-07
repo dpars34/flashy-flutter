@@ -21,12 +21,16 @@ class SwipeCard extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(item.text,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: black,
-                  )
+                Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Text(item.text,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: black,
+                    )
+                  ),
                 ),
               ],
             ),

@@ -214,6 +214,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   CustomInputField(
                     controller: _usernameController,
                     labelText: 'Username',
+                    maxLength: 30,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your username';
@@ -227,6 +228,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     labelText: 'Bio',
                     minLines: 3,
                     maxLines: 3,
+                    maxLength: 200,
                     validator: (value) {
                       return null;
                     },

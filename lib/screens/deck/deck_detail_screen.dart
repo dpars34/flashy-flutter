@@ -112,7 +112,7 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
           .expand((categoryDeck) => categoryDeck.decks)
           .firstWhere((deck) => deck.id == widget.id);
     } else if (widget.type == 'detail') {
-      deck = ref.read(deckProvider).homeDecks
+      deck = ref.read(deckProvider).detailDecks
           .expand((categoryDeck) => categoryDeck.decks)
           .firstWhere((deck) => deck.id == widget.id);
     }
@@ -138,7 +138,7 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
                 ),
               ),
               const SizedBox(height: 10),
-              Text(
+              if (deck.description != '') Text(
                 deck.description,
                 style: const TextStyle(
                   color: gray,
@@ -146,7 +146,10 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              Row(
+              Wrap(
+                spacing: 8.0,
+                runSpacing: 8.0,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   GestureDetector(
                     onTap: () {
@@ -158,6 +161,7 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
                       });
                     },
                     child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         (deck.creator.profileImage != null) ? CircleAvatar(
                           radius: 10,
@@ -182,23 +186,27 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  const Icon(
-                    Icons.thumb_up,
-                    size: 14,
-                    color: gray,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    deck.likedUsers.length.toString(),
-                    style: const TextStyle(
-                      color: gray,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
                   Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.thumb_up,
+                        size: 14,
+                        color: gray,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        deck.likedUsers.length.toString(),
+                        style: const TextStyle(
+                          color: gray,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       OptionPill(color: 'red', text: deck.leftOption),
                       const SizedBox(width: 6),

@@ -160,6 +160,7 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
                   CustomInputField(
                     controller: _titleController,
                     labelText: 'Title',
+                    maxLength: 50,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter a title';
@@ -173,6 +174,7 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
                     labelText: 'Description (optional)',
                     minLines: 3,
                     maxLines: 3,
+                    maxLength: 200,
                     validator: (value) {
                       return null;
                     },
@@ -206,6 +208,7 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
                         child: CustomInputField(
                           controller: _leftOptionController,
                           labelText: 'Left option',
+                          maxLength: 15,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter an option';
@@ -222,6 +225,7 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
                         child: CustomInputField(
                           controller: _rightOptionController,
                           labelText: 'Right option',
+                          maxLength: 15,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter an option';

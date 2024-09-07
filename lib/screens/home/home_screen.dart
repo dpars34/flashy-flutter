@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flashy_flutter/screens/categories/category_list_screen.dart';
 import 'package:flashy_flutter/screens/create/create_deck_screen.dart';
 import 'package:flashy_flutter/screens/login/login_screen.dart';
 import 'package:flutter/material.dart';
@@ -124,9 +125,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 );
               },
             ),
+            ListTile(
+              leading: const Icon(
+                Icons.layers_outlined,
+                color: primary,
+              ),
+              title: const Text(
+                'Categories',
+                style: TextStyle(
+                    color: primary,
+                    fontWeight: FontWeight.bold
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const CategoryListScreen()
+                  ),
+                );
+              },
+            ),
             if (user != null) ListTile(
               leading: const Icon(
-                Icons.account_circle,
+                Icons.account_circle_outlined,
                 color: primary,
               ),
               title: const Text(
@@ -204,14 +226,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             padding: const EdgeInsets.all(24),
             child: Column(
               children: [
-                ...deckDataList.homeDecks.map((category) {
+                ...deckDataList.homeDecks.where((category) => category.decks.isNotEmpty).map((category) {
                   return Column(
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            category.category.name,
+                            '${category.category.emoji} ${category.category.name}',
                             style: const TextStyle(
                               fontWeight: FontWeight.w600,
                               color: black,
@@ -249,8 +271,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             ),
                           )),
                         ],
-                      )
+                      ),
                       // Text(data.toString())
+                      const SizedBox(height: 32.0),
                     ],
                   );
                 })

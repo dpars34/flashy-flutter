@@ -35,11 +35,14 @@ class CustomRadioButtonField extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              labelText,
-              style: TextStyle(
-                fontSize: 16.0,
-                color: gray,
+            Expanded(
+              child: Text(
+                labelText,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 16.0,
+                  color: gray,
+                ),
               ),
             ),
             Container(

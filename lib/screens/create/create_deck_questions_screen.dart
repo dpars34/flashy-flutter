@@ -226,6 +226,7 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
                                 CustomInputField(
                                   controller: question.questionController,
                                   labelText: 'Question',
+                                  maxLength: 100,
                                   minLines: 3,
                                   maxLines: 3,
                                   validator: (value) {
@@ -239,6 +240,7 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
                                 CustomInputField(
                                   controller: question.noteController,
                                   labelText: 'Note',
+                                  maxLength: 50,
                                   validator: (value) {
                                     return null;
                                   },

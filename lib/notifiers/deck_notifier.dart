@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flashy_flutter/models/category_data.dart';
 import 'package:flashy_flutter/models/deck_notifier_data.dart';
+import 'package:flashy_flutter/models/decks_by_category_data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flashy_flutter/utils/api_helper.dart';
 import '../models/category_decks_data.dart';
@@ -11,7 +12,12 @@ import '../utils/api_exception.dart';
 import 'auth_notifier.dart';
 
 class DeckNotifier extends StateNotifier<DeckNotifierData> {
-  DeckNotifier(this.ref) : super(DeckNotifierData(homeDecks: [], detailDecks: []));
+  DeckNotifier(this.ref) : super(DeckNotifierData(
+    homeDecks: [],
+    detailDecks: [],
+    userDecks: [],
+    likedDecks: [],
+  ));
 
   final Ref ref; // Reference to access other providers
   final ApiHelper apiHelper = ApiHelper();
@@ -21,7 +27,9 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
     final homeDecks = jsonData.map((json) => CategoryDecksData.fromJson(json)).toList();
     state = DeckNotifierData(
       homeDecks: homeDecks,
-      detailDecks: state.detailDecks, // Keep the current detailDecks
+      detailDecks: state.detailDecks,
+      userDecks: state.userDecks,
+      likedDecks: state.likedDecks,
     );
   }
 
@@ -62,8 +70,8 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
     }).toList();
 
     // Update detailDecks with the fetched deck details
-    List<CategoryDecksData> updatedDetailDecks = state.detailDecks.map((categoryDecks) {
-      return CategoryDecksData(
+    List<DecksByCategoryData> updatedDetailDecks = state.detailDecks.map((categoryDecks) {
+      return DecksByCategoryData(
         category: categoryDecks.category,
         decks: categoryDecks.decks.map((deck) {
           if (deck.id == id) {
@@ -71,13 +79,32 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
           }
           return deck;
         }).toList(),
+        pagination: categoryDecks.pagination,
       );
+    }).toList();
+
+    // Update userDecks with the fetched deck details
+    List<DeckData> updatedUserDecks = state.userDecks.map((deck) {
+      if (deck.id == id) {
+        return deckData;
+      }
+      return deck;
+    }).toList();
+
+    // Update likedDecks with the fetched deck details
+    List<DeckData> updatedLikedDecks = state.likedDecks.map((deck) {
+      if (deck.id == id) {
+        return deckData;
+      }
+      return deck;
     }).toList();
 
     // Update the state with the new homeDecks and detailDecks
     state = DeckNotifierData(
       homeDecks: updatedHomeDecks,
       detailDecks: updatedDetailDecks,
+      userDecks: updatedUserDecks,
+      likedDecks: updatedLikedDecks,
     );
   }
 
@@ -132,8 +159,8 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
       }).toList();
 
       // Update detailDecks
-      List<CategoryDecksData> updatedDetailDecks = state.detailDecks.map((categoryDecks) {
-        return CategoryDecksData(
+      List<DecksByCategoryData> updatedDetailDecks = state.detailDecks.map((categoryDecks) {
+        return DecksByCategoryData(
           category: categoryDecks.category,
           decks: categoryDecks.decks.map((deck) {
             if (deck.id == id) {
@@ -141,13 +168,30 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
             }
             return deck;
           }).toList(),
+          pagination: categoryDecks.pagination
         );
+      }).toList();
+
+      List<DeckData> updatedUserDecks = state.userDecks.map((deck) {
+        if (deck.id == id) {
+          return deck.copyWith(likedUsers: likedUsers);
+        }
+        return deck;
+      }).toList();
+
+      List<DeckData> updatedLikedDecks = state.likedDecks.map((deck) {
+        if (deck.id == id) {
+          return deck.copyWith(likedUsers: likedUsers);
+        }
+        return deck;
       }).toList();
 
       // Update the state with the new homeDecks and detailDecks
       state = DeckNotifierData(
         homeDecks: updatedHomeDecks,
         detailDecks: updatedDetailDecks,
+        userDecks: updatedUserDecks,
+        likedDecks: updatedLikedDecks,
       );
 
     } catch (e) {
@@ -178,8 +222,8 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
       }).toList();
 
       // Update detailDecks
-      List<CategoryDecksData> updatedDetailDecks = state.detailDecks.map((categoryDecks) {
-        return CategoryDecksData(
+      List<DecksByCategoryData> updatedDetailDecks = state.detailDecks.map((categoryDecks) {
+        return DecksByCategoryData(
           category: categoryDecks.category,
           decks: categoryDecks.decks.map((deck) {
             if (deck.id == id) {
@@ -187,13 +231,30 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
             }
             return deck;
           }).toList(),
+          pagination: categoryDecks.pagination
         );
+      }).toList();
+
+      List<DeckData> updatedUserDecks = state.userDecks.map((deck) {
+        if (deck.id == id) {
+          return deck.copyWith(likedUsers: likedUsers);
+        }
+        return deck;
+      }).toList();
+
+      List<DeckData> updatedLikedDecks = state.likedDecks.map((deck) {
+        if (deck.id == id) {
+          return deck.copyWith(likedUsers: likedUsers);
+        }
+        return deck;
       }).toList();
 
       // Update the state with the new homeDecks and detailDecks
       state = DeckNotifierData(
         homeDecks: updatedHomeDecks,
         detailDecks: updatedDetailDecks,
+        userDecks: updatedUserDecks,
+        likedDecks: updatedLikedDecks,
       );
 
     } catch (e) {
@@ -238,8 +299,8 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
     }).toList();
 
     // Update detailDecks
-    List<CategoryDecksData> updatedDetailDecks = state.detailDecks.map((categoryDecks) {
-      return CategoryDecksData(
+    List<DecksByCategoryData> updatedDetailDecks = state.detailDecks.map((categoryDecks) {
+      return DecksByCategoryData(
         category: categoryDecks.category,
         decks: categoryDecks.decks.map((deck) {
           if (deck.id == deckId) {
@@ -247,14 +308,84 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
           }
           return deck;
         }).toList(),
+        pagination: categoryDecks.pagination
       );
     }).toList();
+
+    List<DeckData> updatedUserDecks = state.userDecks.map((deck) {
+      if (deck.id == deckId) {
+        return deckData;
+      }
+      return deck;
+    }).toList();
+
+    List<DeckData> updatedLikedDecks = state.likedDecks.map((deck) {
+      if (deck.id == deckId) {
+        return deckData;
+      }
+      return deck;
+    }).toList();
+
 
     // Update the state with the new homeDecks and detailDecks
     state = DeckNotifierData(
       homeDecks: updatedHomeDecks,
       detailDecks: updatedDetailDecks,
+      userDecks: updatedUserDecks,
+      likedDecks: updatedLikedDecks,
     );
+  }
+
+  Future<void> fetchDecksByCategory(int categoryId, int limit, int page) async {
+    try {
+      // Fetch data from the API with pagination
+      var response = await apiHelper.get('/decks/category/$categoryId?limit=$limit&page=$page');
+
+      // Assuming response is an object, not a list
+      final DecksByCategoryData data = DecksByCategoryData.fromJson(response);
+
+      int categoryIndex = state.detailDecks.indexWhere((item) => item.category.id == categoryId);
+      List<DecksByCategoryData> updatedDetailDecks;
+
+      if (categoryIndex != -1) {
+        // Category exists, merge the decks with pagination
+        updatedDetailDecks = state.detailDecks.map((categoryDecks) {
+          if (categoryDecks.category.id == categoryId) {
+            return DecksByCategoryData(
+              category: categoryDecks.category,
+              decks: [...categoryDecks.decks, ...data.decks], // Merge the decks
+              pagination: data.pagination, // Update pagination info
+            );
+          }
+          return categoryDecks;
+        }).toList();
+      } else {
+        // Category does not exist, add a new one
+        updatedDetailDecks = [
+          ...state.detailDecks,
+          DecksByCategoryData(
+            category: data.category,
+            decks: data.decks,
+            pagination: data.pagination,
+          )
+        ];
+      }
+
+      // Update the state with the new homeDecks and detailDecks
+      state = DeckNotifierData(
+        homeDecks: state.homeDecks,
+        detailDecks: updatedDetailDecks,
+        userDecks: state.userDecks,
+        likedDecks: state.likedDecks,
+      );
+
+    } catch (e) {
+      if (e is ApiException) {
+        throw ApiException(e.statusCode, e.message);
+      } else {
+        throw ApiException(500, 'Unexpected Error: $e');
+      }
+    }
   }
 }
 

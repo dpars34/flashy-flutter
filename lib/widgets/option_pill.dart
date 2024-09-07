@@ -23,10 +23,12 @@ class OptionPill extends StatelessWidget {
       ),
       child: Text(
         text,
+        maxLines: 1,
         style: TextStyle(
           color: white,
           fontWeight: FontWeight.w600,
-          fontSize: large ? 14 : 11
+          fontSize: large ? 14 : 11,
+          overflow: TextOverflow.ellipsis,
         ),
       ),
     );

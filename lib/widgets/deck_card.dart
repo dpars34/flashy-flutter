@@ -18,6 +18,7 @@ class DeckCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: double.infinity,
       padding: EdgeInsets.fromLTRB(12.0, 12.0, 12.0, 8.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -28,6 +29,8 @@ class DeckCard extends StatelessWidget {
         children: [
           Text(
             deckData.name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               color: black,
               fontSize: 14,
@@ -37,17 +40,23 @@ class DeckCard extends StatelessWidget {
           const SizedBox(height: 2),
           Text(
             deckData.description,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               color: gray,
               fontSize: 12
             )
           ),
           const SizedBox(height: 4),
-          Row(
+          Wrap(
+            spacing: 8.0,
+            runSpacing: 8.0,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               GestureDetector(
                 onTap: () { onUserTap(deckData.creatorUserId); },
                 child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     (deckData.creator.profileImage != null) ? CircleAvatar(
                       radius: 10,
@@ -72,23 +81,27 @@ class DeckCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
-              const Icon(
-                Icons.thumb_up,
-                size: 14,
-                color: gray,
-              ),
-              const SizedBox(width: 4),
-              Text(
-                deckData.likedUsers.length.toString(),
-                style: const TextStyle(
-                  color: gray,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(width: 8),
               Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.thumb_up,
+                    size: 14,
+                    color: gray,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    deckData.likedUsers.length.toString(),
+                    style: const TextStyle(
+                      color: gray,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   OptionPill(color: 'red', text: deckData.leftOption),
                   SizedBox(width: 6),
