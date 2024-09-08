@@ -34,15 +34,51 @@ class CategoryDeckScreen extends ConsumerStatefulWidget {
 }
 
 class _CategoryDeckScreenState extends ConsumerState<CategoryDeckScreen> {
+  late ScrollController _scrollController;
+  bool _isLoading = false;
+  bool _isInfinite = true;
+  int _currentPage = 1;
+
   @override
   void initState() {
     super.initState();
-    // Fetch the deck data when the widget is initialized
+    _scrollController = ScrollController();
+
+    // Fetch the initial deck data
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final deckDataList = ref.watch(deckProvider);
       int categoryIndex = deckDataList.detailDecks.indexWhere((item) => item.category.id == widget.category.id);
       if (categoryIndex == -1) {
-        ref.read(deckProvider.notifier).fetchDecksByCategory(widget.category.id, 10, 1);
+        ref.read(deckProvider.notifier).fetchDecksByCategory(widget.category.id, 10, _currentPage);
+      }
+    });
+
+    // Listen to scroll events
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 100 && !_isLoading && _isInfinite) {
+        _fetchMoreDecks();
+      }
+    });
+  }
+
+  Future<void> _fetchMoreDecks() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final deckDataList = ref.watch(deckProvider);
+    final DecksByCategoryData category = deckDataList.detailDecks.firstWhere((item) => item.category.id == widget.category.id);
+
+    // Fetch more decks based on the current page
+    await ref.read(deckProvider.notifier).fetchDecksByCategory(widget.category.id, 10, _currentPage + 1);
+
+    setState(() {
+      _currentPage += 1;
+      _isLoading = false;
+
+      // Stop infinite scrolling if there are no more pages
+      if (category.pagination.currentPage >= category.pagination.lastPage) {
+        _isInfinite = false;
       }
     });
   }
@@ -51,7 +87,7 @@ class _CategoryDeckScreenState extends ConsumerState<CategoryDeckScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => DeckDetailScreen(id: id, type: 'detail',),
+        builder: (context) => DeckDetailScreen(id: id, type: 'detail'),
       ),
     );
   }
@@ -59,10 +95,6 @@ class _CategoryDeckScreenState extends ConsumerState<CategoryDeckScreen> {
   @override
   Widget build(BuildContext context) {
     final deckDataList = ref.watch(deckProvider);
-    final authNotifier = ref.watch(authProvider.notifier);
-    final loadingNotifier = ref.read(loadingProvider.notifier);
-    final user = ref.watch(authProvider);
-
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
     final List<DeckData> decks;
 
@@ -72,6 +104,9 @@ class _CategoryDeckScreenState extends ConsumerState<CategoryDeckScreen> {
     } else {
       final DecksByCategoryData category = deckDataList.detailDecks.firstWhere((item) => item.category.id == widget.category.id);
       decks = category.decks;
+      if (category.pagination.currentPage >= category.pagination.lastPage) {
+        _isInfinite = false;
+      }
     }
 
     return Scaffold(
@@ -79,56 +114,57 @@ class _CategoryDeckScreenState extends ConsumerState<CategoryDeckScreen> {
       key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: secondary,
-        title: const Text(''),
+        title: Text('${widget.category.emoji} ${widget.category.name}'),
       ),
-      body: decks.isNotEmpty ?
-      SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '${widget.category.emoji} ${widget.category.name}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: black,
-                        fontSize: 16,
-                      ),
+      body: decks.isNotEmpty
+          ? Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              controller: _scrollController,
+              padding: const EdgeInsets.all(24),
+              itemCount: decks.length + (_isInfinite ? 1 : 0), // Add 1 for the loading indicator
+              itemBuilder: (context, index) {
+                if (index == decks.length) {
+                  return const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Center(
+                      child: CircularProgressIndicator(), // Loading spinner at the bottom
                     ),
-                  ],
-                ),
-                const SizedBox(height: 18.0),
-                Column(
-                  children: [
-                    ...decks.map((deckData) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: InkWell(
-                          onTap: () => _navigateToDeckDetail(context, deckData.id),
-                          child: DeckCard(
-                            deckData: deckData,
-                            onUserTap: (int id) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => ProfileScreen(id: id)),
-                              ).then((_) {
-                                ref.read(profileProvider.notifier).clearProfile();
-                              });
-                            },
-                          )
-                      ),
-                    )),
-                  ],
-                ),
-                // Text(data.toString())
-                const SizedBox(height: 32.0),
-              ]),
-        ),
-      ) :
-      Text('LOADING'),
+                  );
+                }
+                final deckData = decks[index];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: InkWell(
+                    onTap: () => _navigateToDeckDetail(context, deckData.id),
+                    child: DeckCard(
+                      deckData: deckData,
+                      onUserTap: (int id) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ProfileScreen(id: id)),
+                        ).then((_) {
+                          ref.read(profileProvider.notifier).clearProfile();
+                        });
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 32.0),
+        ],
+      )
+          : const Center(child: CircularProgressIndicator()), // Show loading spinner while decks are loading
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 }
 

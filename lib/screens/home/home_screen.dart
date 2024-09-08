@@ -17,6 +17,7 @@ import '../../notifiers/profile_notifier.dart';
 import '../../widgets/deck_card.dart';
 import '../../notifiers/loading_notifier.dart';
 import '../../widgets/error_modal.dart';
+import '../categories/category_deck_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -240,13 +241,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               fontSize: 16,
                             ),
                           ),
-                          const Text(
-                            'more',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: primary,
-                              fontSize: 16,
+                          GestureDetector(
+                            child: const Text(
+                              'more',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: primary,
+                                fontSize: 16,
+                              ),
                             ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CategoryDeckScreen(category: category.category),
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
