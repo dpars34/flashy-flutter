@@ -26,14 +26,32 @@ class HomeScreen extends ConsumerStatefulWidget {
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAliveClientMixin {
+
+  late ScrollController _scrollController;
+
+  bool isLoaded = false;
+  double scrollPosition = 0;
+
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(() {
+      scrollPosition = _scrollController.position.pixels;
+    });
     // Fetch the deck data when the widget is initialized
     WidgetsBinding.instance.addPostFrameCallback((_) {
+
       ref.read(deckProvider.notifier).fetchHomeDeckData();
       ref.read(categoryProvider.notifier).fetchCategoryData();
+
+      setState(() {
+        isLoaded = true;
+      });
     });
   }
 
@@ -113,8 +131,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               title: const Text(
                 'Create deck',
                 style: TextStyle(
-                  color: primary,
-                  fontWeight: FontWeight.bold
+                    color: primary,
+                    fontWeight: FontWeight.bold
                 ),
               ),
               onTap: () {
@@ -176,15 +194,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               title: const Text(
                 'Login',
                 style: TextStyle(
-                  color: primary,
-                  fontWeight: FontWeight.bold
+                    color: primary,
+                    fontWeight: FontWeight.bold
                 ),
               ),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const LoginScreen()
+                      builder: (context) => const LoginScreen()
                   ),
                 );
               },
@@ -221,11 +239,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ],
         ),
       ),
-      body: deckDataList.homeDecks.isNotEmpty ?
-        SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
+      body: isLoaded ?
+      SingleChildScrollView(
+        controller: _scrollController,
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
               children: [
                 ...deckDataList.homeDecks.where((category) => category.decks.isNotEmpty).map((category) {
                   return Column(
@@ -256,7 +275,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 MaterialPageRoute(
                                   builder: (context) => CategoryDeckScreen(category: category.category),
                                 ),
-                              );
+                              ).then((result) {
+                                _scrollController.jumpTo(scrollPosition);
+                              }) ;
                             },
                           ),
                         ],
@@ -288,10 +309,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ],
                   );
                 })
-            ]),
-          ),
-        ) :
-        Text('LOADING'),
+              ]),
+        ),
+      ) :
+      Text('LOADING'),
     );
   }
 }
