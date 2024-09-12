@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flashy_flutter/screens/categories/category_list_screen.dart';
 import 'package:flashy_flutter/screens/create/create_deck_screen.dart';
+import 'package:flashy_flutter/screens/likes/liked_deck_screen.dart';
 import 'package:flashy_flutter/screens/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flashy_flutter/utils/colors.dart';
@@ -114,10 +115,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            SizedBox(height: 80),
+            const SizedBox(height: 80),
             Row(
               children: [
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Image.asset(
                   'assets/flashy-logo.png',
                   height: 40,
@@ -163,6 +164,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
                   context,
                   MaterialPageRoute(
                       builder: (context) => const CategoryListScreen()
+                  ),
+                );
+              },
+            ),
+            if (user != null) ListTile(
+              leading: const Icon(
+                Icons.thumb_up_outlined,
+                color: primary,
+              ),
+              title: const Text(
+                'Liked decks',
+                style: TextStyle(
+                    color: primary,
+                    fontWeight: FontWeight.bold
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const LikedDeckScreen()
                   ),
                 );
               },

@@ -14,19 +14,16 @@ import '../../notifiers/profile_notifier.dart';
 import '../../widgets/deck_card.dart';
 import '../../widgets/error_modal.dart';
 
-class CategoryDeckScreen extends ConsumerStatefulWidget {
-  const CategoryDeckScreen({
+class LikedDeckScreen extends ConsumerStatefulWidget {
+  const LikedDeckScreen({
     Key? key,
-    required this.category
   }) : super(key: key);
 
-  final CategoryData category;
-
   @override
-  ConsumerState<CategoryDeckScreen> createState() => _CategoryDeckScreenState();
+  ConsumerState<LikedDeckScreen> createState() => _LikedDeckScreenState();
 }
 
-class _CategoryDeckScreenState extends ConsumerState<CategoryDeckScreen> {
+class _LikedDeckScreenState extends ConsumerState<LikedDeckScreen> {
   late ScrollController _scrollController;
   bool _isLoading = false;
   bool _isInfinite = true;
@@ -44,9 +41,8 @@ class _CategoryDeckScreenState extends ConsumerState<CategoryDeckScreen> {
     // Fetch the initial deck data
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final deckDataList = ref.watch(deckProvider);
-      int categoryIndex = deckDataList.detailDecks.indexWhere((item) => item.category.id == widget.category.id);
-      if (categoryIndex == -1) {
-        ref.read(deckProvider.notifier).fetchDecksByCategory(widget.category.id, 10, _currentPage);
+      if (deckDataList.likedDecks == null) {
+        ref.read(deckProvider.notifier).fetchLikedDecks(10, _currentPage);
       }
     });
 
@@ -64,17 +60,16 @@ class _CategoryDeckScreenState extends ConsumerState<CategoryDeckScreen> {
     });
 
     final deckDataList = ref.watch(deckProvider);
-    final DecksByCategoryData category = deckDataList.detailDecks.firstWhere((item) => item.category.id == widget.category.id);
 
     // Fetch more decks based on the current page
-    await ref.read(deckProvider.notifier).fetchDecksByCategory(widget.category.id, 10, _currentPage + 1);
+    await ref.read(deckProvider.notifier).fetchLikedDecks(10, _currentPage + 1);
 
     setState(() {
       _currentPage += 1;
       _isLoading = false;
 
       // Stop infinite scrolling if there are no more pages
-      if (category.pagination.currentPage >= category.pagination.lastPage) {
+      if (deckDataList.likedDecks!.pagination.currentPage >= deckDataList.likedDecks!.pagination.lastPage) {
         _isInfinite = false;
       }
     });
@@ -97,13 +92,11 @@ class _CategoryDeckScreenState extends ConsumerState<CategoryDeckScreen> {
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
     final List<DeckData> decks;
 
-    int categoryIndex = deckDataList.detailDecks.indexWhere((item) => item.category.id == widget.category.id);
-    if (categoryIndex == -1) {
+    if (deckDataList.likedDecks == null) {
       decks = [];
     } else {
-      final DecksByCategoryData category = deckDataList.detailDecks.firstWhere((item) => item.category.id == widget.category.id);
-      decks = category.decks;
-      if (category.pagination.currentPage >= category.pagination.lastPage) {
+      decks = deckDataList.likedDecks!.decks;
+      if (deckDataList.likedDecks!.pagination.currentPage >= deckDataList.likedDecks!.pagination.lastPage) {
         _isInfinite = false;
       }
     }
@@ -113,7 +106,7 @@ class _CategoryDeckScreenState extends ConsumerState<CategoryDeckScreen> {
       key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: secondary,
-        title: Text('${widget.category.emoji} ${widget.category.name}'),
+        title: const Text('Liked decks'),
       ),
       body: decks.isNotEmpty
           ? Column(

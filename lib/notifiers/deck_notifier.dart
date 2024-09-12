@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flashy_flutter/models/category_data.dart';
 import 'package:flashy_flutter/models/deck_notifier_data.dart';
 import 'package:flashy_flutter/models/decks_by_category_data.dart';
+import 'package:flashy_flutter/models/decks_with_pagination.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flashy_flutter/utils/api_helper.dart';
 import '../models/category_decks_data.dart';
@@ -15,8 +16,8 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
   DeckNotifier(this.ref) : super(DeckNotifierData(
     homeDecks: [],
     detailDecks: [],
-    userDecks: [],
-    likedDecks: [],
+    userDecks: null,
+    likedDecks: null,
   ));
 
   final Ref ref; // Reference to access other providers
@@ -83,21 +84,27 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
       );
     }).toList();
 
-    // Update userDecks with the fetched deck details
-    List<DeckData> updatedUserDecks = state.userDecks.map((deck) {
-      if (deck.id == id) {
-        return deckData;
-      }
-      return deck;
-    }).toList();
+    // Update userDecks
+    DecksWithPagination? updatedUserDecks = state.userDecks != null ? DecksWithPagination(
+      decks: state.userDecks!.decks.map((deck) {
+        if (deck.id == id) {
+          return deckData;
+        }
+        return deck;
+      }).toList(),
+      pagination: state.userDecks!.pagination,
+    ) : null;
 
-    // Update likedDecks with the fetched deck details
-    List<DeckData> updatedLikedDecks = state.likedDecks.map((deck) {
-      if (deck.id == id) {
-        return deckData;
-      }
-      return deck;
-    }).toList();
+    // Update likedDecks
+    DecksWithPagination? updatedLikedDecks = state.likedDecks != null ? DecksWithPagination(
+      decks: state.likedDecks!.decks.map((deck) {
+        if (deck.id == id) {
+          return deckData;
+        }
+        return deck;
+      }).toList(),
+      pagination: state.likedDecks!.pagination,
+    ) : null;
 
     // Update the state with the new homeDecks and detailDecks
     state = DeckNotifierData(
@@ -172,19 +179,25 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
         );
       }).toList();
 
-      List<DeckData> updatedUserDecks = state.userDecks.map((deck) {
-        if (deck.id == id) {
-          return deck.copyWith(likedUsers: likedUsers);
-        }
-        return deck;
-      }).toList();
+      DecksWithPagination? updatedUserDecks = state.userDecks != null ? DecksWithPagination(
+        decks: state.userDecks!.decks.map((deck) {
+          if (deck.id == id) {
+            return deck.copyWith(likedUsers: likedUsers);
+          }
+          return deck;
+        }).toList(),
+        pagination: state.userDecks!.pagination,
+      ) : null;
 
-      List<DeckData> updatedLikedDecks = state.likedDecks.map((deck) {
-        if (deck.id == id) {
-          return deck.copyWith(likedUsers: likedUsers);
-        }
-        return deck;
-      }).toList();
+      DecksWithPagination? updatedLikedDecks = state.likedDecks != null ? DecksWithPagination(
+        decks: state.likedDecks!.decks.map((deck) {
+          if (deck.id == id) {
+            return deck.copyWith(likedUsers: likedUsers);
+          }
+          return deck;
+        }).toList(),
+        pagination: state.likedDecks!.pagination,
+      ) : null;
 
       // Update the state with the new homeDecks and detailDecks
       state = DeckNotifierData(
@@ -235,19 +248,25 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
         );
       }).toList();
 
-      List<DeckData> updatedUserDecks = state.userDecks.map((deck) {
-        if (deck.id == id) {
-          return deck.copyWith(likedUsers: likedUsers);
-        }
-        return deck;
-      }).toList();
+      DecksWithPagination? updatedUserDecks = state.userDecks != null ? DecksWithPagination(
+        decks: state.userDecks!.decks.map((deck) {
+          if (deck.id == id) {
+            return deck.copyWith(likedUsers: likedUsers);
+          }
+          return deck;
+        }).toList(),
+        pagination: state.userDecks!.pagination,
+      ) : null;
 
-      List<DeckData> updatedLikedDecks = state.likedDecks.map((deck) {
-        if (deck.id == id) {
-          return deck.copyWith(likedUsers: likedUsers);
-        }
-        return deck;
-      }).toList();
+      DecksWithPagination? updatedLikedDecks = state.likedDecks != null ? DecksWithPagination(
+        decks: state.likedDecks!.decks.map((deck) {
+          if (deck.id == id) {
+            return deck.copyWith(likedUsers: likedUsers);
+          }
+          return deck;
+        }).toList(),
+        pagination: state.likedDecks!.pagination,
+      ) : null;
 
       // Update the state with the new homeDecks and detailDecks
       state = DeckNotifierData(
@@ -312,19 +331,25 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
       );
     }).toList();
 
-    List<DeckData> updatedUserDecks = state.userDecks.map((deck) {
-      if (deck.id == deckId) {
-        return deckData;
-      }
-      return deck;
-    }).toList();
+    DecksWithPagination? updatedUserDecks = state.userDecks != null ? DecksWithPagination(
+      decks: state.userDecks!.decks.map((deck) {
+        if (deck.id == deckId) {
+          return deckData;
+        }
+        return deck;
+      }).toList(),
+      pagination: state.userDecks!.pagination,
+    ) : null;
 
-    List<DeckData> updatedLikedDecks = state.likedDecks.map((deck) {
-      if (deck.id == deckId) {
-        return deckData;
-      }
-      return deck;
-    }).toList();
+    DecksWithPagination? updatedLikedDecks = state.userDecks != null ? DecksWithPagination(
+      decks: state.likedDecks!.decks.map((deck) {
+        if (deck.id == deckId) {
+          return deckData;
+        }
+        return deck;
+      }).toList(),
+      pagination: state.likedDecks!.pagination,
+    ) : null;
 
 
     // Update the state with the new homeDecks and detailDecks
@@ -377,6 +402,41 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
         detailDecks: updatedDetailDecks,
         userDecks: state.userDecks,
         likedDecks: state.likedDecks,
+      );
+
+    } catch (e) {
+      if (e is ApiException) {
+        throw ApiException(e.statusCode, e.message);
+      } else {
+        throw ApiException(500, 'Unexpected Error: $e');
+      }
+    }
+  }
+
+  Future<void> fetchLikedDecks(int limit, int page) async {
+    try {
+      // Fetch data from the API with pagination
+      var response = await apiHelper.get('/decks/liked-decks?limit=$limit&page=$page');
+
+      final DecksWithPagination data = DecksWithPagination.fromJson(response);
+
+      DecksWithPagination updatedLikedDecks;
+
+      if (state.likedDecks != null) {
+        updatedLikedDecks = DecksWithPagination(
+          decks: [...state.likedDecks!.decks, ...data.decks],
+          pagination: data.pagination,
+        );
+      } else {
+        updatedLikedDecks = data;
+      }
+
+      // Update the state with the new homeDecks and detailDecks
+      state = DeckNotifierData(
+        homeDecks: state.homeDecks,
+        detailDecks: state.detailDecks,
+        userDecks: state.userDecks,
+        likedDecks: updatedLikedDecks,
       );
 
     } catch (e) {
