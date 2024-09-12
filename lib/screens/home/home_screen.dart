@@ -61,7 +61,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
       MaterialPageRoute(
         builder: (context) => DeckDetailScreen(id: id, type: 'home',),
       ),
-    );
+    ).then((result) {
+      _scrollController.jumpTo(scrollPosition);
+    });
   }
 
   @override
@@ -277,7 +279,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
                                 ),
                               ).then((result) {
                                 _scrollController.jumpTo(scrollPosition);
-                              }) ;
+                              });
                             },
                           ),
                         ],
@@ -297,6 +299,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
                                       MaterialPageRoute(builder: (context) => ProfileScreen(id: id)),
                                     ).then((_) {
                                       ref.read(profileProvider.notifier).clearProfile();
+                                      _scrollController.jumpTo(scrollPosition);
                                     });
                                   },
                                 )

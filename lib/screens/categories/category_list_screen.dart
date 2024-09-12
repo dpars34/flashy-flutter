@@ -74,7 +74,6 @@ class _CategoryListScreenState extends ConsumerState<CategoryListScreen> {
                       color: black,
                   ),
                 ),
-
                 onTap: () {
                   _navigateToCategoryDeckScreen(context, category);
                 },

@@ -38,11 +38,15 @@ class _CategoryDeckScreenState extends ConsumerState<CategoryDeckScreen> {
   bool _isLoading = false;
   bool _isInfinite = true;
   int _currentPage = 1;
+  double scrollPosition = 0;
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
+    _scrollController.addListener(() {
+      scrollPosition = _scrollController.position.pixels;
+    });
 
     // Fetch the initial deck data
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -89,7 +93,9 @@ class _CategoryDeckScreenState extends ConsumerState<CategoryDeckScreen> {
       MaterialPageRoute(
         builder: (context) => DeckDetailScreen(id: id, type: 'detail'),
       ),
-    );
+    ).then((result) {
+      _scrollController.jumpTo(scrollPosition);
+    });
   }
 
   @override
@@ -154,7 +160,6 @@ class _CategoryDeckScreenState extends ConsumerState<CategoryDeckScreen> {
               },
             ),
           ),
-          const SizedBox(height: 32.0),
         ],
       )
           : const Center(child: CircularProgressIndicator()), // Show loading spinner while decks are loading

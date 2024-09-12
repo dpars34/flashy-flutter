@@ -271,7 +271,7 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => SwipeScreen(
-                            deck: deck,
+                            deck: deck..cards!.shuffle(),
                           )),
                         ),
                       },
