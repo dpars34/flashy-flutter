@@ -413,6 +413,41 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
     }
   }
 
+  Future<void> fetchUserDecks(int limit, int page) async {
+    try {
+      // Fetch data from the API with pagination
+      var response = await apiHelper.get('/decks/created-decks?limit=$limit&page=$page');
+
+      final DecksWithPagination data = DecksWithPagination.fromJson(response);
+
+      DecksWithPagination updatedUserDecks;
+
+      if (state.userDecks != null) {
+        updatedUserDecks = DecksWithPagination(
+          decks: [...state.likedDecks!.decks, ...data.decks],
+          pagination: data.pagination,
+        );
+      } else {
+        updatedUserDecks = data;
+      }
+
+      // Update the state with the new homeDecks and detailDecks
+      state = DeckNotifierData(
+        homeDecks: state.homeDecks,
+        detailDecks: state.detailDecks,
+        userDecks: updatedUserDecks,
+        likedDecks: state.likedDecks,
+      );
+
+    } catch (e) {
+      if (e is ApiException) {
+        throw ApiException(e.statusCode, e.message);
+      } else {
+        throw ApiException(500, 'Unexpected Error: $e');
+      }
+    }
+  }
+
   Future<void> fetchLikedDecks(int limit, int page) async {
     try {
       // Fetch data from the API with pagination

@@ -128,7 +128,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
             const SizedBox(height: 10),
             if (user != null) ListTile(
               leading: const Icon(
-                Icons.add_circle_outline_outlined,
+                Icons.my_library_add_outlined,
                 color: primary,
               ),
               title: const Text(
@@ -175,6 +175,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
               ),
               title: const Text(
                 'Liked decks',
+                style: TextStyle(
+                    color: primary,
+                    fontWeight: FontWeight.bold
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const LikedDeckScreen()
+                  ),
+                );
+              },
+            ),
+            if (user != null) ListTile(
+              leading: const Icon(
+                Icons.person_outline,
+                color: primary,
+              ),
+              title: const Text(
+                'My decks',
                 style: TextStyle(
                     color: primary,
                     fontWeight: FontWeight.bold

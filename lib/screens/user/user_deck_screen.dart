@@ -14,16 +14,16 @@ import '../../notifiers/profile_notifier.dart';
 import '../../widgets/deck_card.dart';
 import '../../widgets/error_modal.dart';
 
-class LikedDeckScreen extends ConsumerStatefulWidget {
-  const LikedDeckScreen({
+class UserDeckScreen extends ConsumerStatefulWidget {
+  const UserDeckScreen({
     Key? key,
   }) : super(key: key);
 
   @override
-  ConsumerState<LikedDeckScreen> createState() => _LikedDeckScreenState();
+  ConsumerState<UserDeckScreen> createState() => _UserDeckScreenState();
 }
 
-class _LikedDeckScreenState extends ConsumerState<LikedDeckScreen> {
+class _UserDeckScreenState extends ConsumerState<UserDeckScreen> {
   late ScrollController _scrollController;
   bool _isLoading = false;
   bool _isInfinite = true;
@@ -41,8 +41,8 @@ class _LikedDeckScreenState extends ConsumerState<LikedDeckScreen> {
     // Fetch the initial deck data
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final deckDataList = ref.watch(deckProvider);
-      if (deckDataList.likedDecks == null) {
-        ref.read(deckProvider.notifier).fetchLikedDecks(10, _currentPage);
+      if (deckDataList.userDecks == null) {
+        ref.read(deckProvider.notifier).fetchUserDecks(10, _currentPage);
       }
     });
 
@@ -62,14 +62,14 @@ class _LikedDeckScreenState extends ConsumerState<LikedDeckScreen> {
     final deckDataList = ref.watch(deckProvider);
 
     // Fetch more decks based on the current page
-    await ref.read(deckProvider.notifier).fetchLikedDecks(10, _currentPage + 1);
+    await ref.read(deckProvider.notifier).fetchUserDecks(10, _currentPage + 1);
 
     setState(() {
       _currentPage += 1;
       _isLoading = false;
 
       // Stop infinite scrolling if there are no more pages
-      if (deckDataList.likedDecks!.pagination.currentPage >= deckDataList.likedDecks!.pagination.lastPage) {
+      if (deckDataList.userDecks!.pagination.currentPage >= deckDataList.userDecks!.pagination.lastPage) {
         _isInfinite = false;
       }
     });
@@ -79,7 +79,7 @@ class _LikedDeckScreenState extends ConsumerState<LikedDeckScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => DeckDetailScreen(id: id, type: 'liked'),
+        builder: (context) => DeckDetailScreen(id: id, type: 'user'),
       ),
     ).then((result) {
       _scrollController.jumpTo(scrollPosition);
@@ -92,11 +92,11 @@ class _LikedDeckScreenState extends ConsumerState<LikedDeckScreen> {
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
     final List<DeckData> decks;
 
-    if (deckDataList.likedDecks == null) {
+    if (deckDataList.userDecks == null) {
       decks = [];
     } else {
-      decks = deckDataList.likedDecks!.decks;
-      if (deckDataList.likedDecks!.pagination.currentPage >= deckDataList.likedDecks!.pagination.lastPage) {
+      decks = deckDataList.userDecks!.decks;
+      if (deckDataList.userDecks!.pagination.currentPage >= deckDataList.userDecks!.pagination.lastPage) {
         _isInfinite = false;
       }
     }
@@ -106,7 +106,7 @@ class _LikedDeckScreenState extends ConsumerState<LikedDeckScreen> {
       key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: secondary,
-        title: const Text('Liked decks'),
+        title: const Text('My decks'),
       ),
       body: decks.isNotEmpty
           ? Column(
