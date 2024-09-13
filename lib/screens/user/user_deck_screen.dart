@@ -10,7 +10,9 @@ import 'package:flashy_flutter/screens/profile/profile_screen.dart';
 
 import '../../models/category_data.dart';
 import '../../notifiers/deck_notifier.dart';
+import '../../notifiers/loading_notifier.dart';
 import '../../notifiers/profile_notifier.dart';
+import '../../widgets/custom_modal.dart';
 import '../../widgets/deck_card.dart';
 import '../../widgets/error_modal.dart';
 
@@ -86,6 +88,35 @@ class _UserDeckScreenState extends ConsumerState<UserDeckScreen> {
     });
   }
 
+  void _handleDeckDelete(int deckId, BuildContext context) {
+    final loadingNotifier = ref.read(loadingProvider.notifier);
+
+    void doNothing () {}
+
+    Future handleDelete() async {
+      try {
+        loadingNotifier.showLoading(context);
+        await ref.read(deckProvider.notifier).deleteDeck(deckId);
+        showModal(context, 'Delete deck', 'Deck has been successfully deleted');
+      } catch (e) {
+        showModal(context, 'An Error Occurred', 'Please try logging in again');
+      } finally {
+        loadingNotifier.hideLoading();
+
+      }
+    }
+
+    showDeleteModal(
+      context,
+      'Delete deck',
+      'Are you sure you want to delete this deck?',
+      'Delete',
+      'Cancel',
+      handleDelete,
+      doNothing
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final deckDataList = ref.watch(deckProvider);
@@ -112,7 +143,7 @@ class _UserDeckScreenState extends ConsumerState<UserDeckScreen> {
           Expanded(
             child: ListView.builder(
               controller: _scrollController,
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.only(top: 24, left: 24, right: 8, bottom: 24),
               itemCount: decks.length + (_isInfinite ? 1 : 0), // Add 1 for the loading indicator
               itemBuilder: (context, index) {
                 if (index == decks.length) {
@@ -126,19 +157,35 @@ class _UserDeckScreenState extends ConsumerState<UserDeckScreen> {
                 final deckData = decks[index];
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
-                  child: InkWell(
-                    onTap: () => _navigateToDeckDetail(context, deckData.id),
-                    child: DeckCard(
-                      deckData: deckData,
-                      onUserTap: (int id) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => ProfileScreen(id: id)),
-                        ).then((_) {
-                          ref.read(profileProvider.notifier).clearProfile();
-                        });
-                      },
-                    ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: InkWell(
+                          onTap: () => _navigateToDeckDetail(context, deckData.id),
+                          child: DeckCard(
+                            deckData: deckData,
+                            onUserTap: (int id) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => ProfileScreen(id: id)),
+                              ).then((_) {
+                                ref.read(profileProvider.notifier).clearProfile();
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () => _handleDeckDelete(deckData.id, context),
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.delete,
+                            color: gray,
+                          ),
+                        ),
+                      )
+                    ],
                   ),
                 );
               },
@@ -155,6 +202,22 @@ class _UserDeckScreenState extends ConsumerState<UserDeckScreen> {
     _scrollController.dispose();
     super.dispose();
   }
+}
+
+void showDeleteModal(BuildContext context, String title, String content, String button1Text, String button2Text, VoidCallback button1Callback, VoidCallback button2Callback) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return CustomModal(
+        title: title,
+        content: content,
+        button1Text: button1Text,
+        button2Text: button2Text,
+        button1Callback: button1Callback,
+        button2Callback: button2Callback,
+      );
+    },
+  );
 }
 
 void showModal(BuildContext context, String title, String content) {

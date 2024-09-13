@@ -482,6 +482,58 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
       }
     }
   }
+
+  Future<void> deleteDeck(int id) async {
+    try {
+      // Call the API to delete the deck
+      await apiHelper.delete('/decks/$id');
+
+      // Update the state by removing the deck from all relevant lists
+      List<CategoryDecksData> updatedHomeDecks = state.homeDecks.map((categoryDecks) {
+        return CategoryDecksData(
+          category: categoryDecks.category,
+          decks: categoryDecks.decks.where((deck) => deck.id != id).toList(),
+        );
+      }).toList();
+
+      List<DecksByCategoryData> updatedDetailDecks = state.detailDecks.map((categoryDecks) {
+        return DecksByCategoryData(
+          category: categoryDecks.category,
+          decks: categoryDecks.decks.where((deck) => deck.id != id).toList(),
+          pagination: categoryDecks.pagination,
+        );
+      }).toList();
+
+      DecksWithPagination? updatedUserDecks = state.userDecks != null
+          ? DecksWithPagination(
+        decks: state.userDecks!.decks.where((deck) => deck.id != id).toList(),
+        pagination: state.userDecks!.pagination,
+      )
+          : null;
+
+      DecksWithPagination? updatedLikedDecks = state.likedDecks != null
+          ? DecksWithPagination(
+        decks: state.likedDecks!.decks.where((deck) => deck.id != id).toList(),
+        pagination: state.likedDecks!.pagination,
+      )
+          : null;
+
+      // Update the state with the modified lists
+      state = DeckNotifierData(
+        homeDecks: updatedHomeDecks,
+        detailDecks: updatedDetailDecks,
+        userDecks: updatedUserDecks,
+        likedDecks: updatedLikedDecks,
+      );
+
+    } catch (e) {
+      if (e is ApiException) {
+        throw ApiException(e.statusCode, e.message);
+      } else {
+        throw ApiException(500, 'Unexpected Error: $e');
+      }
+    }
+  }
 }
 
 final deckProvider = StateNotifierProvider<DeckNotifier, DeckNotifierData>((ref) {
