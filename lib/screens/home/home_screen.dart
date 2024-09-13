@@ -19,6 +19,7 @@ import '../../widgets/deck_card.dart';
 import '../../notifiers/loading_notifier.dart';
 import '../../widgets/error_modal.dart';
 import '../categories/category_deck_screen.dart';
+import '../user/user_deck_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -205,7 +206,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const LikedDeckScreen()
+                      builder: (context) => const UserDeckScreen()
                   ),
                 );
               },
