@@ -94,7 +94,6 @@ class _CategoryDeckScreenState extends ConsumerState<CategoryDeckScreen> {
   @override
   Widget build(BuildContext context) {
     final deckDataList = ref.watch(deckProvider);
-    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
     final List<DeckData> decks;
 
     int categoryIndex = deckDataList.detailDecks.indexWhere((item) => item.category.id == widget.category.id);
@@ -110,7 +109,6 @@ class _CategoryDeckScreenState extends ConsumerState<CategoryDeckScreen> {
 
     return Scaffold(
       backgroundColor: bg,
-      key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: secondary,
         title: Text('${widget.category.emoji} ${widget.category.name}'),

@@ -89,7 +89,6 @@ class _UserDeckScreenState extends ConsumerState<UserDeckScreen> {
   @override
   Widget build(BuildContext context) {
     final deckDataList = ref.watch(deckProvider);
-    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
     final List<DeckData> decks;
 
     if (deckDataList.userDecks == null) {
@@ -103,7 +102,6 @@ class _UserDeckScreenState extends ConsumerState<UserDeckScreen> {
 
     return Scaffold(
       backgroundColor: bg,
-      key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: secondary,
         title: const Text('My decks'),

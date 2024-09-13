@@ -424,7 +424,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
 
       if (state.userDecks != null) {
         updatedUserDecks = DecksWithPagination(
-          decks: [...state.likedDecks!.decks, ...data.decks],
+          decks: [...state.userDecks!.decks, ...data.decks],
           pagination: data.pagination,
         );
       } else {

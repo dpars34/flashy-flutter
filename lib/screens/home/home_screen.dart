@@ -31,6 +31,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAliveClientMixin {
 
   late ScrollController _scrollController;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   bool isLoaded = false;
   double scrollPosition = 0;
@@ -57,6 +58,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
     });
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_scaffoldKey.currentState != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scaffoldKey.currentState?.openDrawer();
+      });
+    }
+  }
+
   void _navigateToDeckDetail(BuildContext context, int id) {
     Navigator.push(
       context,
@@ -70,12 +81,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final deckDataList = ref.watch(deckProvider);
     final authNotifier = ref.watch(authProvider.notifier);
     final loadingNotifier = ref.read(loadingProvider.notifier);
     final user = ref.watch(authProvider);
-
-    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
     return Scaffold(
       backgroundColor: bg,
@@ -211,6 +221,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
                 );
               },
             ),
+            const SizedBox(height: 8),
             if (user != null) ListTile(
               leading: const Icon(
                 Icons.account_circle_outlined,

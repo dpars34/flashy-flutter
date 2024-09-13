@@ -89,7 +89,6 @@ class _LikedDeckScreenState extends ConsumerState<LikedDeckScreen> {
   @override
   Widget build(BuildContext context) {
     final deckDataList = ref.watch(deckProvider);
-    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
     final List<DeckData> decks;
 
     if (deckDataList.likedDecks == null) {
@@ -103,7 +102,6 @@ class _LikedDeckScreenState extends ConsumerState<LikedDeckScreen> {
 
     return Scaffold(
       backgroundColor: bg,
-      key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: secondary,
         title: const Text('Liked decks'),
