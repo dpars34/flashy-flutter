@@ -44,6 +44,7 @@ dependencies:
   shimmer: ^2.0.0
   appinio_swiper: ^2.1.1
   flutter_confetti: ^0.3.0
+  flutter_custom_tabs: ^2.1.0
 
 dev_dependencies:
   flutter_test:

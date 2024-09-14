@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flashy_flutter/screens/deck/deck_detail_screen.dart';
 import 'package:flashy_flutter/screens/account/account_screen.dart';
 import 'package:flashy_flutter/screens/profile/profile_screen.dart';
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 
 import '../../notifiers/auth_notifier.dart';
 import '../../notifiers/deck_notifier.dart';
@@ -246,6 +247,85 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
                       builder: (context) => const UserDeckScreen()
                   ),
                 );
+              },
+            ),
+            const SizedBox(height: 8),
+            ListTile(
+              leading: const Icon(
+                Icons.description_outlined,
+                color: primary,
+              ),
+              title: const Text(
+                'Terms of service',
+                style: TextStyle(
+                    color: primary,
+                    fontWeight: FontWeight.bold
+                ),
+              ),
+              onTap: () async  {
+                try {
+                  await launchUrl(
+                    Uri.parse('https://dpars34.github.io/flashy-terms/'),
+                    customTabsOptions: CustomTabsOptions(
+                      colorSchemes: CustomTabsColorSchemes.defaults(
+                        toolbarColor: secondary,
+                      ),
+                      shareState: CustomTabsShareState.on,
+                      urlBarHidingEnabled: true,
+                      showTitle: true,
+                      closeButton: CustomTabsCloseButton(
+                        icon: CustomTabsCloseButtonIcons.back,
+                      ),
+                    ),
+                    safariVCOptions: const SafariViewControllerOptions(
+                      preferredBarTintColor: secondary,
+                      preferredControlTintColor: black,
+                      barCollapsingEnabled: true,
+                      dismissButtonStyle: SafariViewControllerDismissButtonStyle.close,
+                    )
+                  );
+                } catch (e) {
+                  showModal(context, 'An Error Occurred', 'Please try again');
+                }
+              },
+            ),
+            ListTile(
+              leading: const Icon(
+                Icons.policy_outlined,
+                color: primary,
+              ),
+              title: const Text(
+                'Privacy policy',
+                style: TextStyle(
+                    color: primary,
+                    fontWeight: FontWeight.bold
+                ),
+              ),
+              onTap: () async  {
+                try {
+                  await launchUrl(
+                      Uri.parse('https://dpars34.github.io/flashy-privacy-policy/'),
+                      customTabsOptions: CustomTabsOptions(
+                        colorSchemes: CustomTabsColorSchemes.defaults(
+                          toolbarColor: secondary,
+                        ),
+                        shareState: CustomTabsShareState.on,
+                        urlBarHidingEnabled: true,
+                        showTitle: true,
+                        closeButton: CustomTabsCloseButton(
+                          icon: CustomTabsCloseButtonIcons.back,
+                        ),
+                      ),
+                      safariVCOptions: const SafariViewControllerOptions(
+                        preferredBarTintColor: secondary,
+                        preferredControlTintColor: black,
+                        barCollapsingEnabled: true,
+                        dismissButtonStyle: SafariViewControllerDismissButtonStyle.close,
+                      )
+                  );
+                } catch (e) {
+                  showModal(context, 'An Error Occurred', 'Please try again');
+                }
               },
             ),
             const SizedBox(height: 8),

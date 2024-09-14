@@ -124,7 +124,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       backgroundColor: bg,
       appBar: AppBar(
         backgroundColor: secondary,
-        title: const Text('Search'),
+        title: const Text(''),
       ),
       body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
