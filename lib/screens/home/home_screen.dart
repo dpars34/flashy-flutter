@@ -4,6 +4,7 @@ import 'package:flashy_flutter/screens/categories/category_list_screen.dart';
 import 'package:flashy_flutter/screens/create/create_deck_screen.dart';
 import 'package:flashy_flutter/screens/likes/liked_deck_screen.dart';
 import 'package:flashy_flutter/screens/login/login_screen.dart';
+import 'package:flashy_flutter/screens/search/search_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flashy_flutter/utils/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -117,7 +118,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
               color: primary,
             ),
             onPressed: () {
-              // Handle settings button press
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SearchScreen()
+                ),
+              ).then((result) {
+                _scrollController.jumpTo(scrollPosition);
+                ref.read(deckProvider.notifier).clearSearchResults();
+              });
             },
           ),
         ],

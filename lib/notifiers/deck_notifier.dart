@@ -18,6 +18,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
     detailDecks: [],
     userDecks: null,
     likedDecks: null,
+    searchDecks: null,
   ));
 
   final Ref ref; // Reference to access other providers
@@ -31,6 +32,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
       detailDecks: state.detailDecks,
       userDecks: state.userDecks,
       likedDecks: state.likedDecks,
+      searchDecks: state.searchDecks,
     );
   }
 
@@ -106,12 +108,23 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
       pagination: state.likedDecks!.pagination,
     ) : null;
 
+    DecksWithPagination? updatedSearchDecks = state.searchDecks != null ? DecksWithPagination(
+      decks: state.searchDecks!.decks.map((deck) {
+        if (deck.id == id) {
+          return deckData;
+        }
+        return deck;
+      }).toList(),
+      pagination: state.searchDecks!.pagination,
+    ) : null;
+
     // Update the state with the new homeDecks and detailDecks
     state = DeckNotifierData(
       homeDecks: updatedHomeDecks,
       detailDecks: updatedDetailDecks,
       userDecks: updatedUserDecks,
       likedDecks: updatedLikedDecks,
+      searchDecks: updatedSearchDecks,
     );
   }
 
@@ -199,12 +212,23 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
         pagination: state.likedDecks!.pagination,
       ) : null;
 
+      DecksWithPagination? updatedSearchDecks = state.searchDecks != null ? DecksWithPagination(
+        decks: state.searchDecks!.decks.map((deck) {
+          if (deck.id == id) {
+            return deck.copyWith(likedUsers: likedUsers);
+          }
+          return deck;
+        }).toList(),
+        pagination: state.searchDecks!.pagination,
+      ) : null;
+
       // Update the state with the new homeDecks and detailDecks
       state = DeckNotifierData(
         homeDecks: updatedHomeDecks,
         detailDecks: updatedDetailDecks,
         userDecks: updatedUserDecks,
         likedDecks: updatedLikedDecks,
+        searchDecks: updatedSearchDecks,
       );
 
     } catch (e) {
@@ -268,12 +292,23 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
         pagination: state.likedDecks!.pagination,
       ) : null;
 
+      DecksWithPagination? updatedSearchDecks = state.searchDecks != null ? DecksWithPagination(
+        decks: state.searchDecks!.decks.map((deck) {
+          if (deck.id == id) {
+            return deck.copyWith(likedUsers: likedUsers);
+          }
+          return deck;
+        }).toList(),
+        pagination: state.searchDecks!.pagination,
+      ) : null;
+
       // Update the state with the new homeDecks and detailDecks
       state = DeckNotifierData(
         homeDecks: updatedHomeDecks,
         detailDecks: updatedDetailDecks,
         userDecks: updatedUserDecks,
         likedDecks: updatedLikedDecks,
+        searchDecks: updatedSearchDecks,
       );
 
     } catch (e) {
@@ -341,7 +376,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
       pagination: state.userDecks!.pagination,
     ) : null;
 
-    DecksWithPagination? updatedLikedDecks = state.userDecks != null ? DecksWithPagination(
+    DecksWithPagination? updatedLikedDecks = state.likedDecks != null ? DecksWithPagination(
       decks: state.likedDecks!.decks.map((deck) {
         if (deck.id == deckId) {
           return deckData;
@@ -351,6 +386,15 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
       pagination: state.likedDecks!.pagination,
     ) : null;
 
+    DecksWithPagination? updatedSearchDecks = state.searchDecks != null ? DecksWithPagination(
+      decks: state.searchDecks!.decks.map((deck) {
+        if (deck.id == deckId) {
+          return deckData;
+        }
+        return deck;
+      }).toList(),
+      pagination: state.searchDecks!.pagination,
+    ) : null;
 
     // Update the state with the new homeDecks and detailDecks
     state = DeckNotifierData(
@@ -358,6 +402,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
       detailDecks: updatedDetailDecks,
       userDecks: updatedUserDecks,
       likedDecks: updatedLikedDecks,
+      searchDecks: updatedSearchDecks,
     );
   }
 
@@ -402,6 +447,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
         detailDecks: updatedDetailDecks,
         userDecks: state.userDecks,
         likedDecks: state.likedDecks,
+        searchDecks: state.searchDecks,
       );
 
     } catch (e) {
@@ -437,6 +483,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
         detailDecks: state.detailDecks,
         userDecks: updatedUserDecks,
         likedDecks: state.likedDecks,
+        searchDecks: state.searchDecks,
       );
 
     } catch (e) {
@@ -472,6 +519,43 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
         detailDecks: state.detailDecks,
         userDecks: state.userDecks,
         likedDecks: updatedLikedDecks,
+        searchDecks: state.searchDecks,
+      );
+
+    } catch (e) {
+      if (e is ApiException) {
+        throw ApiException(e.statusCode, e.message);
+      } else {
+        throw ApiException(500, 'Unexpected Error: $e');
+      }
+    }
+  }
+
+  Future<void> fetchSearchDecks(String query, int limit, int page, bool reload) async {
+    try {
+      // Fetch data from the API with pagination
+      var response = await apiHelper.get('/search-decks?query=$query&limit=$limit&page=$page');
+
+      final DecksWithPagination data = DecksWithPagination.fromJson(response);
+
+      DecksWithPagination updatedSearchDecks;
+
+      if (state.searchDecks != null && !reload) {
+        updatedSearchDecks = DecksWithPagination(
+          decks: [...state.searchDecks!.decks, ...data.decks],
+          pagination: data.pagination,
+        );
+      } else {
+        updatedSearchDecks = data;
+      }
+
+      // Update the state with the new homeDecks and detailDecks
+      state = DeckNotifierData(
+        homeDecks: state.homeDecks,
+        detailDecks: state.detailDecks,
+        userDecks: state.userDecks,
+        likedDecks: state.likedDecks,
+        searchDecks: updatedSearchDecks,
       );
 
     } catch (e) {
@@ -508,15 +592,19 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
           ? DecksWithPagination(
         decks: state.userDecks!.decks.where((deck) => deck.id != id).toList(),
         pagination: state.userDecks!.pagination,
-      )
-          : null;
+      ) : null;
 
       DecksWithPagination? updatedLikedDecks = state.likedDecks != null
           ? DecksWithPagination(
         decks: state.likedDecks!.decks.where((deck) => deck.id != id).toList(),
         pagination: state.likedDecks!.pagination,
-      )
-          : null;
+      ) : null;
+
+      DecksWithPagination? updatedSearchDecks = state.searchDecks != null
+          ? DecksWithPagination(
+        decks: state.searchDecks!.decks.where((deck) => deck.id != id).toList(),
+        pagination: state.searchDecks!.pagination,
+      ) : null;
 
       // Update the state with the modified lists
       state = DeckNotifierData(
@@ -524,6 +612,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
         detailDecks: updatedDetailDecks,
         userDecks: updatedUserDecks,
         likedDecks: updatedLikedDecks,
+        searchDecks: updatedSearchDecks,
       );
 
     } catch (e) {
@@ -533,6 +622,16 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
         throw ApiException(500, 'Unexpected Error: $e');
       }
     }
+  }
+
+  void clearSearchResults() {
+    state = DeckNotifierData(
+      homeDecks: state.homeDecks,
+      detailDecks: state.detailDecks,
+      userDecks: state.userDecks,
+      likedDecks: state.likedDecks,
+      searchDecks: null,
+    );
   }
 }
 

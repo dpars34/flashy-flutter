@@ -9,11 +9,13 @@ class DeckNotifierData {
   final List<DecksByCategoryData> detailDecks;
   final DecksWithPagination? userDecks;
   final DecksWithPagination? likedDecks;
+  final DecksWithPagination? searchDecks;
 
   DeckNotifierData({
     required this.homeDecks,
     required this.detailDecks,
     required this.userDecks,
     required this.likedDecks,
+    required this.searchDecks,
   });
 }

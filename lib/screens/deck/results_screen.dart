@@ -275,6 +275,14 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> with TickerProvid
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    _highscoreController.dispose();
+    _fadeController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final deckDataList = ref.watch(deckProvider);
     final deckNotifier = ref.read(deckProvider.notifier);

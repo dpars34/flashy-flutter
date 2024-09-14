@@ -63,6 +63,13 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
         if (deck?.cards == null) {
           ref.read(deckProvider.notifier).fetchDeckDetails(widget.id);
         }
+      } else if (widget.type == 'search') {
+        final deck = ref.read(deckProvider).searchDecks!.decks
+            .firstWhere((deck) => deck.id == widget.id);
+
+        if (deck?.cards == null) {
+          ref.read(deckProvider.notifier).fetchDeckDetails(widget.id);
+        }
       }
     });
   }
@@ -133,6 +140,9 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
           .firstWhere((deck) => deck.id == widget.id);
     } else if (widget.type == 'liked') {
       deck = ref.read(deckProvider).likedDecks!.decks
+          .firstWhere((deck) => deck.id == widget.id);
+    } else if (widget.type == 'search') {
+      deck = ref.read(deckProvider).searchDecks!.decks
           .firstWhere((deck) => deck.id == widget.id);
     }
 
