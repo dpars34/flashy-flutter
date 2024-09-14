@@ -20,7 +20,7 @@ class CustomInputField extends StatelessWidget {
     this.minLines = 1,
     this.maxLines = 1,
     this.maxLength,
-    this.autocorrect = false,
+    this.autocorrect = true,
   }) : super(key: key);
 
   @override
