@@ -59,6 +59,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
                 child: TextField(
                   controller: _emailController,
+                  autocorrect: false,
                   decoration: const InputDecoration(
                     hintText: 'Email',
                     border: InputBorder.none,

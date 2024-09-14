@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'api_exception.dart';
 
 class ApiHelper {
-  String baseUrl = 'http://localhost/api';
+  String baseUrl = 'http://192.168.3.3/api';
   String? _token;
 
   // constructor

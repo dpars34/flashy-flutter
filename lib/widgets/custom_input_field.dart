@@ -9,6 +9,7 @@ class CustomInputField extends StatelessWidget {
   final int minLines;
   final int maxLines;
   final int? maxLength;
+  final bool autocorrect;
 
   const CustomInputField({
     Key? key,
@@ -19,6 +20,7 @@ class CustomInputField extends StatelessWidget {
     this.minLines = 1,
     this.maxLines = 1,
     this.maxLength,
+    this.autocorrect = false,
   }) : super(key: key);
 
   @override
@@ -40,6 +42,7 @@ class CustomInputField extends StatelessWidget {
           minLines: minLines,
           maxLines: maxLines,
           maxLength: maxLength,
+          autocorrect: autocorrect,
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.white,
