@@ -47,14 +47,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
       scrollPosition = _scrollController.position.pixels;
     });
     // Fetch the deck data when the widget is initialized
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-
-      ref.read(deckProvider.notifier).fetchHomeDeckData();
-      ref.read(categoryProvider.notifier).fetchCategoryData();
-
-      setState(() {
-        isLoaded = true;
-      });
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      try {
+        await ref.read(deckProvider.notifier).fetchHomeDeckData();
+        await ref.read(categoryProvider.notifier).fetchCategoryData();
+      } catch (e) {
+        showModal(context, 'An Error Occurred', 'Please try again');
+      } finally {
+        setState(() {
+          isLoaded = true;
+        });
+      }
     });
   }
 
@@ -77,6 +80,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
     ).then((result) {
       _scrollController.jumpTo(scrollPosition);
     });
+  }
+
+  Future _refreshPage() async {
+    try {
+      setState(() {
+        isLoaded = false;
+      });
+      await ref.read(deckProvider.notifier).fetchHomeDeckData();
+    } catch (e) {
+      showModal(context, 'An Error Occurred', 'Please try again');
+    } finally {
+      setState(() {
+        isLoaded = true;
+      });
+    }
   }
 
   @override
@@ -296,81 +314,85 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
           ],
         ),
       ),
-      body: isLoaded ?
-      SingleChildScrollView(
-        controller: _scrollController,
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-              children: [
-                ...deckDataList.homeDecks.where((category) => category.decks.isNotEmpty).map((category) {
-                  return Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '${category.category.emoji} ${category.category.name}',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: black,
-                              fontSize: 16,
-                            ),
-                          ),
-                          GestureDetector(
-                            child: const Text(
-                              'more',
-                              style: TextStyle(
+      body: RefreshIndicator(
+        onRefresh: _refreshPage,
+        child: isLoaded ?
+        SingleChildScrollView(
+          controller: _scrollController,
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+                children: [
+                  ...deckDataList.homeDecks.where((category) => category.decks.isNotEmpty).map((category) {
+                    return Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '${category.category.emoji} ${category.category.name}',
+                              style: const TextStyle(
                                 fontWeight: FontWeight.w600,
-                                color: primary,
+                                color: black,
                                 fontSize: 16,
                               ),
                             ),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CategoryDeckScreen(category: category.category),
+                            GestureDetector(
+                              child: const Text(
+                                'more',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: primary,
+                                  fontSize: 16,
                                 ),
-                              ).then((result) {
-                                _scrollController.jumpTo(scrollPosition);
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 18.0),
-                      Column(
-                        children: [
-                          ...category.decks.map((deckData) => Padding(
-                            padding: const EdgeInsets.only(bottom: 8.0),
-                            child: InkWell(
-                                onTap: () => _navigateToDeckDetail(context, deckData.id),
-                                child: DeckCard(
-                                  deckData: deckData,
-                                  onUserTap: (int id) {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => ProfileScreen(id: id)),
-                                    ).then((_) {
-                                      ref.read(profileProvider.notifier).clearProfile();
-                                      _scrollController.jumpTo(scrollPosition);
-                                    });
-                                  },
-                                )
+                              ),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => CategoryDeckScreen(category: category.category),
+                                  ),
+                                ).then((result) {
+                                  _scrollController.jumpTo(scrollPosition);
+                                });
+                              },
                             ),
-                          )),
-                        ],
-                      ),
-                      // Text(data.toString())
-                      const SizedBox(height: 32.0),
-                    ],
-                  );
-                })
-              ]),
+                          ],
+                        ),
+                        const SizedBox(height: 18.0),
+                        Column(
+                          children: [
+                            ...category.decks.map((deckData) => Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: InkWell(
+                                  onTap: () => _navigateToDeckDetail(context, deckData.id),
+                                  child: DeckCard(
+                                    deckData: deckData,
+                                    onUserTap: (int id) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => ProfileScreen(id: id)),
+                                      ).then((_) {
+                                        ref.read(profileProvider.notifier).clearProfile();
+                                        _scrollController.jumpTo(scrollPosition);
+                                      });
+                                    },
+                                  )
+                              ),
+                            )),
+                          ],
+                        ),
+                        // Text(data.toString())
+                        const SizedBox(height: 32.0),
+                      ],
+                    );
+                  })
+                ]),
+          ),
+        ) : const Center(
+          child: CircularProgressIndicator(),
         ),
-      ) :
-      Text('LOADING'),
+      ),
     );
   }
 }

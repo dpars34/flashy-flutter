@@ -29,6 +29,7 @@ class CategoryDeckScreen extends ConsumerStatefulWidget {
 class _CategoryDeckScreenState extends ConsumerState<CategoryDeckScreen> {
   late ScrollController _scrollController;
   bool _isLoading = false;
+  bool _isPageLoading = false;
   bool _isInfinite = true;
   int _currentPage = 1;
   double scrollPosition = 0;
@@ -42,11 +43,29 @@ class _CategoryDeckScreenState extends ConsumerState<CategoryDeckScreen> {
     });
 
     // Fetch the initial deck data
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       final deckDataList = ref.watch(deckProvider);
       int categoryIndex = deckDataList.detailDecks.indexWhere((item) => item.category.id == widget.category.id);
       if (categoryIndex == -1) {
-        ref.read(deckProvider.notifier).fetchDecksByCategory(widget.category.id, 10, _currentPage);
+        try {
+          setState(() {
+            _isPageLoading = true;
+          });
+          await ref.read(deckProvider.notifier).fetchDecksByCategory(widget.category.id, 10, _currentPage, false);
+        } catch (e) {
+          if (!mounted) return;
+          showModal(context, 'An Error Occurred', 'Please try again');
+        } finally {
+          setState(() {
+            _isPageLoading = false;
+          });
+        }
+      } else {
+        DecksByCategoryData deck = deckDataList.detailDecks.firstWhere((item) => item.category.id == widget.category.id);
+        setState(() {
+          _currentPage = deck.pagination.currentPage;
+          _isPageLoading = false;
+        });
       }
     });
 
@@ -67,7 +86,7 @@ class _CategoryDeckScreenState extends ConsumerState<CategoryDeckScreen> {
     final DecksByCategoryData category = deckDataList.detailDecks.firstWhere((item) => item.category.id == widget.category.id);
 
     // Fetch more decks based on the current page
-    await ref.read(deckProvider.notifier).fetchDecksByCategory(widget.category.id, 10, _currentPage + 1);
+    await ref.read(deckProvider.notifier).fetchDecksByCategory(widget.category.id, 10, _currentPage + 1, false);
 
     setState(() {
       _currentPage += 1;
@@ -89,6 +108,23 @@ class _CategoryDeckScreenState extends ConsumerState<CategoryDeckScreen> {
     ).then((result) {
       _scrollController.jumpTo(scrollPosition);
     });
+  }
+
+  Future _refreshPage() async {
+    try {
+      setState(() {
+        _isPageLoading = true;
+        _currentPage = 1;
+      });
+      await ref.read(deckProvider.notifier).fetchDecksByCategory(widget.category.id, 10, _currentPage, true);
+    } catch (e) {
+      if (!mounted) return;
+      showModal(context, 'An Error Occurred', 'Please try again');
+    } finally {
+      setState(() {
+        _isPageLoading = false;
+      });
+    }
   }
 
   @override
@@ -113,46 +149,49 @@ class _CategoryDeckScreenState extends ConsumerState<CategoryDeckScreen> {
         backgroundColor: secondary,
         title: Text('${widget.category.emoji} ${widget.category.name}'),
       ),
-      body: decks.isNotEmpty
-          ? Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              controller: _scrollController,
-              padding: const EdgeInsets.all(24),
-              itemCount: decks.length + (_isInfinite ? 1 : 0), // Add 1 for the loading indicator
-              itemBuilder: (context, index) {
-                if (index == decks.length) {
-                  return const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Center(
-                      child: CircularProgressIndicator(), // Loading spinner at the bottom
+      body: !_isPageLoading
+          ? RefreshIndicator(
+            onRefresh: _refreshPage,
+            child: Column(
+                    children: [
+            Expanded(
+              child: ListView.builder(
+                controller: _scrollController,
+                padding: const EdgeInsets.all(24),
+                itemCount: decks.length + (_isInfinite ? 1 : 0), // Add 1 for the loading indicator
+                itemBuilder: (context, index) {
+                  if (index == decks.length) {
+                    return const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Center(
+                        child: CircularProgressIndicator(), // Loading spinner at the bottom
+                      ),
+                    );
+                  }
+                  final deckData = decks[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: InkWell(
+                      onTap: () => _navigateToDeckDetail(context, deckData.id),
+                      child: DeckCard(
+                        deckData: deckData,
+                        onUserTap: (int id) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ProfileScreen(id: id)),
+                          ).then((_) {
+                            ref.read(profileProvider.notifier).clearProfile();
+                          });
+                        },
+                      ),
                     ),
                   );
-                }
-                final deckData = decks[index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: InkWell(
-                    onTap: () => _navigateToDeckDetail(context, deckData.id),
-                    child: DeckCard(
-                      deckData: deckData,
-                      onUserTap: (int id) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => ProfileScreen(id: id)),
-                        ).then((_) {
-                          ref.read(profileProvider.notifier).clearProfile();
-                        });
-                      },
-                    ),
-                  ),
-                );
-              },
+                },
+              ),
             ),
-          ),
-        ],
-      )
+                    ],
+                  ),
+          )
           : const Center(child: CircularProgressIndicator()), // Show loading spinner while decks are loading
     );
   }

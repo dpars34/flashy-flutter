@@ -361,7 +361,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
     );
   }
 
-  Future<void> fetchDecksByCategory(int categoryId, int limit, int page) async {
+  Future<void> fetchDecksByCategory(int categoryId, int limit, int page, bool reload) async {
     try {
       // Fetch data from the API with pagination
       var response = await apiHelper.get('/decks/category/$categoryId?limit=$limit&page=$page');
@@ -372,7 +372,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
       int categoryIndex = state.detailDecks.indexWhere((item) => item.category.id == categoryId);
       List<DecksByCategoryData> updatedDetailDecks;
 
-      if (categoryIndex != -1) {
+      if (categoryIndex != -1 && !reload) {
         // Category exists, merge the decks with pagination
         updatedDetailDecks = state.detailDecks.map((categoryDecks) {
           if (categoryDecks.category.id == categoryId) {
@@ -385,7 +385,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
           return categoryDecks;
         }).toList();
       } else {
-        // Category does not exist, add a new one
+        // Category does not exist or reload is forced, add a new one
         updatedDetailDecks = [
           ...state.detailDecks,
           DecksByCategoryData(
@@ -413,7 +413,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
     }
   }
 
-  Future<void> fetchUserDecks(int limit, int page) async {
+  Future<void> fetchUserDecks(int limit, int page, bool reload) async {
     try {
       // Fetch data from the API with pagination
       var response = await apiHelper.get('/decks/created-decks?limit=$limit&page=$page');
@@ -422,7 +422,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
 
       DecksWithPagination updatedUserDecks;
 
-      if (state.userDecks != null) {
+      if (state.userDecks != null && !reload) {
         updatedUserDecks = DecksWithPagination(
           decks: [...state.userDecks!.decks, ...data.decks],
           pagination: data.pagination,
@@ -448,7 +448,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
     }
   }
 
-  Future<void> fetchLikedDecks(int limit, int page) async {
+  Future<void> fetchLikedDecks(int limit, int page, bool reload) async {
     try {
       // Fetch data from the API with pagination
       var response = await apiHelper.get('/decks/liked-decks?limit=$limit&page=$page');
@@ -457,7 +457,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
 
       DecksWithPagination updatedLikedDecks;
 
-      if (state.likedDecks != null) {
+      if (state.likedDecks != null && !reload) {
         updatedLikedDecks = DecksWithPagination(
           decks: [...state.likedDecks!.decks, ...data.decks],
           pagination: data.pagination,

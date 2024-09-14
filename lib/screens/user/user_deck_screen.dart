@@ -1,14 +1,12 @@
 import 'dart:async';
 
 import 'package:flashy_flutter/models/deck_data.dart';
-import 'package:flashy_flutter/models/decks_by_category_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flashy_flutter/utils/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flashy_flutter/screens/deck/deck_detail_screen.dart';
 import 'package:flashy_flutter/screens/profile/profile_screen.dart';
 
-import '../../models/category_data.dart';
 import '../../notifiers/deck_notifier.dart';
 import '../../notifiers/loading_notifier.dart';
 import '../../notifiers/profile_notifier.dart';
@@ -28,6 +26,7 @@ class UserDeckScreen extends ConsumerStatefulWidget {
 class _UserDeckScreenState extends ConsumerState<UserDeckScreen> {
   late ScrollController _scrollController;
   bool _isLoading = false;
+  bool _isPageLoading = false;
   bool _isInfinite = true;
   int _currentPage = 1;
   double scrollPosition = 0;
@@ -41,10 +40,24 @@ class _UserDeckScreenState extends ConsumerState<UserDeckScreen> {
     });
 
     // Fetch the initial deck data
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       final deckDataList = ref.watch(deckProvider);
       if (deckDataList.userDecks == null) {
-        ref.read(deckProvider.notifier).fetchUserDecks(10, _currentPage);
+        try {
+          setState(() {
+            _isPageLoading = true;
+          });
+          ref.read(deckProvider.notifier).fetchUserDecks(10, _currentPage, false);
+        } catch (e) {
+          if (!mounted) return;
+          showModal(context, 'An Error Occurred', 'Please try again');
+        } finally {
+          setState(() {
+            _isPageLoading = false;
+          });
+        }
+      } else {
+        _currentPage = deckDataList.userDecks!.pagination.currentPage;
       }
     });
 
@@ -64,7 +77,7 @@ class _UserDeckScreenState extends ConsumerState<UserDeckScreen> {
     final deckDataList = ref.watch(deckProvider);
 
     // Fetch more decks based on the current page
-    await ref.read(deckProvider.notifier).fetchUserDecks(10, _currentPage + 1);
+    await ref.read(deckProvider.notifier).fetchUserDecks(10, _currentPage + 1, false);
 
     setState(() {
       _currentPage += 1;
@@ -102,7 +115,6 @@ class _UserDeckScreenState extends ConsumerState<UserDeckScreen> {
         showModal(context, 'An Error Occurred', 'Please try logging in again');
       } finally {
         loadingNotifier.hideLoading();
-
       }
     }
 
@@ -115,6 +127,24 @@ class _UserDeckScreenState extends ConsumerState<UserDeckScreen> {
       handleDelete,
       doNothing
     );
+  }
+
+  Future _refreshPage() async {
+    try {
+      setState(() {
+        _isPageLoading = true;
+        _currentPage = 1;
+        _isInfinite = true;
+      });
+      ref.read(deckProvider.notifier).fetchUserDecks(10, _currentPage, true);
+    } catch (e) {
+      if (!mounted) return;
+      showModal(context, 'An Error Occurred', 'Please try again');
+    } finally {
+      setState(() {
+        _isPageLoading = false;
+      });
+    }
   }
 
   @override
@@ -138,61 +168,64 @@ class _UserDeckScreenState extends ConsumerState<UserDeckScreen> {
         title: const Text('My decks'),
       ),
       body: decks.isNotEmpty
-          ? Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              controller: _scrollController,
-              padding: const EdgeInsets.only(top: 24, left: 24, right: 8, bottom: 24),
-              itemCount: decks.length + (_isInfinite ? 1 : 0), // Add 1 for the loading indicator
-              itemBuilder: (context, index) {
-                if (index == decks.length) {
-                  return const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Center(
-                      child: CircularProgressIndicator(), // Loading spinner at the bottom
-                    ),
-                  );
-                }
-                final deckData = decks[index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: InkWell(
-                          onTap: () => _navigateToDeckDetail(context, deckData.id),
-                          child: DeckCard(
-                            deckData: deckData,
-                            onUserTap: (int id) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => ProfileScreen(id: id)),
-                              ).then((_) {
-                                ref.read(profileProvider.notifier).clearProfile();
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () => _handleDeckDelete(deckData.id, context),
-                        child: const Padding(
+          ? RefreshIndicator(
+        onRefresh: _refreshPage,
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    padding: const EdgeInsets.only(top: 24, left: 24, right: 8, bottom: 24),
+                    itemCount: decks.length + (_isInfinite ? 1 : 0), // Add 1 for the loading indicator
+                    itemBuilder: (context, index) {
+                      if (index == decks.length) {
+                        return const Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Icon(
-                            Icons.delete,
-                            color: gray,
+                          child: Center(
+                            child: CircularProgressIndicator(), // Loading spinner at the bottom
                           ),
+                        );
+                      }
+                      final deckData = decks[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: InkWell(
+                                onTap: () => _navigateToDeckDetail(context, deckData.id),
+                                child: DeckCard(
+                                  deckData: deckData,
+                                  onUserTap: (int id) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => ProfileScreen(id: id)),
+                                    ).then((_) {
+                                      ref.read(profileProvider.notifier).clearProfile();
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () => _handleDeckDelete(deckData.id, context),
+                              child: const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Icon(
+                                  Icons.delete,
+                                  color: gray,
+                                ),
+                              ),
+                            )
+                          ],
                         ),
-                      )
-                    ],
+                      );
+                    },
                   ),
-                );
-              },
+                ),
+              ],
             ),
-          ),
-        ],
-      )
+          )
           : const Center(child: CircularProgressIndicator()), // Show loading spinner while decks are loading
     );
   }
