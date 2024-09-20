@@ -31,6 +31,7 @@ class FlashySearchBar extends StatelessWidget {
       minLines: minLines,
       maxLines: maxLines,
       maxLength: maxLength,
+      autocorrect: false,
       textInputAction: TextInputAction.search,
       onFieldSubmitted: (String value) {
         onSubmit();

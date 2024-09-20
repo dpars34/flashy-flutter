@@ -170,6 +170,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   CustomInputField(
                     controller: _emailController,
                     labelText: 'Email',
+                    caplitalize: false,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your email';
@@ -215,6 +216,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     controller: _usernameController,
                     labelText: 'Username',
                     maxLength: 30,
+                    caplitalize: false,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your username';

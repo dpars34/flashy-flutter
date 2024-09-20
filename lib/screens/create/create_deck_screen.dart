@@ -209,6 +209,7 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
                           controller: _leftOptionController,
                           labelText: 'Left option',
                           maxLength: 15,
+                          caplitalize: false,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter an option';
@@ -226,6 +227,7 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
                           controller: _rightOptionController,
                           labelText: 'Right option',
                           maxLength: 15,
+                          caplitalize: false,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter an option';

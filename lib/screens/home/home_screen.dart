@@ -412,18 +412,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
             padding: const EdgeInsets.all(24),
             child: Column(
                 children: [
+                  const SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      'Popular decks',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: black,
+                        fontSize: 24,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
                   ...deckDataList.homeDecks.where((category) => category.decks.isNotEmpty).map((category) {
                     return Column(
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
                               '${category.category.emoji} ${category.category.name}',
                               style: const TextStyle(
                                 fontWeight: FontWeight.w600,
                                 color: black,
-                                fontSize: 16,
+                                fontSize: 18,
                               ),
                             ),
                             GestureDetector(
