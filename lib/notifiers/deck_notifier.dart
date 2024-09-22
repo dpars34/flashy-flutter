@@ -38,22 +38,22 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
 
   Future<void> fetchDeckDetails(int id) async {
     // Iterate over homeDecks to find the deck with the given id
-    for (var homeDecksData in state.homeDecks) {
-      final homeIndex = homeDecksData.decks.indexWhere((deck) => deck.id == id);
-
-      if (homeIndex != -1 && homeDecksData.decks[homeIndex].cards != null) {
-        return; // Cards are already loaded, no need to fetch
-      }
-    }
-
-    // Iterate over detailDecks to find the deck with the given id
-    for (var detailDecksData in state.detailDecks) {
-      final detailIndex = detailDecksData.decks.indexWhere((deck) => deck.id == id);
-
-      if (detailIndex != -1 && detailDecksData.decks[detailIndex].cards != null) {
-        return; // Cards are already loaded, no need to fetch
-      }
-    }
+    // for (var homeDecksData in state.homeDecks) {
+    //   final homeIndex = homeDecksData.decks.indexWhere((deck) => deck.id == id);
+    //
+    //   if (homeIndex != -1 && homeDecksData.decks[homeIndex].cards != null) {
+    //     return; // Cards are already loaded, no need to fetch
+    //   }
+    // }
+    //
+    // // Iterate over detailDecks to find the deck with the given id
+    // for (var detailDecksData in state.detailDecks) {
+    //   final detailIndex = detailDecksData.decks.indexWhere((deck) => deck.id == id);
+    //
+    //   if (detailIndex != -1 && detailDecksData.decks[detailIndex].cards != null) {
+    //     return; // Cards are already loaded, no need to fetch
+    //   }
+    // }
 
     // Fetch the deck details from the API
     Map<String, dynamic> jsonData = await apiHelper.get('/decks/$id');
