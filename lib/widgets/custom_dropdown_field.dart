@@ -36,7 +36,7 @@ class CustomDropdownField extends StatelessWidget {
           items: items.map<DropdownMenuItem<CategoryData>>((CategoryData item) {
             return DropdownMenuItem(
               value: item,
-              child: Text(item.name),
+              child: Text('${item.emoji} ${item.name}'),
             );
           }).toList(),
           onChanged: onChanged,

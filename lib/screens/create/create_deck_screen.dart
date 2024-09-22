@@ -148,15 +148,15 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
                         'Create deck',
                         style: TextStyle(
                           fontWeight: FontWeight.w800,
-                          color: primary,
-                          fontSize: 20,
+                          color: black,
+                          fontSize: 24,
                         )
                     ),
                     const Text(
                         'Basic info',
                         style: TextStyle(
                           fontWeight: FontWeight.w800,
-                          color: black,
+                          color: primary,
                           fontSize: 16,
                         )
                     ),

@@ -123,8 +123,8 @@ class _PasswordChangeScreenState extends ConsumerState<PasswordChangeScreen> {
                         'Change password',
                         style: TextStyle(
                           fontWeight: FontWeight.w800,
-                          color: primary,
-                          fontSize: 20,
+                          color: black,
+                          fontSize: 24,
                         )
                     ),
                     // const Text(

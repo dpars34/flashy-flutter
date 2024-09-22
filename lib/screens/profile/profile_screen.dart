@@ -19,10 +19,26 @@ class ProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
-  bool loading = true;
+  bool isLoaded = false;
 
   void _goBack () {
     Navigator.of(context).pop();
+  }
+
+  Future _refreshPage() async {
+    try {
+      setState(() {
+        isLoaded = false;
+      });
+      ref.read(profileProvider.notifier).loadProfile(widget.id);
+    } catch (e) {
+      if (!mounted) return;
+      showModal(context, 'An Error Occurred', 'Please try again');
+    } finally {
+      setState(() {
+        isLoaded = true;
+      });
+    }
   }
 
   @override
@@ -30,7 +46,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     super.initState();
     // Fetch the deck data when the widget is initialized
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(profileProvider.notifier).loadProfile(widget.id);
+      try {
+        ref.read(profileProvider.notifier).loadProfile(widget.id);
+      } catch (e) {
+        if (!mounted) return;
+        showModal(context, 'An Error Occurred', 'Please try again');
+      } finally {
+        setState(() {
+          isLoaded = true;
+        });
+      }
+
     });
   }
 
@@ -51,74 +77,98 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       appBar: AppBar(
         backgroundColor: secondary,
       ),
-      body: profileUser != null ?
-      SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Container(
-            width: double.infinity,
-            child: Column(
-              children: [
-                (profileUser.profileImage != null) ? CircleAvatar(
-                  radius: 50,
-                  backgroundImage: NetworkImage(profileUser.profileImage!),
-                  onBackgroundImageError: (exception, stackTrace) {
-                    print('Error loading image: $exception');
-                  },
-                ) : const Icon(
-                    Icons.account_circle,
+      body: isLoaded ?
+      RefreshIndicator(
+        onRefresh: _refreshPage,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Container(
+              width: double.infinity,
+              child: profileUser == null ? const Column(
+                children: [
+                  Icon(
+                    Icons.person,
+                    color: gray2,
                     size: 100,
-                    color: gray2
-                ),
-                SizedBox(height: 8),
-                Text(
-                  profileUser.name,
-                  style: const TextStyle(
-                    color: black,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 14,
-                  )
-                ),
-                Text(
-                    'User since: ${formatDate(profileUser.createdAt)}',
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    "User couldn't be found!",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: gray,
+                      fontSize: 16,
+                    ),
+                  ),
+                  SizedBox(height: 100),
+                ],
+              ) : Column(
+                children: [
+                  (profileUser!.profileImage != null) ? CircleAvatar(
+                    radius: 50,
+                    backgroundImage: NetworkImage(profileUser.profileImage!),
+                    onBackgroundImageError: (exception, stackTrace) {
+                      print('Error loading image: $exception');
+                    },
+                  ) : const Icon(
+                      Icons.account_circle,
+                      size: 100,
+                      color: gray2
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    profileUser.name,
                     style: const TextStyle(
                       color: black,
+                      fontWeight: FontWeight.w800,
                       fontSize: 14,
                     )
-                ),
-                SizedBox(height: 16),
-                Container(
-                  width: double.infinity,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                          "Bio",
-                          style: const TextStyle(
-                            color: black,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w800,
-                          )
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                          profileUser.bio,
-                          style: const TextStyle(
-                            color: black,
-                            fontSize: 14,
-                          )
-                      ),
-                    ],
                   ),
-                ),
-                const SizedBox(height: 40),
-                BaseButton(onPressed: _goBack, text: 'Go back', outlined: true,),
-             ]
+                  Text(
+                      'User since: ${formatDate(profileUser.createdAt)}',
+                      style: const TextStyle(
+                        color: black,
+                        fontSize: 14,
+                      )
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    width: double.infinity,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                            "Bio",
+                            style: TextStyle(
+                              color: black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w800,
+                            )
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                            profileUser.bio,
+                            style: const TextStyle(
+                              color: black,
+                              fontSize: 14,
+                            )
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  BaseButton(onPressed: _goBack, text: 'Go back', outlined: true,),
+                  const SizedBox(height: 150),
+               ]
+              ),
             ),
           ),
         ),
-      ) :
-      Text('LOADING'),
+      ) : const Center(
+        child: CircularProgressIndicator(),
+      ),
     );
   }
 }

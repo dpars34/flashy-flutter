@@ -178,8 +178,8 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
                         'Add questions',
                         style: TextStyle(
                           fontWeight: FontWeight.w800,
-                          color: primary,
-                          fontSize: 20,
+                          color: black,
+                          fontSize: 24,
                         )
                     ),
                     const SizedBox(height: 12.0),
@@ -245,7 +245,9 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
                                   CustomInputField(
                                     controller: question.noteController,
                                     labelText: 'Note',
-                                    maxLength: 50,
+                                    minLines: 2,
+                                    maxLines: 2,
+                                    maxLength: 200,
                                     validator: (value) {
                                       return null;
                                     },

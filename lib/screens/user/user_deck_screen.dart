@@ -165,7 +165,7 @@ class _UserDeckScreenState extends ConsumerState<UserDeckScreen> {
       backgroundColor: bg,
       appBar: AppBar(
         backgroundColor: secondary,
-        title: const Text('My decks'),
+        title: const Text(''),
       ),
       body: !_isPageLoading
           ? RefreshIndicator(
@@ -199,6 +199,18 @@ class _UserDeckScreenState extends ConsumerState<UserDeckScreen> {
                 )
             ) : Column(
               children: [
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.only(top: 24, left: 24, right: 24),
+                  child: const Text(
+                    'My decks',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: black,
+                      fontSize: 24,
+                    ),
+                  ),
+                ),
                 Expanded(
                   child: ListView.builder(
                     physics: const AlwaysScrollableScrollPhysics(),

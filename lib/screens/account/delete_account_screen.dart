@@ -121,15 +121,15 @@ class _DeleteAccountScreenState extends ConsumerState<DeleteAccountScreen> {
                         'Delete account',
                         style: TextStyle(
                           fontWeight: FontWeight.w800,
-                          color: primary,
-                          fontSize: 20,
+                          color: black,
+                          fontSize: 24,
                         )
                     ),
                     const Text(
                         'Are you sure you want to delete your account?',
                         style: TextStyle(
                           fontWeight: FontWeight.w800,
-                          color: black,
+                          color: primary,
                           fontSize: 16,
                         )
                     ),

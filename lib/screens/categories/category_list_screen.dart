@@ -53,7 +53,7 @@ class _CategoryListScreenState extends ConsumerState<CategoryListScreen> {
       key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: secondary,
-        title: const Text('Categories'),
+        title: const Text(''),
       ),
       body: categoriesList.isNotEmpty
           ? ListView.builder(

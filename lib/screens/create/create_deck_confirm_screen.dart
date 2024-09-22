@@ -10,6 +10,7 @@ import '../../notifiers/loading_notifier.dart';
 import '../../notifiers/auth_notifier.dart';
 import '../../utils/api_exception.dart';
 import '../../widgets/error_modal.dart';
+import '../../widgets/option_pill.dart';
 import '../account/account_edit_complete_screen.dart';
 import 'create_deck_complete_screen.dart';
 
@@ -81,8 +82,8 @@ class CreateDeckConfirmScreen extends ConsumerWidget {
                 'Review questions',
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
-                  color: primary,
-                  fontSize: 20,
+                  color: black,
+                  fontSize: 24,
                 ),
               ),
               const Text(
@@ -137,7 +138,7 @@ class CreateDeckConfirmScreen extends ConsumerWidget {
                 ),
               ),
               Text(
-                category!.name,
+                '${category!.emoji} ${category!.name}',
                 style: const TextStyle(
                   fontWeight: FontWeight.w500,
                   color: gray,
@@ -154,13 +155,22 @@ class CreateDeckConfirmScreen extends ConsumerWidget {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Question ${index + 1}',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w800,
-                            color: gray,
-                            fontSize: 14,
-                          ),
+                        Row(
+                          children: [
+                            Text(
+                              'Question ${index + 1}',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w800,
+                                color: gray,
+                                fontSize: 14,
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            OptionPill(
+                              color: question.answerController.text == 'left' ? 'yellow' : 'purple',
+                              text: question.answerController.text == 'left' ? leftOption : rightOption
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 4),
                         Text(
@@ -181,15 +191,6 @@ class CreateDeckConfirmScreen extends ConsumerWidget {
                               fontSize: 14,
                             ),
                           ),
-                        if (question.noteController.text.isNotEmpty) const SizedBox(height: 4),
-                        Text(
-                          '${question.answerController.text == 'left' ? leftOption : rightOption}',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w400,
-                            color: primary,
-                            fontSize: 14,
-                          ),
-                        ),
                         const SizedBox(height: 24),
                       ],
                     );

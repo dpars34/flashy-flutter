@@ -87,15 +87,15 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                     'My account',
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
-                      color: primary,
-                      fontSize: 20,
+                      color: black,
+                      fontSize: 24,
                     )
                 ),
                 const Text(
                     'Account details',
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
-                      color: black,
+                      color: primary,
                       fontSize: 16,
                     )
                 ),
