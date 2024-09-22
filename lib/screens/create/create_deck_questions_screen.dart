@@ -7,6 +7,7 @@ import 'package:flashy_flutter/widgets/custom_radio_button_field.dart';
 import 'package:flashy_flutter/widgets/error_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flashy_flutter/utils/colors.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -161,163 +162,170 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
             },
           ),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                      'Add questions',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        color: primary,
-                        fontSize: 20,
-                      )
-                  ),
-                  const SizedBox(height: 12.0),
-                  const Text(
-                      'Decks must have a minimum of 5 questions.',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: black,
-                        fontSize: 14,
-                      )
-                  ),
-                  const SizedBox(height: 12.0),
-                  const Text(
-                      'Extra information can be provided as a "note". This is only shown once a quiz has been completed.',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: black,
-                        fontSize: 14,
-                      )
-                  ),
-                  // const Text(
-                  //     'Questions',
-                  //     style: TextStyle(
-                  //       fontWeight: FontWeight.w800,
-                  //       color: black,
-                  //       fontSize: 16,
-                  //     )
-                  // ),
-                  const SizedBox(height: 24.0),
-                  Column(
-                    children: [
-                      ..._controllers.asMap().entries.map((entry) {
-                        int index = entry.key;
-                        var question = entry.value;
-                        return Stack(
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Question ${index + 1}',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w800,
-                                    color: gray,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                CustomInputField(
-                                  controller: question.questionController,
-                                  labelText: 'Question',
-                                  maxLength: 100,
-                                  minLines: 3,
-                                  maxLines: 3,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter a question';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                const SizedBox(height: 8),
-                                CustomInputField(
-                                  controller: question.noteController,
-                                  labelText: 'Note',
-                                  maxLength: 50,
-                                  validator: (value) {
-                                    return null;
-                                  },
-                                ),
-                                const SizedBox(height: 8),
-                                const Text(
-                                  'Answer',
-                                  style: TextStyle(
-                                    color: gray,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                const SizedBox(height: 4.0),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: CustomRadioButtonField(
-                                        labelText: widget.leftOption,
-                                        isError: question.answerController.text.isEmpty && validationChecked,
-                                        value: question.answerController.text == 'left',
-                                        onChanged: (newValue) {
-                                          setState(() {
-                                            question.answerController.text = 'left';
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: CustomRadioButtonField(
-                                        labelText: widget.rightOption,
-                                        isError: question.answerController.text.isEmpty && validationChecked,
-                                        value: question.answerController.text == 'right',
-                                        onChanged: (newValue) {
-                                          setState(() {
-                                            question.answerController.text = 'right';
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                if (question.answerController.text.isEmpty && validationChecked)
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8.0),
-                                    child: Text(
-                                      'Please select an answer for Question ${index + 1}',
-                                      style: const TextStyle(
-                                        color: red,
-                                        fontSize: 12.0,
-                                      ),
+        body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                        'Add questions',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w800,
+                          color: primary,
+                          fontSize: 20,
+                        )
+                    ),
+                    const SizedBox(height: 12.0),
+                    const Text(
+                        'Decks must have a minimum of 5 questions.',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: black,
+                          fontSize: 14,
+                        )
+                    ),
+                    const SizedBox(height: 12.0),
+                    const Text(
+                        'Extra information can be provided as a "note". This is only shown once a quiz has been completed.',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: black,
+                          fontSize: 14,
+                        )
+                    ),
+                    // const Text(
+                    //     'Questions',
+                    //     style: TextStyle(
+                    //       fontWeight: FontWeight.w800,
+                    //       color: black,
+                    //       fontSize: 16,
+                    //     )
+                    // ),
+                    const SizedBox(height: 24.0),
+                    Column(
+                      children: [
+                        ..._controllers.asMap().entries.map((entry) {
+                          int index = entry.key;
+                          var question = entry.value;
+                          return Stack(
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Question ${index + 1}',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w800,
+                                      color: gray,
+                                      fontSize: 14,
                                     ),
                                   ),
-                                const SizedBox(height: 40),
-                              ],
-                            ),
-                            if (index > 4) Positioned(
-                              top: 0,
-                              right: 0,
-                              child: IconButton(
-                                icon: const Icon(Icons.delete, color: gray),
-                                onPressed: () => _removeQuestion(index),
+                                  const SizedBox(height: 8),
+                                  CustomInputField(
+                                    controller: question.questionController,
+                                    labelText: 'Question',
+                                    maxLength: 100,
+                                    minLines: 3,
+                                    maxLines: 3,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please enter a question';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  const SizedBox(height: 8),
+                                  CustomInputField(
+                                    controller: question.noteController,
+                                    labelText: 'Note',
+                                    maxLength: 50,
+                                    validator: (value) {
+                                      return null;
+                                    },
+                                  ),
+                                  const SizedBox(height: 8),
+                                  const Text(
+                                    'Answer',
+                                    style: TextStyle(
+                                      color: gray,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4.0),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: CustomRadioButtonField(
+                                          labelText: widget.leftOption,
+                                          isError: question.answerController.text.isEmpty && validationChecked,
+                                          value: question.answerController.text == 'left',
+                                          onChanged: (newValue) {
+                                            setState(() {
+                                              HapticFeedback.mediumImpact();
+                                              question.answerController.text = 'left';
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: CustomRadioButtonField(
+                                          labelText: widget.rightOption,
+                                          isError: question.answerController.text.isEmpty && validationChecked,
+                                          value: question.answerController.text == 'right',
+                                          onChanged: (newValue) {
+                                            setState(() {
+                                              HapticFeedback.mediumImpact();
+                                              question.answerController.text = 'right';
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  if (question.answerController.text.isEmpty && validationChecked)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: Text(
+                                        'Please select an answer for Question ${index + 1}',
+                                        style: const TextStyle(
+                                          color: red,
+                                          fontSize: 12.0,
+                                        ),
+                                      ),
+                                    ),
+                                  const SizedBox(height: 40),
+                                ],
                               ),
-                            ),
-                          ],
-                        );
-                      }).toList(),
-                    ],
-                  ),
-                  const SizedBox(height: 40.0),
-                  BaseButton(onPressed: _addQuestion, text: 'Add question', outlined: true,),
-                  const SizedBox(height: 12.0),
-                  BaseButton(onPressed: _goBack, text: 'Go back', outlined: true,),
-                  const SizedBox(height: 12.0),
-                  BaseButton(onPressed: _toNextPage, text: 'Next'),
-                  const SizedBox(height: 92.0),
-                ],
+                              if (index > 4) Positioned(
+                                top: 0,
+                                right: 0,
+                                child: IconButton(
+                                  icon: const Icon(Icons.delete, color: gray),
+                                  onPressed: () => _removeQuestion(index),
+                                ),
+                              ),
+                            ],
+                          );
+                        }).toList(),
+                      ],
+                    ),
+                    const SizedBox(height: 40.0),
+                    BaseButton(onPressed: _addQuestion, text: 'Add question', outlined: true,),
+                    const SizedBox(height: 12.0),
+                    BaseButton(onPressed: _goBack, text: 'Go back', outlined: true,),
+                    const SizedBox(height: 12.0),
+                    BaseButton(onPressed: _toNextPage, text: 'Next'),
+                    const SizedBox(height: 92.0),
+                  ],
+                ),
               ),
             ),
           ),

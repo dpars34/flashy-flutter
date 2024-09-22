@@ -124,7 +124,7 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
                   constraints: const BoxConstraints(
                     maxWidth: 100
                   ),
-                  child: OptionPill(color: 'red', text: widget.deck.leftOption, large: true,),
+                  child: OptionPill(color: 'yellow', text: widget.deck.leftOption, large: true,),
                 ),
                 const Spacer(),
                 const Icon(Icons.access_time, size: 18, color: black),
@@ -145,7 +145,7 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
                   constraints: const BoxConstraints(
                       maxWidth: 100
                   ),
-                  child: OptionPill(color: 'green', text: widget.deck.rightOption, large: true,),
+                  child: OptionPill(color: 'purple', text: widget.deck.rightOption, large: true,),
                 ),
               ],
             ),

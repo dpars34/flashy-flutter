@@ -103,9 +103,9 @@ class DeckCard extends StatelessWidget {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  OptionPill(color: 'red', text: deckData.leftOption),
+                  OptionPill(color: 'yellow', text: deckData.leftOption),
                   SizedBox(width: 6),
-                  OptionPill(color: 'green', text: deckData.rightOption)
+                  OptionPill(color: 'purple', text: deckData.rightOption)
                 ],
               )
             ],

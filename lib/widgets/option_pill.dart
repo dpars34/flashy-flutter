@@ -19,13 +19,13 @@ class OptionPill extends StatelessWidget {
       padding: large ? const EdgeInsets.symmetric(horizontal: 14.0, vertical: 3.0) : const EdgeInsets.symmetric(horizontal: 8.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(50),
-        color: color == 'red' ? red : green,
+        color: color == 'purple' ? primary : yellow,
       ),
       child: Text(
         text,
         maxLines: 1,
         style: TextStyle(
-          color: white,
+          color: color == 'purple' ? white : black,
           fontWeight: FontWeight.w600,
           fontSize: large ? 14 : 11,
           overflow: TextOverflow.ellipsis,

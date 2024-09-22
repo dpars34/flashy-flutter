@@ -126,76 +126,81 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         backgroundColor: secondary,
         title: const Text(''),
       ),
-      body: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 8, right: 8, top: 16, bottom: 0),
-                child: FlashySearchBar(
-                    controller: _searchQueryController,
-                    hintText: 'Search for a deck...',
-                    onSubmit: _searchForDecks,
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 8, right: 8, top: 16, bottom: 0),
+                  child: FlashySearchBar(
+                      controller: _searchQueryController,
+                      hintText: 'Search for a deck...',
+                      onSubmit: _searchForDecks,
+                  ),
                 ),
-              ),
-              Expanded(
-                child: !_isPageLoading ? decks.isEmpty
-                    ? Center(
-                      child: Column(
-                        children: [
-                          SizedBox(height: 100),
-                          Icon(
-                            Icons.search,
-                            color: gray2,
-                            size: 100,
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            _isSearched ? 'No decks could be found! :(' : 'Go on, search for a deck!',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: gray,
-                              fontSize: 16,
+                Expanded(
+                  child: !_isPageLoading ? decks.isEmpty
+                      ? Center(
+                        child: Column(
+                          children: [
+                            SizedBox(height: 100),
+                            Icon(
+                              Icons.search,
+                              color: gray2,
+                              size: 100,
                             ),
-                          )
-                        ],
+                            SizedBox(height: 8),
+                            Text(
+                              _isSearched ? 'No decks could be found! :(' : 'Go on, search for a deck!',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: gray,
+                                fontSize: 16,
+                              ),
+                            )
+                          ],
+                        )
                       )
-                    )
-                    : ListView.builder(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.only(top: 16, bottom: 24, left: 24, right: 24),
-                  itemCount: decks.length + (_isInfinite ? 1 : 0), // Add 1 for the loading indicator
-                  itemBuilder: (context, index) {
-                    if (index == decks.length) {
-                      return const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Center(
-                          child: CircularProgressIndicator(), // Loading spinner at the bottom
+                      : ListView.builder(
+                    controller: _scrollController,
+                    padding: const EdgeInsets.only(top: 16, bottom: 24, left: 24, right: 24),
+                    itemCount: decks.length + (_isInfinite ? 1 : 0), // Add 1 for the loading indicator
+                    itemBuilder: (context, index) {
+                      if (index == decks.length) {
+                        return const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Center(
+                            child: CircularProgressIndicator(), // Loading spinner at the bottom
+                          ),
+                        );
+                      }
+                      final deckData = decks[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: InkWell(
+                          onTap: () => _navigateToDeckDetail(context, deckData.id),
+                          child: DeckCard(
+                            deckData: deckData,
+                            onUserTap: (int id) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => ProfileScreen(id: id)),
+                              ).then((_) {
+                                ref.read(profileProvider.notifier).clearProfile();
+                              });
+                            },
+                          ),
                         ),
                       );
-                    }
-                    final deckData = decks[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: InkWell(
-                        onTap: () => _navigateToDeckDetail(context, deckData.id),
-                        child: DeckCard(
-                          deckData: deckData,
-                          onUserTap: (int id) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => ProfileScreen(id: id)),
-                            ).then((_) {
-                              ref.read(profileProvider.notifier).clearProfile();
-                            });
-                          },
-                        ),
-                      ),
-                    );
-                  },
-                ) : const Center(child: CircularProgressIndicator()),
-              ),
-            ],
-          )
+                    },
+                  ) : const Center(child: CircularProgressIndicator()),
+                ),
+              ],
+            ),
+      )
     );
   }
 

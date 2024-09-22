@@ -9,3 +9,4 @@ const Color gray2 = Color(0xFFD9D9D9);
 const Color bg = Color(0xFFEFEFEF);
 const Color green = Color(0xFF34A200);
 const Color red = Color(0xFFA20000);
+const Color yellow = Color(0xFFFFD702);

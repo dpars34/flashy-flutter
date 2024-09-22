@@ -237,9 +237,9 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      OptionPill(color: 'red', text: deck.leftOption),
+                      OptionPill(color: 'yellow', text: deck.leftOption),
                       const SizedBox(width: 6),
-                      OptionPill(color: 'green', text: deck.rightOption)
+                      OptionPill(color: 'purple', text: deck.rightOption)
                     ],
                   )
                 ],

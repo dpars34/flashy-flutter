@@ -148,10 +148,10 @@ class _DeckReviewScreenState extends ConsumerState<DeckReviewScreen> {
                           ),
                           const SizedBox(width: 8),
                           answer.userAnswer == 'left' ? OptionPill(
-                              color: 'red',
+                              color: 'yellow',
                               text: widget.deck.leftOption,
                           ) : OptionPill(
-                            color: 'green',
+                            color: 'purple',
                             text: widget.deck.rightOption,
                           ),
                         ],
@@ -169,10 +169,10 @@ class _DeckReviewScreenState extends ConsumerState<DeckReviewScreen> {
                           ),
                           const SizedBox(width: 8),
                           answer.correctAnswer == 'left' ? OptionPill(
-                            color: 'red',
+                            color: 'yellow',
                             text: widget.deck.leftOption,
                           ) : OptionPill(
-                            color: 'green',
+                            color: 'purple',
                             text: widget.deck.rightOption,
                           ),
                         ],

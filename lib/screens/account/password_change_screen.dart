@@ -107,78 +107,83 @@ class _PasswordChangeScreenState extends ConsumerState<PasswordChangeScreen> {
           backgroundColor: secondary,
           title: const Text(''),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                      'Change password',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        color: primary,
-                        fontSize: 20,
-                      )
-                  ),
-                  // const Text(
-                  //     '',
-                  //     style: TextStyle(
-                  //       fontWeight: FontWeight.w500,
-                  //       color: black,
-                  //       fontSize: 16,
-                  //     )
-                  // ),
-                  const SizedBox(height: 24.0),
-                  CustomInputField(
-                    controller: _oldPasswordController,
-                    labelText: 'Old Password',
-                    isPassword: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 12.0),
-                  CustomInputField(
-                    controller: _passwordController,
-                    labelText: 'New password',
-                    isPassword: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
-                      }
-                      if (value.length < 6) {
-                        return 'Password must be at least 6 characters long';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 12.0),
-                  CustomInputField(
-                    controller: _passwordConfirmationController,
-                    labelText: 'New password confirmation',
-                    isPassword: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please confirm your password';
-                      }
-                      if (value != _passwordController.text) {
-                        return 'Passwords do not match';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 40.0),
-                  BaseButton(onPressed: _goBack, text: 'Go back', outlined: true,),
-                  const SizedBox(height: 12.0),
-                  BaseButton(onPressed: _toNextPage, text: 'Change password'),
-                  const SizedBox(height: 92.0),
-                ],
+        body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                        'Change password',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w800,
+                          color: primary,
+                          fontSize: 20,
+                        )
+                    ),
+                    // const Text(
+                    //     '',
+                    //     style: TextStyle(
+                    //       fontWeight: FontWeight.w500,
+                    //       color: black,
+                    //       fontSize: 16,
+                    //     )
+                    // ),
+                    const SizedBox(height: 24.0),
+                    CustomInputField(
+                      controller: _oldPasswordController,
+                      labelText: 'Old Password',
+                      isPassword: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 12.0),
+                    CustomInputField(
+                      controller: _passwordController,
+                      labelText: 'New password',
+                      isPassword: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        if (value.length < 6) {
+                          return 'Password must be at least 6 characters long';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 12.0),
+                    CustomInputField(
+                      controller: _passwordConfirmationController,
+                      labelText: 'New password confirmation',
+                      isPassword: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please confirm your password';
+                        }
+                        if (value != _passwordController.text) {
+                          return 'Passwords do not match';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 40.0),
+                    BaseButton(onPressed: _goBack, text: 'Go back', outlined: true,),
+                    const SizedBox(height: 12.0),
+                    BaseButton(onPressed: _toNextPage, text: 'Change password'),
+                    const SizedBox(height: 92.0),
+                  ],
+                ),
               ),
             ),
           ),
