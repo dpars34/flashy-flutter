@@ -185,6 +185,8 @@ class _AccountEditScreenState extends ConsumerState<AccountEditScreen> {
                     CustomInputField(
                       controller: _emailController,
                       labelText: 'Email',
+                      autocorrect: false,
+                      caplitalize: false,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your email';
@@ -199,6 +201,8 @@ class _AccountEditScreenState extends ConsumerState<AccountEditScreen> {
                     CustomInputField(
                       controller: _usernameController,
                       labelText: 'Username',
+                      autocorrect: false,
+                      caplitalize: false,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your username';

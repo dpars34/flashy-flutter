@@ -167,13 +167,41 @@ class _UserDeckScreenState extends ConsumerState<UserDeckScreen> {
         backgroundColor: secondary,
         title: const Text('My decks'),
       ),
-      body: decks.isNotEmpty
+      body: !_isPageLoading
           ? RefreshIndicator(
         onRefresh: _refreshPage,
-            child: Column(
+            child: decks.isEmpty ? const Center(
+                child: SingleChildScrollView(
+                  physics: AlwaysScrollableScrollPhysics(),
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.person,
+                        color: gray2,
+                        size: 100,
+                      ),
+                      SizedBox(height: 8),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 24),
+                        child: Text(
+                          textAlign: TextAlign.center,
+                          "You haven't created any decks yet! You can create your own decks by going to 'Create deck' from the menu",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: gray,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 100),
+                    ],
+                  ),
+                )
+            ) : Column(
               children: [
                 Expanded(
                   child: ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
                     controller: _scrollController,
                     padding: const EdgeInsets.only(top: 24, left: 24, right: 8, bottom: 24),
                     itemCount: decks.length + (_isInfinite ? 1 : 0), // Add 1 for the loading indicator

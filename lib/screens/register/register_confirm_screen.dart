@@ -55,6 +55,10 @@ class _RegisterConfirmScreenState extends ConsumerState<RegisterConfirmScreen> {
         widget.bio,
         widget.image
       );
+      await authNotifier.login(
+        widget.email,
+        widget.password,
+      );
       if (mounted) {
         Navigator.pushReplacement(
           context,

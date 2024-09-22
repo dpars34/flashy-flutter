@@ -105,65 +105,70 @@ class _DeleteAccountScreenState extends ConsumerState<DeleteAccountScreen> {
           backgroundColor: secondary,
           title: const Text(''),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                      'Delete account',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        color: primary,
-                        fontSize: 20,
-                      )
-                  ),
-                  const Text(
-                      'Are you sure you want to delete your account?',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        color: black,
-                        fontSize: 16,
-                      )
-                  ),
-                  const SizedBox(height: 12.0),
-                  const Text(
-                      'Deleting your account will delete all data associated with your account such as decks, cards and highscores.',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: black,
-                        fontSize: 14,
-                      )
-                  ),
-                  const SizedBox(height: 12.0),
-                  const Text(
-                      'If you really want to delete your account, enter your password and tap "Delete account"',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: black,
-                        fontSize: 14,
-                      )
-                  ),
-                  CustomInputField(
-                    controller: _passwordController,
-                    labelText: '',
-                    isPassword: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 40.0),
-                  BaseButton(onPressed: _goBack, text: 'Go back', outlined: true,),
-                  const SizedBox(height: 12.0),
-                  BaseButton(onPressed: _deleteAccount, text: 'Delete account'),
-                  const SizedBox(height: 92.0),
-                ],
+        body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                        'Delete account',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w800,
+                          color: primary,
+                          fontSize: 20,
+                        )
+                    ),
+                    const Text(
+                        'Are you sure you want to delete your account?',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w800,
+                          color: black,
+                          fontSize: 16,
+                        )
+                    ),
+                    const SizedBox(height: 12.0),
+                    const Text(
+                        'Deleting your account will delete all data associated with your account such as decks, cards and highscores.',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: black,
+                          fontSize: 14,
+                        )
+                    ),
+                    const SizedBox(height: 12.0),
+                    const Text(
+                        'If you really want to delete your account, enter your password and tap "Delete account"',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: black,
+                          fontSize: 14,
+                        )
+                    ),
+                    CustomInputField(
+                      controller: _passwordController,
+                      labelText: '',
+                      isPassword: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 40.0),
+                    BaseButton(onPressed: _goBack, text: 'Go back', outlined: true,),
+                    const SizedBox(height: 12.0),
+                    BaseButton(onPressed: _deleteAccount, text: 'Delete account'),
+                    const SizedBox(height: 92.0),
+                  ],
+                ),
               ),
             ),
           ),

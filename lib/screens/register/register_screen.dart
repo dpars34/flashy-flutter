@@ -142,144 +142,151 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           backgroundColor: secondary,
           title: const Text(''),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                      'Register account',
+        body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                        'Register account',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w800,
+                          color: primary,
+                          fontSize: 20,
+                        )
+                    ),
+                    const Text(
+                      'Enter your details',
                       style: TextStyle(
                         fontWeight: FontWeight.w800,
-                        color: primary,
-                        fontSize: 20,
+                        color: black,
+                        fontSize: 16,
                       )
-                  ),
-                  const Text(
-                    'Enter your details',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w800,
-                      color: black,
-                      fontSize: 16,
-                    )
-                  ),
-                  const SizedBox(height: 24.0),
-                  CustomInputField(
-                    controller: _emailController,
-                    labelText: 'Email',
-                    caplitalize: false,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
-                      }
-                      if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                        return 'Please enter a valid email address';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 12.0),
-                  CustomInputField(
-                    controller: _passwordController,
-                    labelText: 'Password',
-                    isPassword: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
-                      }
-                      if (value.length < 6) {
-                        return 'Password must be at least 6 characters long';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 12.0),
-                  CustomInputField(
-                    controller: _passwordConfirmationController,
-                    labelText: 'Password confirmation',
-                    isPassword: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please confirm your password';
-                      }
-                      if (value != _passwordController.text) {
-                        return 'Passwords do not match';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 40.0),
-                  CustomInputField(
-                    controller: _usernameController,
-                    labelText: 'Username',
-                    maxLength: 30,
-                    caplitalize: false,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your username';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 12.0),
-                  CustomInputField(
-                    controller: _bioController,
-                    labelText: 'Bio',
-                    minLines: 3,
-                    maxLines: 3,
-                    maxLength: 200,
-                    validator: (value) {
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 12.0),
-                  const Text(
-                    'Profile picture',
-                    style: TextStyle(
-                      color: gray,
-                      fontSize: 14,
-                    )
-                  ),
-                  const SizedBox(height: 12.0),
-                  GestureDetector(
-                    onTap: _pickImage,
-                    child: _image != null ? Container(
-                      height: 109,
-                      width: 109,
-                        decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12), // Rounded corners
-                        image: DecorationImage(
-                          image: FileImage(_image!),
-                          fit: BoxFit.cover, // Make the image cover the container
+                    ),
+                    const SizedBox(height: 24.0),
+                    CustomInputField(
+                      controller: _emailController,
+                      labelText: 'Email',
+                      caplitalize: false,
+                      autocorrect: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your email';
+                        }
+                        if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                          return 'Please enter a valid email address';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 12.0),
+                    CustomInputField(
+                      controller: _passwordController,
+                      labelText: 'Password',
+                      isPassword: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        if (value.length < 6) {
+                          return 'Password must be at least 6 characters long';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 12.0),
+                    CustomInputField(
+                      controller: _passwordConfirmationController,
+                      labelText: 'Password confirmation',
+                      isPassword: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please confirm your password';
+                        }
+                        if (value != _passwordController.text) {
+                          return 'Passwords do not match';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 40.0),
+                    CustomInputField(
+                      controller: _usernameController,
+                      labelText: 'Username',
+                      maxLength: 30,
+                      caplitalize: false,
+                      autocorrect: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your username';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 12.0),
+                    CustomInputField(
+                      controller: _bioController,
+                      labelText: 'Bio',
+                      minLines: 3,
+                      maxLines: 3,
+                      maxLength: 200,
+                      validator: (value) {
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 12.0),
+                    const Text(
+                      'Profile picture',
+                      style: TextStyle(
+                        color: gray,
+                        fontSize: 14,
+                      )
+                    ),
+                    const SizedBox(height: 12.0),
+                    GestureDetector(
+                      onTap: _pickImage,
+                      child: _image != null ? Container(
+                        height: 109,
+                        width: 109,
+                          decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12), // Rounded corners
+                          image: DecorationImage(
+                            image: FileImage(_image!),
+                            fit: BoxFit.cover, // Make the image cover the container
+                          ),
                         ),
-                      ),
-                    ):
-                    Container(
-                      height: 109,
-                      width: 109,
-                      decoration: BoxDecoration(
-                        color: gray2,
-                        borderRadius: BorderRadius.circular(12), // Rounded corners
-                      ),
-                      child: const Center(
-                        child: Icon(
-                          Icons.add,
-                          size: 50,
-                          color: white
+                      ):
+                      Container(
+                        height: 109,
+                        width: 109,
+                        decoration: BoxDecoration(
+                          color: gray2,
+                          borderRadius: BorderRadius.circular(12), // Rounded corners
+                        ),
+                        child: const Center(
+                          child: Icon(
+                            Icons.add,
+                            size: 50,
+                            color: white
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 40.0),
-                  _image != null ? BaseButton(onPressed: _deleteImage, text: 'Delete image', outlined: true,) :
-                    BaseButton(onPressed: _pickImage, text: 'Upload image', outlined: true,),
-                  const SizedBox(height: 12.0),
-                  BaseButton(onPressed: _toNextPage, text: 'Next'),
-                  const SizedBox(height: 92.0),
-                ],
+                    const SizedBox(height: 40.0),
+                    _image != null ? BaseButton(onPressed: _deleteImage, text: 'Delete image', outlined: true,) :
+                      BaseButton(onPressed: _pickImage, text: 'Upload image', outlined: true,),
+                    const SizedBox(height: 12.0),
+                    BaseButton(onPressed: _toNextPage, text: 'Next'),
+                    const SizedBox(height: 92.0),
+                  ],
+                ),
               ),
             ),
           ),

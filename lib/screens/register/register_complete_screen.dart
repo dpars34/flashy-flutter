@@ -12,10 +12,6 @@ class RegisterCompleteScreen extends StatefulWidget {
 }
 
 class _RegisterCompleteScreenState extends State<RegisterCompleteScreen> {
-  void _goToLogin () {
-    Navigator.of(context).pop();
-    Navigator.of(context).pop();
-  }
 
   void _goHome () {
     Navigator.of(context).pushAndRemoveUntil(
@@ -53,9 +49,7 @@ class _RegisterCompleteScreenState extends State<RegisterCompleteScreen> {
                   ),
                 ),
                 const SizedBox(height: 60),
-                BaseButton(onPressed: _goHome, text: 'To Home Screen', outlined: true,),
-                const SizedBox(height: 12),
-                BaseButton(onPressed: _goToLogin, text: 'To Login Screen')
+                BaseButton(onPressed: _goHome, text: 'To Home Screen'),
               ],
             ),
           ),
