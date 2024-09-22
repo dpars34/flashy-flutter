@@ -17,6 +17,7 @@ import '../../notifiers/auth_notifier.dart';
 import '../../notifiers/deck_notifier.dart';
 import '../../notifiers/category_notifier.dart';
 import '../../notifiers/profile_notifier.dart';
+import '../../widgets/report_modal.dart';
 import '../../widgets/deck_card.dart';
 import '../../notifiers/loading_notifier.dart';
 import '../../widgets/error_modal.dart';
@@ -328,6 +329,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
                 }
               },
             ),
+            ListTile(
+              leading: const Icon(
+                Icons.report_outlined,
+                color: primary,
+              ),
+              title: const Text(
+                'Report a problem',
+                style: TextStyle(
+                    color: primary,
+                    fontWeight: FontWeight.bold
+                ),
+              ),
+              onTap: () async  {
+                showReportModal(context);
+              },
+            ),
             const SizedBox(height: 8),
             if (user != null) ListTile(
               leading: const Icon(
@@ -530,6 +547,15 @@ void showModal(BuildContext context, String title, String content) {
     context: context,
     builder: (BuildContext context) {
       return ErrorModal(title: title, content: content, context: context);
+    },
+  );
+}
+
+void showReportModal(BuildContext context,) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return ReportModal(context: context);
     },
   );
 }
