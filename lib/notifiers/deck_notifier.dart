@@ -160,6 +160,109 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
     Map<String, dynamic> jsonData = await apiHelper.postNoConvert('/submit-deck', body);
   }
 
+  Future<void> updateDeck(
+      String name,
+      String description,
+      String leftOption,
+      String rightOption,
+      CategoryData? category,
+      List<QuestionControllers> questions,
+      int deckId,
+      ) async {
+
+    final user = ref.read(authProvider);
+    if (user == null) {
+      throw Exception('User is not logged in');
+    }
+
+    Map<String, dynamic> body = {
+      'name': name,
+      'description': description,
+      'category_id': category!.id,
+      'left_option': leftOption,
+      'right_option': rightOption,
+      'count': questions.length,
+      'creator_user_id': user.id,
+      'cards': questions.map((q) => {
+        'text': q.questionController.text,
+        'note': q.noteController.text,
+        'answer': q.answerController.text,
+        'id': q.cardId,
+      }).toList(),
+    };
+
+    Map<String, dynamic> jsonData = await apiHelper.put('/decks/$deckId', body);
+    DeckData deckData = DeckData.fromJson(jsonData);
+
+    // Update homeDecks with the fetched deck details
+    List<CategoryDecksData> updatedHomeDecks = state.homeDecks.map((categoryDecks) {
+      return CategoryDecksData(
+        category: categoryDecks.category,
+        decks: categoryDecks.decks.map((deck) {
+          if (deck.id == deckId) {
+            return deckData;
+          }
+          return deck;
+        }).toList(),
+      );
+    }).toList();
+
+    // Update detailDecks with the fetched deck details
+    List<DecksByCategoryData> updatedDetailDecks = state.detailDecks.map((categoryDecks) {
+      return DecksByCategoryData(
+        category: categoryDecks.category,
+        decks: categoryDecks.decks.map((deck) {
+          if (deck.id == deckId) {
+            return deckData;
+          }
+          return deck;
+        }).toList(),
+        pagination: categoryDecks.pagination,
+      );
+    }).toList();
+
+    // Update userDecks
+    DecksWithPagination? updatedUserDecks = state.userDecks != null ? DecksWithPagination(
+      decks: state.userDecks!.decks.map((deck) {
+        if (deck.id == deckId) {
+          return deckData;
+        }
+        return deck;
+      }).toList(),
+      pagination: state.userDecks!.pagination,
+    ) : null;
+
+    // Update likedDecks
+    DecksWithPagination? updatedLikedDecks = state.likedDecks != null ? DecksWithPagination(
+      decks: state.likedDecks!.decks.map((deck) {
+        if (deck.id == deckId) {
+          return deckData;
+        }
+        return deck;
+      }).toList(),
+      pagination: state.likedDecks!.pagination,
+    ) : null;
+
+    DecksWithPagination? updatedSearchDecks = state.searchDecks != null ? DecksWithPagination(
+      decks: state.searchDecks!.decks.map((deck) {
+        if (deck.id == deckId) {
+          return deckData;
+        }
+        return deck;
+      }).toList(),
+      pagination: state.searchDecks!.pagination,
+    ) : null;
+
+    // Update the state with the new homeDecks and detailDecks
+    state = DeckNotifierData(
+      homeDecks: updatedHomeDecks,
+      detailDecks: updatedDetailDecks,
+      userDecks: updatedUserDecks,
+      likedDecks: updatedLikedDecks,
+      searchDecks: updatedSearchDecks,
+    );
+  }
+
   Future<void> likeDeck(int id) async {
     try {
       var response = await apiHelper.post('/like-deck/$id', {});

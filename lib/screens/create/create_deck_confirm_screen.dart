@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flashy_flutter/widgets/base_button.dart';
 
 import '../../models/category_data.dart';
+import '../../models/deck_data.dart';
 import '../../models/question_controllers.dart';
 import '../../notifiers/deck_notifier.dart';
 import '../../utils/colors.dart';
@@ -21,6 +22,7 @@ class CreateDeckConfirmScreen extends ConsumerWidget {
   final String rightOption;
   final CategoryData? category;
   final List<QuestionControllers> controllers;
+  final DeckData? editDeck;
 
   const CreateDeckConfirmScreen({
     Key? key,
@@ -30,6 +32,7 @@ class CreateDeckConfirmScreen extends ConsumerWidget {
     required this.rightOption,
     required this.category,
     required this.controllers,
+    required this.editDeck,
   }) : super(key: key);
 
   void _goBack(BuildContext context) {
@@ -43,11 +46,15 @@ class CreateDeckConfirmScreen extends ConsumerWidget {
 
     try {
       loadingNotifier.showLoading(context);
-      await deckNotifier.submitDeck(title, description, leftOption, rightOption, category, controllers);
+      if (editDeck != null) {
+        await deckNotifier.updateDeck(title, description, leftOption, rightOption, category, controllers, editDeck!.id);
+      } else {
+        await deckNotifier.submitDeck(title, description, leftOption, rightOption, category, controllers);
+      }
       if (context.mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const CreateDeckCompleteScreen()),
+          MaterialPageRoute(builder: (context) => CreateDeckCompleteScreen(isEdit: editDeck != null)),
         );
       }
     } catch (e) {

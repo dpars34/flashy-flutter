@@ -1,4 +1,5 @@
 import 'package:flashy_flutter/models/deck_data.dart';
+import 'package:flashy_flutter/screens/create/create_deck_screen.dart';
 import 'package:flashy_flutter/widgets/leaderboard_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flashy_flutter/utils/colors.dart';
@@ -148,6 +149,15 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
     } finally {
       likeProcessing = false;
     }
+  }
+
+  void _handleEditClick(DeckData deck) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CreateDeckScreen(
+        editDeck: deck,
+      )),
+    );
   }
 
   Future _onRefresh() async {
@@ -339,6 +349,20 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
                               ),
                             ),
                             const SizedBox(height: 30),
+                            if (user != null && deck.creatorUserId == user.id) BaseButton(
+                              text: 'Edit deck',
+                              color: yellow,
+                              onPressed: () => _handleEditClick(deck),
+                            ),
+                            if (user != null && deck.creatorUserId == user.id) const SizedBox(height: 4),
+                            if (user != null && deck.creatorUserId == user.id) const Text(
+                                'Decks can be deleted from the "My decks" menu',
+                                style: TextStyle(
+                                  color: gray,
+                                  fontSize: 12
+                                ),
+                            ),
+                            if (user != null && deck.creatorUserId == user.id) const SizedBox(height: 30),
                             deck.likedUsers.contains(user?.id) ? BaseButton(
                               text: 'Deck liked',
                               color: green,

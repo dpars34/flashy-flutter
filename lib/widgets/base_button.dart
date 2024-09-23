@@ -37,7 +37,7 @@ class BaseButton extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w900,
-                color: outlined ? color : white
+                color: color == yellow ? outlined ? color : black : outlined ? color : white
               ),
             ),
           ),

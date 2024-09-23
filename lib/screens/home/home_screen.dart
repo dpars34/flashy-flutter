@@ -182,7 +182,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const CreateDeckScreen()
+                      builder: (context) => const CreateDeckScreen(editDeck: null,)
                   ),
                 );
               },

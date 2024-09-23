@@ -12,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../models/category_data.dart';
+import '../../models/deck_data.dart';
 import '../../models/question_controllers.dart';
 import '../../notifiers/auth_notifier.dart';
 import '../../notifiers/loading_notifier.dart';
@@ -25,6 +26,7 @@ class CreateDeckQuestionsScreen extends ConsumerStatefulWidget {
   final String rightOption;
   final CategoryData? category;
   final List<QuestionControllers>? controllers;
+  final DeckData? editDeck;
 
   const CreateDeckQuestionsScreen({
     Key? key,
@@ -33,6 +35,7 @@ class CreateDeckQuestionsScreen extends ConsumerStatefulWidget {
     required this.leftOption,
     required this.rightOption,
     required this.category,
+    required this.editDeck,
     this.controllers,
   }) : super(key: key);
 
@@ -58,6 +61,7 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
         questionController: TextEditingController(),
         noteController: TextEditingController(),
         answerController: TextEditingController(),
+        cardId: null,
       ));
     });
   }
@@ -103,12 +107,13 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
         context,
         MaterialPageRoute(
           builder: (context) => CreateDeckConfirmScreen(
-              title: widget.title,
-              description: widget.description,
-              leftOption: widget.leftOption,
-              rightOption: widget.rightOption,
-              category: widget.category,
-              controllers: _controllers,
+            title: widget.title,
+            description: widget.description,
+            leftOption: widget.leftOption,
+            rightOption: widget.rightOption,
+            category: widget.category,
+            controllers: _controllers,
+            editDeck: widget.editDeck,
           ),
         ),
       );
@@ -127,6 +132,28 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
         setState(() {
           _controllers = widget.controllers!;
         });
+      } else if (widget.editDeck != null) {
+        for (var question in widget.editDeck!.cards!) {
+
+          TextEditingController questionController = TextEditingController();
+          TextEditingController answerController = TextEditingController();
+          TextEditingController noteController = TextEditingController();
+
+          questionController.text = question.text;
+          answerController.text = question.answer;
+          noteController.text = question.note ?? '';
+
+          setState(() {
+            _controllers.add(
+              QuestionControllers(
+                questionController: questionController,
+                answerController: answerController,
+                noteController: noteController,
+                cardId: question.id,
+              )
+            );
+          });
+        }
       } else {
         _controllers = [];
         for (int i = 0; i < 5; i++) {
@@ -197,6 +224,15 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
                           color: black,
+                          fontSize: 14,
+                        )
+                    ),
+                    if (widget.editDeck != null) const SizedBox(height: 12.0),
+                    if (widget.editDeck != null) const Text(
+                        "Questions can't be added or deleted when editing.",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: primary,
                           fontSize: 14,
                         )
                     ),
@@ -306,7 +342,7 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
                                   const SizedBox(height: 40),
                                 ],
                               ),
-                              if (index > 4) Positioned(
+                              if (index > 4 && widget.editDeck == null) Positioned(
                                 top: 0,
                                 right: 0,
                                 child: IconButton(
@@ -320,7 +356,7 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
                       ],
                     ),
                     const SizedBox(height: 40.0),
-                    BaseButton(onPressed: _addQuestion, text: 'Add question', outlined: true,),
+                    if (widget.editDeck == null) BaseButton(onPressed: _addQuestion, text: 'Add question', outlined: true,),
                     const SizedBox(height: 12.0),
                     BaseButton(onPressed: _goBack, text: 'Go back', outlined: true,),
                     const SizedBox(height: 12.0),

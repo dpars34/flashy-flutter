@@ -109,15 +109,15 @@ class _RegisterConfirmScreenState extends ConsumerState<RegisterConfirmScreen> {
                     'Register account',
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
-                      color: primary,
-                      fontSize: 20,
+                      color: black,
+                      fontSize: 24,
                     )
                 ),
                 const Text(
                     'Check your details',
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
-                      color: black,
+                      color: primary,
                       fontSize: 16,
                     )
                 ),

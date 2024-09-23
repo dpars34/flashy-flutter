@@ -5,7 +5,12 @@ import 'package:flutter/material.dart';
 import '../../utils/colors.dart';
 
 class CreateDeckCompleteScreen extends StatefulWidget {
-  const CreateDeckCompleteScreen({super.key});
+  final bool isEdit;
+
+  const CreateDeckCompleteScreen({
+    required this.isEdit,
+    super.key
+  });
 
   @override
   State<CreateDeckCompleteScreen> createState() => _CreateDeckCompleteScreenState();
@@ -43,7 +48,15 @@ class _CreateDeckCompleteScreenState extends State<CreateDeckCompleteScreen> {
                   height: 75,
                 ),
                 SizedBox(height: 12),
-                const Text(
+                widget.isEdit ? const Text(
+                  'Thank you!\n Your deck has been updated!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      color: black,
+                      fontSize: 20
+                  ),
+                ) : const Text(
                   'Thank you!\n Your deck has been submitted!',
                   textAlign: TextAlign.center,
                   style: TextStyle(

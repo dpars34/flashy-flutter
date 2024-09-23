@@ -10,6 +10,7 @@ import 'package:flashy_flutter/utils/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../models/deck_data.dart';
 import '../../models/question_controllers.dart';
 import '../../notifiers/auth_notifier.dart';
 import '../../notifiers/category_notifier.dart';
@@ -20,7 +21,12 @@ import '../../widgets/custom_modal.dart';
 import 'create_deck_questions_screen.dart';
 
 class CreateDeckScreen extends ConsumerStatefulWidget {
-  const CreateDeckScreen({Key? key}) : super(key: key);
+  final DeckData? editDeck;
+
+  const CreateDeckScreen({
+    Key? key,
+    required this.editDeck,
+  }) : super(key: key);
 
   @override
   ConsumerState<CreateDeckScreen> createState() => _CreateDeckScreenState();
@@ -92,6 +98,7 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
               rightOption: _rightOptionController.text,
               category: _category,
               controllers: _controllers,
+              editDeck: widget.editDeck,
           ),
         ),
       ).then((result) {
@@ -110,8 +117,21 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
 
     // Fetch the deck data when the widget is initialized
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _leftOptionController.text = 'false';
-      _rightOptionController.text = 'true';
+      final categoryNotifier = ref.read(categoryProvider.notifier);
+
+      if (widget.editDeck != null) {
+        _titleController.text = widget.editDeck!.name;
+        _descriptionController.text = widget.editDeck!.description;
+        _leftOptionController.text = widget.editDeck!.leftOption;
+        _rightOptionController.text = widget.editDeck!.rightOption;
+        setState(() {
+          CategoryData find = categoryNotifier.state.firstWhere((category) => category.id == widget.editDeck!.category!.id);
+          _category = find;
+        });
+      } else {
+        _leftOptionController.text = 'false';
+        _rightOptionController.text = 'true';
+      }
     });
   }
 
