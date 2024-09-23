@@ -250,7 +250,7 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
                               onTap: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => ProfileScreen(id: deck.id)),
+                                  MaterialPageRoute(builder: (context) => ProfileScreen(id: deck.creatorUserId)),
                                 ).then((_) {
                                   ref.read(profileProvider.notifier).clearProfile();
                                 });
