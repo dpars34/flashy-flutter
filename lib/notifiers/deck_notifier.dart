@@ -520,15 +520,23 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
       int categoryIndex = state.detailDecks.indexWhere((item) => item.category.id == categoryId);
       List<DecksByCategoryData> updatedDetailDecks;
 
-      if (categoryIndex != -1 && !reload) {
+      if (categoryIndex != -1) {
         // Category exists, merge the decks with pagination
         updatedDetailDecks = state.detailDecks.map((categoryDecks) {
           if (categoryDecks.category.id == categoryId) {
-            return DecksByCategoryData(
-              category: categoryDecks.category,
-              decks: [...categoryDecks.decks, ...data.decks], // Merge the decks
-              pagination: data.pagination, // Update pagination info
-            );
+            if (reload) {
+              return DecksByCategoryData(
+                category: categoryDecks.category,
+                decks: [...data.decks],
+                pagination: data.pagination,
+              );
+            } else {
+              return DecksByCategoryData(
+                category: categoryDecks.category,
+                decks: [...categoryDecks.decks, ...data.decks], // Merge the decks
+                pagination: data.pagination, // Update pagination info
+              );
+            }
           }
           return categoryDecks;
         }).toList();

@@ -186,6 +186,7 @@ class _CategoryDeckScreenState extends ConsumerState<CategoryDeckScreen> {
               children: [
                 Expanded(
                   child: ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
                     controller: _scrollController,
                     padding: const EdgeInsets.all(24),
                     itemCount: decks.length + (_isInfinite ? 1 : 0), // Add 1 for the loading indicator
