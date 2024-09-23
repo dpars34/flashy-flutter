@@ -38,6 +38,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
 
   bool isLoaded = false;
   double scrollPosition = 0;
+  bool _drawerOpened = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -67,9 +68,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_scaffoldKey.currentState != null) {
+    if (!_drawerOpened && _scaffoldKey.currentState != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _scaffoldKey.currentState?.openDrawer();
+        _drawerOpened = true;
       });
     }
   }
