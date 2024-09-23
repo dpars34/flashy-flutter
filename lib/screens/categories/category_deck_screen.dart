@@ -152,47 +152,76 @@ class _CategoryDeckScreenState extends ConsumerState<CategoryDeckScreen> {
       body: !_isPageLoading
           ? RefreshIndicator(
             onRefresh: _refreshPage,
-            child: Column(
-                    children: [
-            Expanded(
-              child: ListView.builder(
-                controller: _scrollController,
-                padding: const EdgeInsets.all(24),
-                itemCount: decks.length + (_isInfinite ? 1 : 0), // Add 1 for the loading indicator
-                itemBuilder: (context, index) {
-                  if (index == decks.length) {
-                    return const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Center(
-                        child: CircularProgressIndicator(), // Loading spinner at the bottom
-                      ),
-                    );
-                  }
-                  final deckData = decks[index];
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: InkWell(
-                      onTap: () => _navigateToDeckDetail(context, deckData.id),
-                      child: DeckCard(
-                        deckData: deckData,
-                        onUserTap: (int id) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => ProfileScreen(id: id)),
-                          ).then((_) {
-                            ref.read(profileProvider.notifier).clearProfile();
-                          });
-                        },
+            child: decks.isEmpty ? SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.1, // 10% of the screen height
+                  ),
+                  const Icon(
+                    Icons.quiz,
+                    color: gray2,
+                    size: 100,
+                  ),
+                  const SizedBox(height: 8),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    child: Center(
+                      child: Text(
+                        textAlign: TextAlign.center,
+                        "No decks could be found for this category.",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: gray,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
-                  );
-                },
-              ),
-            ),
-                    ],
                   ),
-          )
-          : const Center(child: CircularProgressIndicator()), // Show loading spinner while decks are loading
+                  const SizedBox(height: 100),
+                ],
+              ),
+            ) : Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    padding: const EdgeInsets.all(24),
+                    itemCount: decks.length + (_isInfinite ? 1 : 0), // Add 1 for the loading indicator
+                    itemBuilder: (context, index) {
+                      if (index == decks.length) {
+                        return const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Center(
+                            child: CircularProgressIndicator(), // Loading spinner at the bottom
+                          ),
+                        );
+                      }
+                      final deckData = decks[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: InkWell(
+                          onTap: () => _navigateToDeckDetail(context, deckData.id),
+                          child: DeckCard(
+                            deckData: deckData,
+                            onUserTap: (int id) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => ProfileScreen(id: id)),
+                              ).then((_) {
+                                ref.read(profileProvider.notifier).clearProfile();
+                              });
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ) : const Center(child: CircularProgressIndicator()), // Show loading spinner while decks are loading
     );
   }
 

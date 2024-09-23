@@ -428,31 +428,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
           physics: AlwaysScrollableScrollPhysics(),
           child: Padding(
             padding: const EdgeInsets.all(24),
-            child: deckDataList.homeDecks.isEmpty ? const Center(
-                child: Column(
-                  children: [
-                    SizedBox(height: 100),
-                    Icon(
-                      Icons.quiz,
-                      color: gray2,
-                      size: 100,
+            child: deckDataList.homeDecks.isEmpty || deckDataList.homeDecks.every((category) => category.decks.isEmpty) ? Column(
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.1, // 10% of the screen height
+                ),
+                const Icon(
+                  Icons.quiz,
+                  color: gray2,
+                  size: 100,
+                ),
+                const SizedBox(height: 8),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  child: Text(
+                    textAlign: TextAlign.center,
+                    "No decks could be found. Try reloading the page and see if that helps.",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: gray,
+                      fontSize: 16,
                     ),
-                    SizedBox(height: 8),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 24),
-                      child: Text(
-                        textAlign: TextAlign.center,
-                        "Well, there appears to be no decks! Try reloading the page and see if that helps!",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: gray,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 100),
-                  ],
-                )
+                  ),
+                ),
+                const SizedBox(height: 100),
+              ],
             ) : Column(
                 children: [
                   const SizedBox(

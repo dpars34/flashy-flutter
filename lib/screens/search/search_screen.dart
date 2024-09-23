@@ -146,16 +146,18 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       ? Center(
                         child: Column(
                           children: [
-                            SizedBox(height: 100),
-                            Icon(
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.1, // 10% of the screen height
+                            ),
+                            const Icon(
                               Icons.search,
                               color: gray2,
                               size: 100,
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             Text(
                               _isSearched ? 'No decks could be found! :(' : 'Go on, search for a deck!',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontWeight: FontWeight.w600,
                                 color: gray,
                                 fontSize: 16,

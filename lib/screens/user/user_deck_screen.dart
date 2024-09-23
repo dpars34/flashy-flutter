@@ -170,33 +170,34 @@ class _UserDeckScreenState extends ConsumerState<UserDeckScreen> {
       body: !_isPageLoading
           ? RefreshIndicator(
         onRefresh: _refreshPage,
-            child: decks.isEmpty ? const Center(
-                child: SingleChildScrollView(
-                  physics: AlwaysScrollableScrollPhysics(),
-                  child: Column(
-                    children: [
-                      Icon(
-                        Icons.person,
-                        color: gray2,
-                        size: 100,
-                      ),
-                      SizedBox(height: 8),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 24),
-                        child: Text(
-                          textAlign: TextAlign.center,
-                          "You haven't created any decks yet! You can create your own decks by going to 'Create deck' from the menu",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: gray,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 100),
-                    ],
+            child: decks.isEmpty ? SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.1, // 10% of the screen height
                   ),
-                )
+                  const Icon(
+                    Icons.person,
+                    color: gray2,
+                    size: 100,
+                  ),
+                  const SizedBox(height: 8),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      "You haven't created any decks yet! You can create your own decks by going to 'Create deck' from the menu",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: gray,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 100),
+                ],
+              ),
             ) : Column(
               children: [
                 Container(

@@ -301,7 +301,7 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> with TickerProvid
               child: Column(
                 children: [
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.1, // 25% of the screen height
+                    height: MediaQuery.of(context).size.height * 0.1, // 10% of the screen height
                   ),
                   ScaleTransition(
                     scale: _scaleAnimation,
