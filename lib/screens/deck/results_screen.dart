@@ -300,7 +300,9 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> with TickerProvid
               padding: const EdgeInsets.all(24),
               child: Column(
                 children: [
-                  SizedBox(height: 100),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.1, // 25% of the screen height
+                  ),
                   ScaleTransition(
                     scale: _scaleAnimation,
                     child: Text(
@@ -326,13 +328,13 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> with TickerProvid
                       ),
                     ),
                   ),
-                  if (isNewRecord) SizedBox(height: 24),
+                  const SizedBox(height: 24),
                   ScaleTransition(
                     scale: _fadeAnimation,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (newRecordData.isNotEmpty) const Text(
+                       const Text(
                           'Leaderboard',
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
@@ -340,8 +342,8 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> with TickerProvid
                             fontSize: 16,
                           ),
                         ),
-                        if (newRecordData.isNotEmpty) SizedBox(height: 12),
-                        if (newRecordData.isNotEmpty) LeaderboardCard(
+                        const SizedBox(height: 12),
+                        newRecordData.isNotEmpty ? LeaderboardCard(
                           highscoresData: newRecordData, highlightIndex: newRecordIndex,
                           onUserTap: (int id) {
                             Navigator.push(
@@ -351,6 +353,20 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> with TickerProvid
                               ref.read(profileProvider.notifier).clearProfile();
                             });
                           },
+                        ) : Container(
+                          padding: const EdgeInsets.fromLTRB(12.0, 12.0, 12.0, 12.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: white,
+                          ),
+                          child: const Text(
+                              "There doesn't seem to be anyone on the leaderboard!",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: gray,
+                                  fontWeight: FontWeight.w600
+                              )
+                          ),
                         ),
                         SizedBox(height: 60),
                         BaseButton(onPressed: _goToReviewScreen, text: 'Review answers', outlined: true,),
