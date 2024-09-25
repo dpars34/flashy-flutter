@@ -154,33 +154,38 @@ class _CategoryDeckScreenState extends ConsumerState<CategoryDeckScreen> {
             onRefresh: _refreshPage,
             child: decks.isEmpty ? SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.1, // 10% of the screen height
-                  ),
-                  const Icon(
-                    Icons.quiz,
-                    color: gray2,
-                    size: 100,
-                  ),
-                  const SizedBox(height: 8),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24),
-                    child: Center(
-                      child: Text(
-                        textAlign: TextAlign.center,
-                        "No decks could be found for this category.",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: gray,
-                          fontSize: 16,
+              child: Container(
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height,
+                ),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.1, // 10% of the screen height
+                    ),
+                    const Icon(
+                      Icons.quiz,
+                      color: gray2,
+                      size: 100,
+                    ),
+                    const SizedBox(height: 8),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 24),
+                      child: Center(
+                        child: Text(
+                          textAlign: TextAlign.center,
+                          "No decks could be found for this category.",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: gray,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 100),
-                ],
+                    const SizedBox(height: 100),
+                  ],
+                ),
               ),
             ) : Column(
               children: [

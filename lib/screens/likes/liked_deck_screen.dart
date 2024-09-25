@@ -142,29 +142,34 @@ class _LikedDeckScreenState extends ConsumerState<LikedDeckScreen> {
             onRefresh: _refreshPage,
             child: decks.isEmpty ? SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.1, // 10% of the screen height
-                  ),
-                  const Icon(
-                    Icons.thumb_up,
-                    color: gray2,
-                    size: 100,
-                  ),
-                  const SizedBox(height: 8),
-                  const Center(
-                    child: Text(
-                      "You haven't liked any decks yet!",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: gray,
-                        fontSize: 16,
+              child: Container(
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height,
+                ),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.1, // 10% of the screen height
+                    ),
+                    const Icon(
+                      Icons.thumb_up,
+                      color: gray2,
+                      size: 100,
+                    ),
+                    const SizedBox(height: 8),
+                    const Center(
+                      child: Text(
+                        "You haven't liked any decks yet!",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: gray,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 100),
-                ],
+                    const SizedBox(height: 100),
+                  ],
+                ),
               ),
             ) : Column(
               children: [

@@ -57,7 +57,7 @@ class _CategoryListScreenState extends ConsumerState<CategoryListScreen> {
       ),
       body: categoriesList.isNotEmpty
           ? ListView.builder(
-            padding: const EdgeInsets.only(top: 12),
+            padding: const EdgeInsets.only(top: 12, bottom: 24),
             itemCount: categoriesList.length,
             itemBuilder: (context, index) {
               final category = categoriesList[index];

@@ -427,114 +427,119 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
         child: isLoaded ?
         SingleChildScrollView(
           controller: _scrollController,
-          physics: AlwaysScrollableScrollPhysics(),
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: deckDataList.homeDecks.isEmpty || deckDataList.homeDecks.every((category) => category.decks.isEmpty) ? Column(
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.1, // 10% of the screen height
-                ),
-                const Icon(
-                  Icons.quiz,
-                  color: gray2,
-                  size: 100,
-                ),
-                const SizedBox(height: 8),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24),
-                  child: Text(
-                    textAlign: TextAlign.center,
-                    "No decks could be found. Try reloading the page and see if that helps.",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: gray,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 100),
-              ],
-            ) : Column(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Container(
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: deckDataList.homeDecks.isEmpty || deckDataList.homeDecks.every((category) => category.decks.isEmpty) ? Column(
                 children: [
-                  const SizedBox(
-                    width: double.infinity,
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.1, // 10% of the screen height
+                  ),
+                  const Icon(
+                    Icons.quiz,
+                    color: gray2,
+                    size: 100,
+                  ),
+                  const SizedBox(height: 8),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
                     child: Text(
-                      'Popular decks',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        color: black,
-                        fontSize: 24,
+                      textAlign: TextAlign.center,
+                      "No decks could be found. Try reloading the page and see if that helps.",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: gray,
+                        fontSize: 16,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  ...deckDataList.homeDecks.where((category) => category.decks.isNotEmpty).map((category) {
-                    return Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              '${category.category.emoji} ${category.category.name}',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: black,
-                                fontSize: 18,
-                              ),
-                            ),
-                            GestureDetector(
-                              child: const Text(
-                                'more',
-                                style: TextStyle(
+                  const SizedBox(height: 100),
+                ],
+              ) : Column(
+                  children: [
+                    const SizedBox(
+                      width: double.infinity,
+                      child: Text(
+                        'Popular decks',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: black,
+                          fontSize: 24,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    ...deckDataList.homeDecks.where((category) => category.decks.isNotEmpty).map((category) {
+                      return Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                '${category.category.emoji} ${category.category.name}',
+                                style: const TextStyle(
                                   fontWeight: FontWeight.w600,
-                                  color: primary,
-                                  fontSize: 16,
+                                  color: black,
+                                  fontSize: 18,
                                 ),
                               ),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => CategoryDeckScreen(category: category.category),
+                              GestureDetector(
+                                child: const Text(
+                                  'more',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: primary,
+                                    fontSize: 16,
                                   ),
-                                ).then((result) {
-                                  _scrollController.jumpTo(scrollPosition);
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 18.0),
-                        Column(
-                          children: [
-                            ...category.decks.map((deckData) => Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: InkWell(
-                                  onTap: () => _navigateToDeckDetail(context, deckData.id),
-                                  child: DeckCard(
-                                    deckData: deckData,
-                                    onUserTap: (int id) {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => ProfileScreen(id: id)),
-                                      ).then((_) {
-                                        ref.read(profileProvider.notifier).clearProfile();
-                                        _scrollController.jumpTo(scrollPosition);
-                                      });
-                                    },
-                                  )
+                                ),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => CategoryDeckScreen(category: category.category),
+                                    ),
+                                  ).then((result) {
+                                    _scrollController.jumpTo(scrollPosition);
+                                  });
+                                },
                               ),
-                            )),
-                          ],
-                        ),
-                        // Text(data.toString())
-                        const SizedBox(height: 32.0),
-                      ],
-                    );
-                  })
-                ]),
+                            ],
+                          ),
+                          const SizedBox(height: 18.0),
+                          Column(
+                            children: [
+                              ...category.decks.map((deckData) => Padding(
+                                padding: const EdgeInsets.only(bottom: 8.0),
+                                child: InkWell(
+                                    onTap: () => _navigateToDeckDetail(context, deckData.id),
+                                    child: DeckCard(
+                                      deckData: deckData,
+                                      onUserTap: (int id) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => ProfileScreen(id: id)),
+                                        ).then((_) {
+                                          ref.read(profileProvider.notifier).clearProfile();
+                                          _scrollController.jumpTo(scrollPosition);
+                                        });
+                                      },
+                                    )
+                                ),
+                              )),
+                            ],
+                          ),
+                          // Text(data.toString())
+                          const SizedBox(height: 32.0),
+                        ],
+                      );
+                    })
+                  ]),
+            ),
           ),
         ) : const Center(
           child: CircularProgressIndicator(),
