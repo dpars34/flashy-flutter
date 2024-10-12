@@ -10,7 +10,7 @@ class ApiHelper {
   // LOCAL: 'http://localhost/api'
   // DEV: 'http://ec2-18-176-57-143.ap-northeast-1.compute.amazonaws.com/api'
   // PROD: 'http://ec2-54-95-23-200.ap-northeast-1.compute.amazonaws.com/api'
-  String baseUrl = 'http://ec2-54-95-23-200.ap-northeast-1.compute.amazonaws.com/api';
+  String baseUrl = 'http://ec2-18-176-57-143.ap-northeast-1.compute.amazonaws.com/api';
   String? _token;
 
   // constructor

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flashy_flutter/screens/categories/category_list_screen.dart';
 import 'package:flashy_flutter/screens/create/create_deck_screen.dart';
+import 'package:flashy_flutter/screens/draft/draft_deck_screen.dart';
 import 'package:flashy_flutter/screens/likes/liked_deck_screen.dart';
 import 'package:flashy_flutter/screens/login/login_screen.dart';
 import 'package:flashy_flutter/screens/search/search_screen.dart';
@@ -184,7 +185,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const CreateDeckScreen(editDeck: null,)
+                      builder: (context) => const CreateDeckScreen(editDeck: null, draftId: null,)
+                  ),
+                );
+              },
+            ),
+            if (user != null) ListTile(
+              leading: const Icon(
+                Icons.mode_edit_outline_outlined,
+                color: primary,
+              ),
+              title: const Text(
+                'Draft decks',
+                style: TextStyle(
+                    color: primary,
+                    fontWeight: FontWeight.bold
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const DraftDeckScreen()
                   ),
                 );
               },

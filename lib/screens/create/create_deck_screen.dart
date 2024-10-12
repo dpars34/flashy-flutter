@@ -22,10 +22,12 @@ import 'create_deck_questions_screen.dart';
 
 class CreateDeckScreen extends ConsumerStatefulWidget {
   final DeckData? editDeck;
+  final int? draftId;
 
   const CreateDeckScreen({
     Key? key,
     required this.editDeck,
+    required this.draftId,
   }) : super(key: key);
 
   @override
@@ -99,6 +101,7 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
               category: _category,
               controllers: _controllers,
               editDeck: widget.editDeck,
+              draftId: widget.draftId,
           ),
         ),
       ).then((result) {

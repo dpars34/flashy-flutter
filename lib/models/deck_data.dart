@@ -68,7 +68,7 @@ class DeckData {
       'creator_user_id': creatorUserId,
       'name': name,
       'description': description,
-      'categories': category,
+      'category': category,
       'left_option': leftOption,
       'right_option': rightOption,
       'count': count,

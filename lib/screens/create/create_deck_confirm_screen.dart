@@ -1,6 +1,10 @@
+import 'dart:convert';
+
+import 'package:flashy_flutter/models/draft_deck_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flashy_flutter/widgets/base_button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../models/category_data.dart';
 import '../../models/deck_data.dart';
@@ -23,6 +27,7 @@ class CreateDeckConfirmScreen extends ConsumerWidget {
   final CategoryData? category;
   final List<QuestionControllers> controllers;
   final DeckData? editDeck;
+  final int? draftId;
 
   const CreateDeckConfirmScreen({
     Key? key,
@@ -33,6 +38,7 @@ class CreateDeckConfirmScreen extends ConsumerWidget {
     required this.category,
     required this.controllers,
     required this.editDeck,
+    required this.draftId,
   }) : super(key: key);
 
   void _goBack(BuildContext context) {
@@ -46,7 +52,24 @@ class CreateDeckConfirmScreen extends ConsumerWidget {
 
     try {
       loadingNotifier.showLoading(context);
-      if (editDeck != null) {
+      if (draftId != null && editDeck != null) {
+        await deckNotifier.submitDeck(title, description, leftOption, rightOption, category, controllers);
+
+        final prefs = await SharedPreferences.getInstance();
+        final String? jsonString = prefs.getString('draftDecks');
+        List<dynamic> jsonData = [];
+
+        if (jsonString != null) jsonData = jsonDecode(jsonString);
+        List<DraftDeckData>decks = jsonData.map((deckJson) => DraftDeckData.fromJson(deckJson)).toList();
+
+        int index = decks.indexWhere((deck) => deck.id == draftId);
+        if (index != -1) {
+          decks.removeAt(index);
+        }
+
+        String decksAsJsonString = jsonEncode(decks.map((deck) => deck.toJson()).toList());
+        prefs.setString('draftDecks', decksAsJsonString);
+      } else if (editDeck != null) {
         await deckNotifier.updateDeck(title, description, leftOption, rightOption, category, controllers, editDeck!.id);
       } else {
         await deckNotifier.submitDeck(title, description, leftOption, rightOption, category, controllers);

@@ -1,5 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:flashy_flutter/models/cards_data.dart';
+import 'package:flashy_flutter/models/creator_data.dart';
 import 'package:flashy_flutter/screens/create/create_deck_confirm_screen.dart';
 import 'package:flashy_flutter/screens/register/register_confirm_screen.dart';
 import 'package:flashy_flutter/utils/api_exception.dart';
@@ -10,10 +13,12 @@ import 'package:flashy_flutter/utils/colors.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../models/category_data.dart';
 import '../../models/deck_data.dart';
 import '../../models/question_controllers.dart';
+import '../../models/draft_deck_data.dart';
 import '../../notifiers/auth_notifier.dart';
 import '../../notifiers/loading_notifier.dart';
 import '../../widgets/base_button.dart';
@@ -27,6 +32,7 @@ class CreateDeckQuestionsScreen extends ConsumerStatefulWidget {
   final CategoryData? category;
   final List<QuestionControllers>? controllers;
   final DeckData? editDeck;
+  final int? draftId;
 
   const CreateDeckQuestionsScreen({
     Key? key,
@@ -36,6 +42,7 @@ class CreateDeckQuestionsScreen extends ConsumerStatefulWidget {
     required this.rightOption,
     required this.category,
     required this.editDeck,
+    required this.draftId,
     this.controllers,
   }) : super(key: key);
 
@@ -92,6 +99,78 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
     Navigator.pop(context, _controllers);
   }
 
+  Future _saveDraft () async {
+    final user = ref.read(authProvider);
+    final prefs = await SharedPreferences.getInstance();
+    final String? jsonString = prefs.getString('draftDecks');
+
+    List<DraftDeckData> decks = [];
+    int largestId = 0;
+
+    if (jsonString != null) {
+      List<dynamic> jsonData = jsonDecode(jsonString);
+      decks = jsonData.map((deckJson) => DraftDeckData.fromJson(deckJson)).toList();
+    }
+
+    for (final deck in decks) {
+      if (deck.id > largestId) {
+        largestId = deck.id;
+      }
+    }
+
+    List<CardsData> cards = [];
+
+    for (final card in _controllers) {
+      cards.add(CardsData(
+          id: 0,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          text: card.questionController.text,
+          note: card.noteController.text,
+          answer: card.answerController.text,
+          deckId: 0
+      ));
+    }
+
+    DeckData draftDeck = DeckData(
+        id: 0,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        creatorUserId: 0,
+        name: widget.title,
+        description: widget.description,
+        category: widget.category,
+        leftOption: widget.leftOption,
+        rightOption: widget.rightOption,
+        count: _controllers.length,
+        likedUsers: [],
+        cards: cards,
+        creator: CreatorData(
+          id: 0,
+          name: user!.name,
+          email: user.email,
+          profileImage: user.profileImage,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now()
+        ),
+        highscores: [],
+    );
+
+    if (widget.draftId == null) {
+      decks.add(DraftDeckData(deck: draftDeck, id: largestId + 1));
+    } else {
+      int index = decks.indexWhere((deck) => deck.id == widget.draftId);
+      if (index != -1) {
+        decks[index] = DraftDeckData(deck: draftDeck, id: widget.draftId!);
+      }
+    }
+    String decksAsJsonString = jsonEncode(decks.map((deck) => deck.toJson()).toList());
+    prefs.setString('draftDecks', decksAsJsonString);
+
+    _goBack();
+    _goBack();
+  }
+
   void _toNextPage () async {
     final loadingNotifier = ref.read(loadingProvider.notifier);
     final authNotifier = ref.watch(authProvider.notifier);
@@ -114,6 +193,7 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
             category: widget.category,
             controllers: _controllers,
             editDeck: widget.editDeck,
+            draftId: widget.draftId,
           ),
         ),
       );
@@ -228,7 +308,7 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
                         )
                     ),
                     if (widget.editDeck != null) const SizedBox(height: 12.0),
-                    if (widget.editDeck != null) const Text(
+                    if (widget.editDeck != null && widget.draftId == null) const Text(
                         "Questions can't be added or deleted when editing.",
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
@@ -356,9 +436,11 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
                       ],
                     ),
                     const SizedBox(height: 40.0),
-                    if (widget.editDeck == null) BaseButton(onPressed: _addQuestion, text: 'Add question', outlined: true,),
+                    if (widget.editDeck == null || widget.draftId != null) BaseButton(onPressed: _addQuestion, text: 'Add question', outlined: true,),
                     const SizedBox(height: 12.0),
                     BaseButton(onPressed: _goBack, text: 'Go back', outlined: true,),
+                    const SizedBox(height: 24.0),
+                    BaseButton(onPressed: _saveDraft, text: 'Save draft', color: yellow),
                     const SizedBox(height: 12.0),
                     BaseButton(onPressed: _toNextPage, text: 'Next'),
                     const SizedBox(height: 92.0),

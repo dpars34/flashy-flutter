@@ -156,6 +156,7 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
       context,
       MaterialPageRoute(builder: (context) => CreateDeckScreen(
         editDeck: deck,
+        draftId: null,
       )),
     );
   }
