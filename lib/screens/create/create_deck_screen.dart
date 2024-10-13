@@ -7,6 +7,7 @@ import 'package:flashy_flutter/widgets/custom_dropdown_field.dart';
 import 'package:flashy_flutter/widgets/error_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flashy_flutter/utils/colors.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -110,6 +111,7 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
         }
       });
     } else {
+      HapticFeedback.heavyImpact();
       // showModal(context, 'An Error Occurred', "Please check that the information you have entered is valid and try again.");
     }
   }

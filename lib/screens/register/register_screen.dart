@@ -6,6 +6,7 @@ import 'package:flashy_flutter/utils/api_exception.dart';
 import 'package:flashy_flutter/widgets/error_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flashy_flutter/utils/colors.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
@@ -158,6 +159,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         loadingNotifier.hideLoading();
       }
     } else {
+      HapticFeedback.heavyImpact();
       // showModal(context, 'An Error Occurred', "Please check that the information you have entered is valid and try again.");
     }
   }

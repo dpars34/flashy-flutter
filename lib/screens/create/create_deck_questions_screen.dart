@@ -199,6 +199,7 @@ class _CreateDeckQuestionsScreenState extends ConsumerState<CreateDeckQuestionsS
       );
 
     } else {
+      HapticFeedback.heavyImpact();
       // showModal(context, 'An Error Occurred', "Please check that the information you have entered is valid and try again.");
     }
   }
