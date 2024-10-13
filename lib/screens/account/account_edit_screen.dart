@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flashy_flutter/screens/account/account_edit_confirm_screen.dart';
 import 'package:flashy_flutter/screens/register/register_confirm_screen.dart';
@@ -9,12 +10,14 @@ import 'package:flashy_flutter/utils/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../notifiers/auth_notifier.dart';
 import '../../notifiers/loading_notifier.dart';
 import '../../widgets/base_button.dart';
 import '../../widgets/custom_input_field.dart';
 import 'account_edit_complete_screen.dart';
+import 'package:image/image.dart' as img;
 
 class AccountEditScreen extends ConsumerStatefulWidget {
   const AccountEditScreen({Key? key}) : super(key: key);
@@ -40,9 +43,17 @@ class _AccountEditScreenState extends ConsumerState<AccountEditScreen> {
       final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
       if (pickedFile != null) {
+        // Compress the image
+        Uint8List compressedImage = await _compressImage(File(pickedFile.path));
+
+        // Save the compressed image to a temporary file
+        File compressedImageFile = await _saveCompressedImage(compressedImage, pickedFile.path);
+
+        print(compressedImageFile);
+
         setState(() {
           _updateImage = true;
-          _image = File(pickedFile.path);
+          _image = compressedImageFile; // Store the compressed image file
         });
       } else {
         print('No image selected.');
@@ -53,6 +64,37 @@ class _AccountEditScreenState extends ConsumerState<AccountEditScreen> {
       loadingNotifier.hideLoading();
     }
   }
+
+  // Compress the image using the image package
+  Future<Uint8List> _compressImage(File imageFile) async {
+    // Read image file as Uint8List
+    Uint8List imageBytes = await imageFile.readAsBytes();
+
+    // Decode the image using the image package
+    img.Image? decodedImage = img.decodeImage(imageBytes);
+
+    // Resize the image (e.g., max width 800px)
+    img.Image resizedImage = img.copyResize(decodedImage!, width: 800);
+
+    // Compress the resized image to JPEG with 75% quality
+    List<int> compressedImage = img.encodeJpg(resizedImage, quality: 75);
+
+    // Return the compressed image as Uint8List
+    return Uint8List.fromList(compressedImage);
+  }
+
+  // Save the compressed image to a file
+  Future<File> _saveCompressedImage(Uint8List compressedImage, String originalFilePath) async {
+    String dir = (await getTemporaryDirectory()).path;
+    String fileName = originalFilePath.split('/').last;
+    File compressedFile = File('$dir/compressed_$fileName');
+
+    // Write the compressed image to the file
+    await compressedFile.writeAsBytes(compressedImage);
+
+    return compressedFile;
+  }
+
 
   void _deleteImage () {
     setState(() {
