@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'firebase_options.dart';
+import 'notifiers/auth_notifier.dart';
 import 'notifiers/deck_notifier.dart';
 import 'notifiers/loading_notifier.dart';
 
@@ -32,6 +33,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  bool _isFirebaseMessagingInitialized = false;
 
   @override
   void initState() {
@@ -57,6 +59,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _setupFirebaseMessaging (WidgetRef ref) {
+    final user = ref.watch(authProvider);
+
     // Request permission on iOS
     _firebaseMessaging.requestPermission(
       alert: true,
@@ -68,11 +72,11 @@ class _MyAppState extends State<MyApp> {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.data.isNotEmpty) {
         // Extract the data and navigate accordingly
-        _handleNotificationTap(message.data, ref);
       }
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
+
       if (message.data.isNotEmpty) {
         // Extract the data and navigate accordingly
         _handleNotificationTap(message.data, ref);
@@ -83,20 +87,25 @@ class _MyAppState extends State<MyApp> {
     _firebaseMessaging.getInitialMessage().then((RemoteMessage? message) {
       if (message != null && message.data.isNotEmpty) {
         // Handle notification tap when the app was terminated
-        _handleNotificationTap(message.data, ref);
       }
     });
 
     // Get token for sending notifications
     _firebaseMessaging.getToken().then((String? token) {
-      print("FCM Token: $token");
+      if (user != null) {
+        ref.read(authProvider.notifier).sendFcmToken(token!);
+      }
     });
+
+    _isFirebaseMessagingInitialized = true;
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (context, ref, child) {
-      _setupFirebaseMessaging(ref);
+      if (!_isFirebaseMessagingInitialized) {
+        _setupFirebaseMessaging(ref);
+      }
 
       return MaterialApp(
         title: 'Flashy',

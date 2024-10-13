@@ -738,6 +738,14 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
     }
   }
 
+  Future<void> deckComplete(int deckId) async {
+    var response = await apiHelper.post('/decks/$deckId/complete', {});
+  }
+
+  Future<void> deckCompleteGuest(int deckId) async {
+    var response = await apiHelper.post('/decks/$deckId/complete-guest', {});
+  }
+
   Future<void> deleteDeck(int id) async {
     try {
       // Call the API to delete the deck

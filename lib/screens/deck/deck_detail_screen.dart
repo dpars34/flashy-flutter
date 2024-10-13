@@ -130,8 +130,8 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
     if (likeProcessing) return;
     try {
       likeProcessing = true;
-      await ref.read(deckProvider.notifier).likeDeck(deckId);
       HapticFeedback.mediumImpact();
+      await ref.read(deckProvider.notifier).likeDeck(deckId);
     } catch (e) {
       if (e is ApiException) {
         showModal(context, 'An Error Occurred', 'Please try again');

@@ -223,6 +223,7 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> with TickerProvid
   @override
   void initState() {
     super.initState();
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
@@ -271,7 +272,17 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> with TickerProvid
     WidgetsBinding.instance.addPostFrameCallback((_) {
       newRecordData = widget.deck.highscores;
       _generateMessage();
+
+      final user = ref.watch(authProvider);
+      // Send complete log data
+      if (user == null) {
+        ref.read(deckProvider.notifier).deckCompleteGuest(widget.deck.id);
+      } else {
+        ref.read(deckProvider.notifier).deckComplete(widget.deck.id);
+      }
     });
+
+
   }
 
   @override
