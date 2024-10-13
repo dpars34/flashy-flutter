@@ -102,6 +102,15 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
             isLoaded = true;
           });
         }
+      } else if (widget.type == 'notification') {
+        setState(() {
+          isLoaded = false;
+        });
+        await ref.read(deckProvider.notifier).fetchDeckDetails(widget.id);
+        final deck = ref.read(deckProvider).notificationDecks!.firstWhere((deck) => deck.id == widget.id);
+        setState(() {
+          isLoaded = true;
+        });
       }
     });
   }
@@ -202,6 +211,9 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
           .firstWhere((deck) => deck.id == widget.id);
     } else if (widget.type == 'search') {
       deck = ref.read(deckProvider).searchDecks!.decks
+          .firstWhere((deck) => deck.id == widget.id);
+    } else if (widget.type == 'notification') {
+      deck = ref.read(deckProvider).notificationDecks!
           .firstWhere((deck) => deck.id == widget.id);
     }
 

@@ -201,6 +201,23 @@ class AuthNotifier extends StateNotifier<User?> {
     }
   }
 
+  Future<void> sendFcmToken(String token) async {
+    try {
+      Map<String, dynamic> body = {
+        'fcm_token': token,
+      };
+
+      var response = await apiHelper.post('/update-fcm-token', body);
+
+    } catch (e) {
+      if (e is ApiException) {
+        throw ApiException(e.statusCode, e.message);
+      } else {
+        throw ApiException(500, 'Unexpected Error: $e');
+      }
+    }
+  }
+
   Future<void> deleteAccount(String password) async {
     try {
       Map<String, dynamic> body = {

@@ -19,6 +19,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
     userDecks: null,
     likedDecks: null,
     searchDecks: null,
+    notificationDecks: [],
   ));
 
   final Ref ref; // Reference to access other providers
@@ -33,6 +34,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
       userDecks: state.userDecks,
       likedDecks: state.likedDecks,
       searchDecks: state.searchDecks,
+      notificationDecks: state.notificationDecks,
     );
   }
 
@@ -118,6 +120,13 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
       pagination: state.searchDecks!.pagination,
     ) : null;
 
+    List<DeckData>? updatedNotificationDecks = state.notificationDecks?.map((deck) {
+      if (deck.id == id) {
+        return deckData;
+      }
+      return deck;
+    }).toList();
+
     // Update the state with the new homeDecks and detailDecks
     state = DeckNotifierData(
       homeDecks: updatedHomeDecks,
@@ -125,6 +134,21 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
       userDecks: updatedUserDecks,
       likedDecks: updatedLikedDecks,
       searchDecks: updatedSearchDecks,
+      notificationDecks: updatedNotificationDecks,
+    );
+  }
+
+  Future<void> fetchNotificationDeck (int id) async {
+    Map<String, dynamic> jsonData = await apiHelper.get('/decks/$id');
+    DeckData deckData = DeckData.fromJson(jsonData);
+
+    state = DeckNotifierData(
+      homeDecks: state.homeDecks,
+      detailDecks: state.detailDecks,
+      userDecks: state.userDecks,
+      likedDecks: state.likedDecks,
+      searchDecks: state.searchDecks,
+      notificationDecks: [deckData],
     );
   }
 
@@ -253,6 +277,13 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
       pagination: state.searchDecks!.pagination,
     ) : null;
 
+    List<DeckData>? updatedNotificationDecks = state.notificationDecks?.map((deck) {
+      if (deck.id == deckId) {
+        return deckData;
+      }
+      return deck;
+    }).toList();
+
     // Update the state with the new homeDecks and detailDecks
     state = DeckNotifierData(
       homeDecks: updatedHomeDecks,
@@ -260,6 +291,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
       userDecks: updatedUserDecks,
       likedDecks: updatedLikedDecks,
       searchDecks: updatedSearchDecks,
+      notificationDecks: updatedNotificationDecks,
     );
   }
 
@@ -325,6 +357,13 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
         pagination: state.searchDecks!.pagination,
       ) : null;
 
+      List<DeckData>? updatedNotificationDecks = state.notificationDecks?.map((deck) {
+        if (deck.id == id) {
+          return deck.copyWith(likedUsers: likedUsers);
+        }
+        return deck;
+      }).toList();
+
       // Update the state with the new homeDecks and detailDecks
       state = DeckNotifierData(
         homeDecks: updatedHomeDecks,
@@ -332,6 +371,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
         userDecks: updatedUserDecks,
         likedDecks: updatedLikedDecks,
         searchDecks: updatedSearchDecks,
+        notificationDecks: updatedNotificationDecks,
       );
 
     } catch (e) {
@@ -405,6 +445,13 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
         pagination: state.searchDecks!.pagination,
       ) : null;
 
+      List<DeckData>? updatedNotificationDecks = state.notificationDecks?.map((deck) {
+        if (deck.id == id) {
+          return deck.copyWith(likedUsers: likedUsers);
+        }
+        return deck;
+      }).toList();
+
       // Update the state with the new homeDecks and detailDecks
       state = DeckNotifierData(
         homeDecks: updatedHomeDecks,
@@ -412,6 +459,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
         userDecks: updatedUserDecks,
         likedDecks: updatedLikedDecks,
         searchDecks: updatedSearchDecks,
+        notificationDecks: updatedNotificationDecks,
       );
 
     } catch (e) {
@@ -499,6 +547,13 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
       pagination: state.searchDecks!.pagination,
     ) : null;
 
+    List<DeckData>? updatedNotificationDecks = state.notificationDecks?.map((deck) {
+      if (deck.id == deckId) {
+        return deckData;
+      }
+      return deck;
+    }).toList();
+
     // Update the state with the new homeDecks and detailDecks
     state = DeckNotifierData(
       homeDecks: updatedHomeDecks,
@@ -506,6 +561,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
       userDecks: updatedUserDecks,
       likedDecks: updatedLikedDecks,
       searchDecks: updatedSearchDecks,
+      notificationDecks: updatedNotificationDecks,
     );
   }
 
@@ -559,6 +615,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
         userDecks: state.userDecks,
         likedDecks: state.likedDecks,
         searchDecks: state.searchDecks,
+        notificationDecks: state.notificationDecks,
       );
 
     } catch (e) {
@@ -595,6 +652,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
         userDecks: updatedUserDecks,
         likedDecks: state.likedDecks,
         searchDecks: state.searchDecks,
+        notificationDecks: state.notificationDecks,
       );
 
     } catch (e) {
@@ -631,6 +689,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
         userDecks: state.userDecks,
         likedDecks: updatedLikedDecks,
         searchDecks: state.searchDecks,
+        notificationDecks: state.notificationDecks,
       );
 
     } catch (e) {
@@ -667,6 +726,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
         userDecks: state.userDecks,
         likedDecks: state.likedDecks,
         searchDecks: updatedSearchDecks,
+        notificationDecks: state.notificationDecks,
       );
 
     } catch (e) {
@@ -717,6 +777,8 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
         pagination: state.searchDecks!.pagination,
       ) : null;
 
+      List<DeckData>? updatedNotificationDecks = state.notificationDecks?.where((deck) => deck.id != id).toList();
+
       // Update the state with the modified lists
       state = DeckNotifierData(
         homeDecks: updatedHomeDecks,
@@ -724,6 +786,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
         userDecks: updatedUserDecks,
         likedDecks: updatedLikedDecks,
         searchDecks: updatedSearchDecks,
+        notificationDecks: updatedNotificationDecks,
       );
 
     } catch (e) {
@@ -742,6 +805,7 @@ class DeckNotifier extends StateNotifier<DeckNotifierData> {
       userDecks: state.userDecks,
       likedDecks: state.likedDecks,
       searchDecks: null,
+      notificationDecks: state.notificationDecks,
     );
   }
 }

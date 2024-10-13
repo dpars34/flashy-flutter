@@ -10,6 +10,7 @@ class DeckNotifierData {
   final DecksWithPagination? userDecks;
   final DecksWithPagination? likedDecks;
   final DecksWithPagination? searchDecks;
+  final List<DeckData>? notificationDecks;
 
   DeckNotifierData({
     required this.homeDecks,
@@ -17,5 +18,6 @@ class DeckNotifierData {
     required this.userDecks,
     required this.likedDecks,
     required this.searchDecks,
+    required this.notificationDecks,
   });
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flashy_flutter/screens/categories/category_list_screen.dart';
 import 'package:flashy_flutter/screens/create/create_deck_screen.dart';
 import 'package:flashy_flutter/screens/draft/draft_deck_screen.dart';
@@ -53,9 +54,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
     });
     // Fetch the deck data when the widget is initialized
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final user = ref.watch(authProvider);
+
       try {
         await ref.read(deckProvider.notifier).fetchHomeDeckData();
         await ref.read(categoryProvider.notifier).fetchCategoryData();
+
+        final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+
+        firebaseMessaging.getToken().then((String? token) {
+          if (user != null) {
+            ref.read(authProvider.notifier).sendFcmToken(token!);
+          }
+        });
+
       } catch (e) {
         showModal(context, 'An Error Occurred', 'Please try again');
       } finally {
