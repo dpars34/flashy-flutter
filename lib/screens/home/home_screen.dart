@@ -50,7 +50,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
     super.initState();
     _scrollController = ScrollController();
     _scrollController.addListener(() {
-      scrollPosition = _scrollController.position.pixels;
+      if (_scrollController.position.pixels >= 0) {
+        scrollPosition = _scrollController.position.pixels;
+      }
     });
     // Fetch the deck data when the widget is initialized
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -78,16 +80,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
     });
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_drawerOpened && _scaffoldKey.currentState != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scaffoldKey.currentState?.openDrawer();
-        _drawerOpened = true;
-      });
-    }
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   if (!_drawerOpened && _scaffoldKey.currentState != null) {
+  //     WidgetsBinding.instance.addPostFrameCallback((_) {
+  //       _scaffoldKey.currentState?.openDrawer();
+  //       _drawerOpened = true;
+  //     });
+  //   }
+  // }
 
   void _navigateToDeckDetail(BuildContext context, int id) {
     Navigator.push(
