@@ -111,11 +111,6 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> with TickerProvid
     }
 
     if (isNewRecord) {
-      Confetti.launch(
-        context,
-        options: const ConfettiOptions(
-            particleCount: 100, spread: 70, y: 0.6),
-      );
 
       try {
         await ref.read(deckProvider.notifier).submitHighscore(widget.deck.id, widget.time);
@@ -153,6 +148,11 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> with TickerProvid
     String timeTaken = formatTime(widget.time);
 
     if (correctAnswers == widget.deck.count) {
+      Confetti.launch(
+        context,
+        options: const ConfettiOptions(
+            particleCount: 100, spread: 70, y: 0.6),
+      );
 
       if (user != null) {
         _handleHighscore();
