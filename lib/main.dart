@@ -45,7 +45,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _handleNotificationTap(Map<String, dynamic> data, WidgetRef ref) async {
-    if (data['notification_type'] == 'deck_like') {
+    if (data['notification_type'] == 'deck_link') {
       await ref.read(deckProvider.notifier).fetchNotificationDeck(int.parse(data['deck_id']));
       navigatorKey.currentState?.push(
         MaterialPageRoute(

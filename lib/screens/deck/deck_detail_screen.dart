@@ -129,9 +129,11 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
 
     if (likeProcessing) return;
     try {
-      likeProcessing = true;
-      HapticFeedback.mediumImpact();
+      setState(() {
+        likeProcessing = true;
+      });
       await ref.read(deckProvider.notifier).likeDeck(deckId);
+      HapticFeedback.mediumImpact();
     } catch (e) {
       if (e is ApiException) {
         showModal(context, 'An Error Occurred', 'Please try again');
@@ -139,14 +141,18 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
         showModal(context, 'An Error Occurred', 'Please try again');
       }
     } finally {
-      likeProcessing = false;
+      setState(() {
+        likeProcessing = false;
+      });
     }
   }
 
   void _handleUnlikeClick (int deckId) async {
     if (likeProcessing) return;
     try {
-      likeProcessing = true;
+      setState(() {
+        likeProcessing = true;
+      });
       await ref.read(deckProvider.notifier).unlikeDeck(deckId);
       HapticFeedback.mediumImpact();
     } catch (e) {
@@ -156,7 +162,9 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
         showModal(context, 'An Error Occurred', 'Please try again');
       }
     } finally {
-      likeProcessing = false;
+      setState(() {
+        likeProcessing = false;
+      });
     }
   }
 
@@ -380,11 +388,13 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
                               text: 'Deck liked',
                               color: green,
                               onPressed: () => _handleUnlikeClick(deck.id),
+                              loading: likeProcessing,
                             ) : BaseButton(
                               text: 'Like deck',
                               color: green,
                               outlined: true,
                               onPressed: () => _handleLikeClick(deck.id),
+                              loading: likeProcessing,
                             ),
                             const SizedBox(height: 8),
                             BaseButton(

@@ -6,6 +6,7 @@ class BaseButton extends StatelessWidget {
   final String text;
   final Color color;
   final bool outlined;
+  final bool loading;
 
   const BaseButton({
     Key? key,
@@ -13,6 +14,7 @@ class BaseButton extends StatelessWidget {
     required this.text,
     this.color = primary,
     this.outlined = false,
+    this.loading = false,
   }) : super(key: key);
 
   @override
@@ -20,6 +22,7 @@ class BaseButton extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
+        height: 51,
         width: double.infinity,
         decoration: BoxDecoration(
           color: outlined ? white : color,
@@ -32,7 +35,14 @@ class BaseButton extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 11),
           child: Center(
-            child: Text(
+            child: loading ? SizedBox(
+              height: 16,
+              width: 16,
+              child: CircularProgressIndicator(
+                color: color == yellow ? outlined ? color : black : outlined ? color : white,
+                strokeWidth: 3,
+              ),
+            ) : Text(
               text,
               style: TextStyle(
                 fontSize: 16,
