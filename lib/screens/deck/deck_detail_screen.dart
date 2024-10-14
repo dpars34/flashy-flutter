@@ -388,7 +388,6 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
                               text: 'Deck liked',
                               color: green,
                               onPressed: () => _handleUnlikeClick(deck.id),
-                              loading: likeProcessing,
                             ) : BaseButton(
                               text: 'Like deck',
                               color: green,
