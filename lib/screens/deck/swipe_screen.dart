@@ -97,9 +97,11 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
   String _formatTime(int milliseconds) {
     int minutes = (milliseconds ~/ 60000);
     int seconds = (milliseconds ~/ 1000) % 60;
+    int hundredths = (milliseconds ~/ 10) % 100;
     String minutesStr = minutes.toString().padLeft(2, '0');
     String secondsStr = seconds.toString().padLeft(2, '0');
-    return '$minutesStr:$secondsStr';
+    String hundredthsStr = hundredths.toString().padLeft(2, '0');
+    return '$minutesStr:$secondsStr.$hundredthsStr';
   }
 
   @override
@@ -120,7 +122,7 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
               children: [
                 ConstrainedBox(
                   constraints: const BoxConstraints(
-                    maxWidth: 115
+                    maxWidth: 100
                   ),
                   child: OptionPill(color: 'yellow', text: widget.deck.leftOption, large: true,),
                 ),
@@ -128,7 +130,7 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
                 const Icon(Icons.access_time, size: 18, color: black),
                 const SizedBox(width: 4),
                 Container(
-                  width: 50,
+                  width: 80,
                   child: Text(
                     _formatTime(_elapsedMilliseconds),
                     style: const TextStyle(
@@ -141,7 +143,7 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
                 const Spacer(),
                 ConstrainedBox(
                   constraints: const BoxConstraints(
-                      maxWidth: 115
+                      maxWidth: 100
                   ),
                   child: OptionPill(color: 'purple', text: widget.deck.rightOption, large: true,),
                 ),
