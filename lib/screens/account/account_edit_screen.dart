@@ -231,6 +231,7 @@ class _AccountEditScreenState extends ConsumerState<AccountEditScreen> {
                       labelText: 'Email',
                       autocorrect: false,
                       caplitalize: false,
+                      required: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your email';
@@ -247,6 +248,7 @@ class _AccountEditScreenState extends ConsumerState<AccountEditScreen> {
                       labelText: 'Username',
                       autocorrect: false,
                       caplitalize: false,
+                      required: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your username';

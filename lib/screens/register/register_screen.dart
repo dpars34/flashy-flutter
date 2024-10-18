@@ -217,6 +217,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       labelText: 'Email',
                       caplitalize: false,
                       autocorrect: false,
+                      required: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your email';
@@ -232,6 +233,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       controller: _passwordController,
                       labelText: 'Password',
                       isPassword: true,
+                      required: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your password';
@@ -247,6 +249,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       controller: _passwordConfirmationController,
                       labelText: 'Password confirmation',
                       isPassword: true,
+                      required: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please confirm your password';
@@ -264,6 +267,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       maxLength: 30,
                       caplitalize: false,
                       autocorrect: false,
+                      required: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your username';

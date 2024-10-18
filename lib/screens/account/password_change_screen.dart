@@ -142,6 +142,7 @@ class _PasswordChangeScreenState extends ConsumerState<PasswordChangeScreen> {
                       controller: _oldPasswordController,
                       labelText: 'Old Password',
                       isPassword: true,
+                      required: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your password';
@@ -154,6 +155,7 @@ class _PasswordChangeScreenState extends ConsumerState<PasswordChangeScreen> {
                       controller: _passwordController,
                       labelText: 'New password',
                       isPassword: true,
+                      required: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your password';
@@ -169,6 +171,7 @@ class _PasswordChangeScreenState extends ConsumerState<PasswordChangeScreen> {
                       controller: _passwordConfirmationController,
                       labelText: 'New password confirmation',
                       isPassword: true,
+                      required: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please confirm your password';

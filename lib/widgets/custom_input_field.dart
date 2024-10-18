@@ -11,6 +11,7 @@ class CustomInputField extends StatelessWidget {
   final int? maxLength;
   final bool caplitalize;
   final bool autocorrect;
+  final bool required;
 
   const CustomInputField({
     Key? key,
@@ -23,6 +24,7 @@ class CustomInputField extends StatelessWidget {
     this.maxLength,
     this.caplitalize = true,
     this.autocorrect = true,
+    this.required = false,
   }) : super(key: key);
 
   @override
@@ -30,11 +32,22 @@ class CustomInputField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          labelText,
-          style: const TextStyle(
-            color: gray,
-            fontSize: 14,
+        Text.rich(
+          TextSpan(
+            text: labelText,
+            style: const TextStyle(
+              color: gray,
+              fontSize: 14,
+            ),
+            children: <TextSpan>[
+              if (required) const TextSpan(
+                text: ' *',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 14,
+                ),
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 4.0),
