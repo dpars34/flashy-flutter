@@ -41,6 +41,12 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
         _totalCount = widget.deck.count!;
         _isLoading = false;
       _startTimer();
+
+      Future.delayed(const Duration(seconds: 3)).then((_) {
+        if (_swipeCounter == 1) {
+          _shakeCard();
+        }
+      });
     });
   }
 
@@ -77,6 +83,28 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
         answers: _answers,
         time: _elapsedMilliseconds,
       )),
+    );
+  }
+
+  Future<void> _shakeCard() async {
+    const double distance = 30;
+    // We can animate back and forth by chaining different animations.
+    await controller.animateTo(
+      const Offset(-distance, 0),
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeInOut,
+    );
+    await controller.animateTo(
+      const Offset(distance, 0),
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeInOut,
+    );
+    // We need to animate back to the center because `animateTo` does not center
+    // the card for us.
+    await controller.animateTo(
+      const Offset(0, 0),
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeInOut,
     );
   }
 
@@ -120,11 +148,14 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
           children: [
             Row(
               children: [
-                ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    maxWidth: 100
+                GestureDetector(
+                  onTap: controller.swipeLeft,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      maxWidth: 100
+                    ),
+                    child: OptionPill(color: 'yellow', text: widget.deck.leftOption, large: true,),
                   ),
-                  child: OptionPill(color: 'yellow', text: widget.deck.leftOption, large: true,),
                 ),
                 const Spacer(),
                 const Icon(Icons.access_time, size: 18, color: black),
@@ -141,11 +172,14 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
                   ),
                 ),
                 const Spacer(),
-                ConstrainedBox(
-                  constraints: const BoxConstraints(
-                      maxWidth: 100
+                GestureDetector(
+                  onTap: controller.swipeRight,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(
+                        maxWidth: 100
+                    ),
+                    child: OptionPill(color: 'purple', text: widget.deck.rightOption, large: true,),
                   ),
-                  child: OptionPill(color: 'purple', text: widget.deck.rightOption, large: true,),
                 ),
               ],
             ),
